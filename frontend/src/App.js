@@ -7,15 +7,20 @@ import {
   Routes,
   Route,
 } from "react-router-dom";
+import HomePage from './pages/HomePage';
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<LandingPage/>}/>
-        <Route path="/login" element={<LoginPage/>}/>
-        <Route path="/signup" element={<SignUpPage/>}/>
-      </Routes>
-    </BrowserRouter>
+    <div className='App'>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<HomePage/>}>
+            <Route index element={<LandingPage/>}/>
+            <Route path="/login" element={<LoginPage/>}/>
+            <Route path="/signup" element={<SignUpPage/>}/>
+          </Route>
+        </Routes>
+      </BrowserRouter>
+    </div>
   );
 }
 

@@ -3,8 +3,7 @@ import {Link} from "react-router-dom"
 import HomeNavbar from '../components/HomeNavbar'
 function LandingPage() {
   return (
-    <div className="flex flex-col min-h-screen bg-slate-200">
-      <HomeNavbar/>
+    <div className="flex flex-col self-center">
       <div className="flex items-center justify-between w-5/6 m-auto">
         <div>
           <div>
