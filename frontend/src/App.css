@@ -13,3 +13,19 @@
   margin: 0;
   box-sizing: border-box;
 }
+
+.bg-primary{
+  @apply bg-slate-200
+}
+
+.dropdown-hidden{
+    /* visibility: hidden; */
+    overflow: hidden;
+    max-height: 0;
+    transition: max-height 0.15s ease-out;
+}
+
+.dropdown-visible{
+  max-height: 500px;
+  transition: max-height 0.25s ease-in;
+}

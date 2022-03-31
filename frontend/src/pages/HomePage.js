@@ -2,7 +2,7 @@ import {Link, Outlet} from 'react-router-dom'
 
 function HomePage() {
   return (
-    <div className="bg-slate-200 min-h-screen">
+    <div className="bg-primary min-h-screen">
         <div className='flex w-full justify-center bg-slate-600 text-white'>
             <nav className='flex flex-row justify-between w-5/6 py-6'>
                 <Link to="/"><h2>HostelCompanion</h2></Link>
