@@ -60,27 +60,25 @@ function SideBar() {
         }
     ])
 
-    const backdropClickHandler = (event) => {
-        const linkElement=document.getElementById
-        console.log(event.target ==linkElement)
-        {
-            if(activeIndex!=openedIndex && openedIndex>=0)
-            {
-                var newLinks=[...links]
-                newLinks[openedIndex].subLinkActiveIndex=-1
-                newLinks[openedIndex].subLinkOpen=false
-                setLinks(newLinks)   
-                setOpenedIndex(-1)
-            }
-        }
-        // if (event.target == event.currentTarget) {
-        //     setModal(null)
-        // }
-    }
+    // const backdropClickHandler = (event) => {
+    //     const linkElement=document.getElementById
+    //     if(event.target==linkElement)
+    //     {
+    //         if(activeIndex!=openedIndex && openedIndex>=0)
+    //         {
+    //             console.log("here7")
+    //             var newLinks=[...links]
+    //             newLinks[openedIndex].subLinkActiveIndex=-1
+    //             newLinks[openedIndex].subLinkOpen=false
+    //             setLinks(newLinks)   
+    //             setOpenedIndex(-1)
+    //         }
+    //     }
+    // }
 
     return (
         <div className='flex flex-row bg-primary min-h-screen h-full'>
-            <div className='flex flex-col w-full bg-white' onClick={backdropClickHandler}>
+            <div className='flex flex-col w-full bg-white'>
                 <div className='flex flex-row items-center px-2 py-4 space-x-3'>
                     {/* LOGO */}
                     <div className='bg-white border border-solid border-black rounded-full w-12 aspect-square'/>
@@ -95,6 +93,7 @@ function SideBar() {
                                     onClick={()=>{
                                         if(links[activeIndex].subLinks!=undefined && activeIndex!=index)
                                         {
+                                            console.log("here1")
                                             var newLinks=[...links]
                                             newLinks[activeIndex].subLinkActiveIndex=-1
                                             newLinks[activeIndex].subLinkOpen=false
@@ -103,12 +102,15 @@ function SideBar() {
 
                                         if(link.subLinks==undefined)
                                         {
+                                            console.log("here2")
                                             setActiveIndex(index)
                                         }
                                         if(index!=openedIndex)
                                         {
+                                            console.log("here3")
                                             if(openedIndex!=-1)
                                             {
+                                                console.log("here4")
                                                 var newLinks=[...links]
                                                 newLinks[openedIndex].subLinkActiveIndex=-1
                                                 newLinks[openedIndex].subLinkOpen=false
@@ -119,7 +121,7 @@ function SideBar() {
 
                                         if(link.subLinks!=undefined)
                                         {
-                                        
+                                            console.log("here5")
                                             var newLinks=[...links]
                                             newLinks[index].subLinkOpen=!link.subLinkOpen
                                             setOpenedIndex(index)
