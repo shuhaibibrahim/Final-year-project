@@ -1,10 +1,9 @@
 import {Link} from "react-router-dom"
 function SignUpForm() {
     return (
-      <div className="flex flex-col w-2/6 bg-white p-10 rounded-xl">
+      <div className="flex flex-col w-5/12 bg-white text-left p-10 rounded-xl">
           <h2 className="font-bold text-2xl">Sign Up</h2>
           <form action="" className="mt-2">
-            <div className="flex items-center justify-between">
               <div className="flex flex-col mt-2">
                 <label htmlFor="">Admission Number</label>
                 <input type="text" className="border-solid border-2 rounded-lg mt-2 px-2 py-1" placeholder="Enter your admission number"/>
@@ -13,7 +12,6 @@ function SignUpForm() {
                 <label htmlFor="">Phone Number</label>
                 <input type="text" className="border-solid border-2 rounded-lg mt-2 px-2 py-1" placeholder="Enter your phone number"/>
               </div>
-            </div>
             <div className="flex flex-col mt-2">
               <label htmlFor="">Name</label>
               <input type="text" className="border-solid border-2 rounded-lg mt-2 px-2 py-1" placeholder="Enter your name"/>
