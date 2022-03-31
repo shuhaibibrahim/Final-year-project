@@ -6,8 +6,8 @@ function LoginForm() {
     const [password,setPassword]=useState("")
 
     return (
-        <div className="flex flex-col w-2/6 bg-white bg-white p-10 rounded-xl">
-            <h2 className="font-bold text-2xl">Login</h2>
+        <div className="flex flex-col bg-white w-5/12 text-left bg-white p-10 rounded-xl">
+            <h2 className="font-bold text-2xl">Log In</h2>
             <p>Welcome Back!</p>
             <p>Please enter your details</p>
             <form action=""> 

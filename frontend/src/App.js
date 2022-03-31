@@ -15,11 +15,9 @@ function App() {
     <div className='App'>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<HomePage/>}>
-            <Route index element={<LandingPage/>}/>
-            <Route path="login" element={<LoginPage/>}/>
-            <Route path="signup" element={<SignUpPage/>}/>
-          </Route>
+          <Route path="/" element={<LandingPage/>}/>
+          <Route path="/login" element={<LoginPage/>}/>
+          <Route path="/signup" element={<SignUpPage/>}/>
 
           {/* Admin Routes */}
           <Route path="/admin" element={<AdminHome/>}>
