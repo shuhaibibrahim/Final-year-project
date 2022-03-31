@@ -4,7 +4,7 @@ import HomeNavbar from '../components/HomeNavbar'
 function LandingPage() {
   return (
     <div className="flex flex-col self-center">
-      <div className="flex items-center justify-between w-5/6 m-auto">
+      <div className="flex items-center justify-between w-5/6 m-auto" style={{minHeight:"80vh"}}>
         <div>
           <div>
             <h2 className="font-bold text-4xl">Perfect Solution for Hostel Activities</h2>
