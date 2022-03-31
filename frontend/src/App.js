@@ -7,7 +7,7 @@ import {
   Routes,
   Route,
 } from "react-router-dom";
-import HomePage from './pages/HomePage';
+import StudentHome from './pages/Student/StudentHome';
 import AdminHome from './pages/Admin/AdminHome';
 import AdminInmates from './pages/Admin/AdminInmates';
 function App() {
@@ -23,6 +23,10 @@ function App() {
           <Route path="/admin" element={<AdminHome/>}>
             <Route index element={<AdminInmates/>} />
             <Route path="inmates" element={<AdminInmates/>} />
+          </Route>
+          {/* Student Routes */}
+          <Route path="/student" element={<StudentHome/>}>
+            <Route index element={<AdminInmates/>} />
           </Route>
         </Routes>
       </BrowserRouter>
