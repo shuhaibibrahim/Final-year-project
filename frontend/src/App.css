@@ -29,3 +29,26 @@
   max-height: 500px;
   transition: max-height 0.25s ease-in;
 }
+
+thead{
+  border-radius: 3rem;
+}
+
+thead tr th{
+  @apply p-3;
+}
+
+tbody{
+  @apply divide-y-2;
+  height: 24rem;
+  overflow-y: scroll;
+}
+
+tbody tr td{
+  @apply p-3
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}

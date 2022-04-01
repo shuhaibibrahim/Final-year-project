@@ -85,7 +85,7 @@ function SideBar() {
                     <div>Logo Name</div>
                 </div>
 
-                <div className='flex flex-col items-start mt-24 w-full px-2' id="main-links">
+                <div className='flex flex-col items-start mt-12 w-full px-2' id="main-links">
                     {links.map((link, index)=>(
                         <div className='flex flex-col w-full'>
                             <Link to={link.subLinks==undefined?link.to:'.'} className="">
@@ -135,6 +135,7 @@ function SideBar() {
                                         {/* <div className='text-black'>
                                             {link.icon}
                                         </div> */}
+                                        <div className={(index==activeIndex?'w-1 bg-stone-800 rounded-full h-3/4':'')}/>
                                         <img src={link.icon}/>
                                         <div>{link.title}</div>
                                     </div>
@@ -214,7 +215,7 @@ function SideBar() {
                     </div> */}
                 </div>
 
-                <div className='flex flex-col justify-end h-full w-full px-2'>
+                <div className='flex flex-col justify-end h-full w-full px-2 mb-3'>
                     <div className='flex flex-row space-x-4 justify-self-start items-center px-2 py-2'>
                         <div className='text-black'>
                             <img src={keySvg} />

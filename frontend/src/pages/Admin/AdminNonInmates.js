@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 
-function AdminInmates() {
-  const dummyDataMH=[
+function AdminNonInmates() {
+  const dummyData=[
     {
       admNo:"1234",
       name:"xyz",
@@ -68,75 +68,7 @@ function AdminInmates() {
     }
   ]
 
-  const dummyDataLH=[
-    {
-      admNo:"1289",
-      name:"pqr",
-      dept:"cse",
-      batch:"batchId",
-      phone:"9876857465",
-      email:"xyz@gmail.com"
-    },
-    {
-      admNo:"1289",
-      name:"pqr",
-      dept:"cse",
-      batch:"batchId",
-      phone:"9876857465",
-      email:"xyz@gmail.com"
-    },
-    {
-      admNo:"1289",
-      name:"pqr",
-      dept:"cse",
-      batch:"batchId",
-      phone:"9876857465",
-      email:"xyz@gmail.com"
-    },
-    {
-      admNo:"1289",
-      name:"pqr",
-      dept:"cse",
-      batch:"batchId",
-      phone:"9876857465",
-      email:"xyz@gmail.com"
-    },
-    {
-      admNo:"1289",
-      name:"pqr",
-      dept:"cse",
-      batch:"batchId",
-      phone:"9876857465",
-      email:"xyz@gmail.com"
-    },
-    {
-      admNo:"1289",
-      name:"pqr",
-      dept:"cse",
-      batch:"batchId",
-      phone:"9876857465",
-      email:"xyz@gmail.com"
-    },
-    {
-      admNo:"1289",
-      name:"pqr",
-      dept:"cse",
-      batch:"batchId",
-      phone:"9876857465",
-      email:"xyz@gmail.com"
-    },
-    {
-      admNo:"1289",
-      name:"pqr",
-      dept:"cse",
-      batch:"batchId",
-      phone:"9876857465",
-      email:"xyz@gmail.com"
-    }
-  ]
-
-  const [hostelDataSelected, setHostelDataSelected] = useState(dummyDataMH)
-  const [hostelSelected, setHostelSelected] = useState("MH")
+  const [nonInmates, setNonInmates] = useState(dummyData)
 
   return (
     <div className='flex flex-col w-full items-center min-h-screen h-full'>
@@ -154,23 +86,9 @@ function AdminInmates() {
           <div className='flex flex-row tex-black text-sm font-bold'>
               <div
                 className='cursor-pointer '
-                onClick={()=>{
-                  setHostelDataSelected(dummyDataMH)
-                  setHostelSelected("MH")
-                }}
               >
                   <div>Mens Hostel <span className='ml-2 p-2 text-white bg-stone-800 rounded-lg cursor-default'>200</span></div>
-                  <div className={hostelSelected=="MH"?'mt-2 h-1 self-center w-7/12 bg-stone-800 rounded-full':''}/>
-              </div>
-              <div 
-                className='ml-5 cursor-pointer'
-                onClick={()=>{
-                  setHostelDataSelected(dummyDataLH)
-                  setHostelSelected("LH")
-                }}
-              >
-                <div>Ladies Hostel <span className='ml-2 p-2 text-white bg-stone-800 rounded-lg cursor-default'>200</span></div>
-                <div className={hostelSelected=="LH"?'mt-2 h-1 w-7/12 self-center bg-stone-800 rounded-full':''}/>
+                  <div className='mt-2 h-1 self-center w-7/12 bg-stone-800 rounded-full'/>
               </div>
           </div>
 
@@ -218,7 +136,7 @@ function AdminInmates() {
               </tr>
             </thead>
             <tbody className=''>
-              {hostelDataSelected.map(user=>(
+              {nonInmates.map(user=>(
                 <tr className='border-b border-slate-200 border-solid'>
                   <td>{user.admNo}</td>
                   <td>{user.name}</td>
@@ -236,4 +154,4 @@ function AdminInmates() {
   )
 }
 
-export default AdminInmates
+export default AdminNonInmates
