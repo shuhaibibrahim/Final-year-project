@@ -7,10 +7,13 @@ import {
   Routes,
   Route,
 } from "react-router-dom";
-import HomePage from './pages/HomePage';
+import StudentHome from './pages/Student/StudentHome';
 import AdminHome from './pages/Admin/AdminHome';
 import AdminInmates from './pages/Admin/AdminInmates';
 import AdminNonInmates from './pages/Admin/AdminNonInmates';
+import ViewDetails from './pages/Student/ViewDetails';
+import HostelApplication from './pages/Student/HostelApplication';
+import NonInmateCertificate from './pages/Student/NonInmateCertificate';
 function App() {
   return (
     <div className='App'>
@@ -25,6 +28,12 @@ function App() {
             <Route index element={<AdminInmates/>} />
             <Route path="inmates" element={<AdminInmates/>} />
             <Route path="noninmates" element={<AdminNonInmates/>} />
+          </Route>
+          {/* Student Routes */}
+          <Route path="/student" element={<StudentHome/>}>
+            <Route index element={<ViewDetails/>}/>
+            <Route path="hostelapply" element={<HostelApplication/>}/>
+            <Route path="noninmatecertificate" element={<NonInmateCertificate/>}/>
           </Route>
         </Routes>
       </BrowserRouter>

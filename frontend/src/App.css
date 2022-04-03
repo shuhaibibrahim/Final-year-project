@@ -3,7 +3,6 @@
 @tailwind utilities;
 
 .App {
-  text-align: center;
   min-height: 100vh;
   overflow:auto;
 }
@@ -32,6 +31,7 @@
 
 thead{
   border-radius: 3rem;
+  text-align: left;
 }
 
 thead tr th{

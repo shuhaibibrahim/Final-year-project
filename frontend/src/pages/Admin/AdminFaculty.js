@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-function AdminNonInmates() {
+function AdminFaculty() {
   const dummyData=[
     {
       admNo:"1234",
@@ -127,7 +127,7 @@ function AdminNonInmates() {
           <table className='w-full relative'>
             <thead className='bg-primary rounded-xl p-3'>
               <tr className='rounded-xl p-3'>
-                <th>Admission Number</th>
+                <th>PEN number</th>
                 <th>Name</th>
                 <th>Department</th>
                 <th>Batch</th>
@@ -154,4 +154,4 @@ function AdminNonInmates() {
   )
 }
 
-export default AdminNonInmates
+export default AdminFaculty
