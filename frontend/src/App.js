@@ -14,6 +14,7 @@ import AdminNonInmates from './pages/Admin/AdminNonInmates';
 import ViewDetails from './pages/Student/ViewDetails';
 import HostelApplication from './pages/Student/HostelApplication';
 import NonInmateCertificate from './pages/Student/NonInmateCertificate';
+import AdminPaths from './pages/Admin/AdminPaths';
 function App() {
   return (
     <div className='App'>
@@ -28,6 +29,7 @@ function App() {
             <Route index element={<AdminInmates/>} />
             <Route path="inmates" element={<AdminInmates/>} />
             <Route path="noninmates" element={<AdminNonInmates/>} />
+            <Route path="paths" element={<AdminPaths/>} />
           </Route>
           {/* Student Routes */}
           <Route path="/student" element={<StudentHome/>}>

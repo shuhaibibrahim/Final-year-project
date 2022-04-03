@@ -50,7 +50,7 @@ function AdminHome() {
       },
       {
           title:"Application Paths",
-          to:"",
+          to:"paths",
           icon: fitnessSvg,
       }
   ]
