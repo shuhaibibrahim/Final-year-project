@@ -10,21 +10,88 @@ function SideBar({myLinks,myActiveIndex,myOpenedIndex}) {
 
     const [links, setLinks] = useState(myLinks)
 
-    // const backdropClickHandler = (event) => {
-    //     const linkElement=document.getElementById
-    //     if(event.target==linkElement)
+    //---Documentation---
+    // const links=[
     //     {
-    //         if(activeIndex!=openedIndex && openedIndex>=0)
-    //         {
-    //             console.log("here7")
-    //             var newLinks=[...links]
-    //             newLinks[openedIndex].subLinkActiveIndex=-1
-    //             newLinks[openedIndex].subLinkOpen=false
-    //             setLinks(newLinks)   
-    //             setOpenedIndex(-1)
-    //         }
+    //         title:"Users", :: label of the link
+    //         to:null, :: to link
+    //         icon:userSvg, :: icon of the link
+    //         subLinkOpen:true, :: should sublink be open by default
+    //         subLinkActiveIndex:0, :: index of the active sublink
+    //         subLinks:[
+    //             {
+    //                 title:"Inmate",
+    //                 to:"inmates",
+    //                 icon:   <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+    //                             <path stroke-linecap="round" stroke-linejoin="round" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+    //                         </svg>,
+    //             },
+    //         ]
     //     }
     // }
+
+    const SideBarLink=({link, index})=>{
+        return (
+            <div 
+                onClick={()=>{
+                    if(links[activeIndex].subLinks!=undefined && activeIndex!=index)
+                    {
+                        console.log("here1")
+                        var newLinks=[...links]
+                        newLinks[activeIndex].subLinkActiveIndex=-1
+                        newLinks[activeIndex].subLinkOpen=false
+                        setLinks(newLinks)
+                    }
+
+                    if(link.subLinks==undefined)
+                    {
+                        console.log("here2")
+                        setActiveIndex(index)
+                    }
+                    if(index!=openedIndex)
+                    {
+                        console.log("here3")
+                        if(openedIndex!=-1)
+                        {
+                            console.log("here4")
+                            var newLinks=[...links]
+                            newLinks[openedIndex].subLinkActiveIndex=-1
+                            newLinks[openedIndex].subLinkOpen=false
+                            setLinks(newLinks)   
+                            setOpenedIndex(-1)
+                        }
+                    }
+
+                    if(link.subLinks!=undefined)
+                    {
+                        console.log("here5")
+                        var newLinks=[...links]
+                        newLinks[index].subLinkOpen=!link.subLinkOpen
+                        setOpenedIndex(index)
+                        setLinks(newLinks)
+                    }
+                }}
+                key={index} 
+                className={'flex flex-row cursor-pointer justify-between py-2 px-2 '+(index==activeIndex&&link.subLinks==undefined?' text-blue-500 ':' text-black ')}
+            >
+                <div className='flex flex-row space-x-4 items-center'>
+                    {/* <div className='text-black'>
+                        {link.icon}
+                    </div> */}
+                    <div className={(index==activeIndex?'w-1 bg-stone-800 rounded-full h-3/4':'')}/>
+                    <img src={link.icon}/>
+                    <div>{link.title}</div>
+                </div>
+                {link.subLinks!=undefined&&(
+                    <div>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </div>
+                )}
+            </div>
+        )
+    }
 
     return (
         <div className='flex flex-row bg-primary min-h-screen h-full'>
@@ -38,66 +105,12 @@ function SideBar({myLinks,myActiveIndex,myOpenedIndex}) {
                 <div className='flex flex-col items-start mt-12 w-full px-2' id="main-links">
                     {links.map((link, index)=>(
                         <div className='flex flex-col w-full'>
-                            <Link to={link.subLinks==undefined?link.to:'.'} className="">
-                                <div 
-                                    onClick={()=>{
-                                        if(links[activeIndex].subLinks!=undefined && activeIndex!=index)
-                                        {
-                                            console.log("here1")
-                                            var newLinks=[...links]
-                                            newLinks[activeIndex].subLinkActiveIndex=-1
-                                            newLinks[activeIndex].subLinkOpen=false
-                                            setLinks(newLinks)
-                                        }
+                            
+                            {link.to!=null&&<Link to={link.to} className="">
+                                <SideBarLink link={link} index={index} />
+                            </Link>}
+                            {link.to==null&&<SideBarLink link={link} index={index} />}
 
-                                        if(link.subLinks==undefined)
-                                        {
-                                            console.log("here2")
-                                            setActiveIndex(index)
-                                        }
-                                        if(index!=openedIndex)
-                                        {
-                                            console.log("here3")
-                                            if(openedIndex!=-1)
-                                            {
-                                                console.log("here4")
-                                                var newLinks=[...links]
-                                                newLinks[openedIndex].subLinkActiveIndex=-1
-                                                newLinks[openedIndex].subLinkOpen=false
-                                                setLinks(newLinks)   
-                                                setOpenedIndex(-1)
-                                            }
-                                        }
-
-                                        if(link.subLinks!=undefined)
-                                        {
-                                            console.log("here5")
-                                            var newLinks=[...links]
-                                            newLinks[index].subLinkOpen=!link.subLinkOpen
-                                            setOpenedIndex(index)
-                                            setLinks(newLinks)
-                                        }
-                                    }}
-                                    key={index} 
-                                    className={'flex flex-row justify-between py-2 px-2 '+(index==activeIndex&&link.subLinks==undefined?'text-blue-500':'text-black')}
-                                >
-                                    <div className='flex flex-row space-x-4 items-center'>
-                                        {/* <div className='text-black'>
-                                            {link.icon}
-                                        </div> */}
-                                        <div className={(index==activeIndex?'w-1 bg-stone-800 rounded-full h-3/4':'')}/>
-                                        <img src={link.icon}/>
-                                        <div>{link.title}</div>
-                                    </div>
-                                    {link.subLinks!=undefined&&(
-                                        <div>
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                                <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
-                                            </svg>
-                                        </div>
-                                    )}
-                                </div>
-                            </Link>
                             {link.subLinks!=undefined&&<div className={'flex flex-col bg-gray-100 ' + (link.subLinkOpen?'dropdown-visible':'dropdown-hidden')}>
                                 {link.subLinks.map((subLink, subIndex)=>(
                                     <Link to={subLink.to} className="">

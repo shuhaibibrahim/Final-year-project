@@ -4,7 +4,6 @@
 
 .App {
   min-height: 100vh;
-  overflow:auto;
 }
 
 *{
@@ -55,4 +54,8 @@ tbody tr td{
 
 .admin-dashbord-height{
   height: 30rem;
+}
+
+.button-blue{
+  @apply rounded-lg p-2 bg-blue-500 self-start text-white text-base font-medium hover:bg-blue-700
 }

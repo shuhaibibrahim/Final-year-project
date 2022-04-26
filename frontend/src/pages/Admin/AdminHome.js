@@ -10,7 +10,7 @@ function AdminHome() {
   const links=[
       {
           title:"Users",
-          to:"/admin",
+          to:null,
           icon:userSvg,
           subLinkOpen:true,
           subLinkActiveIndex:0,
@@ -45,7 +45,7 @@ function AdminHome() {
       },
       {
           title:"Allotment Rules",
-          to:"",
+          to:"allotmentrule",
           icon: bookSvg,
       },
       {
@@ -55,8 +55,8 @@ function AdminHome() {
       }
   ]
   return (
-    <div className='flex w-full flex-row bg-primary min-h-screen h-full'>
-        <div className='w-3/12'>
+    <div className='flex w-full flex-row bg-primary h-screen'>
+        <div className='w-3/12 '>
             <SideBar myLinks={links} myActiveIndex={0} myOpenedIndex={0}/>
         </div>
         <Outlet/>

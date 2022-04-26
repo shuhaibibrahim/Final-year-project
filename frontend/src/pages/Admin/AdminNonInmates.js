@@ -71,7 +71,7 @@ function AdminNonInmates() {
   const [nonInmates, setNonInmates] = useState(dummyData)
 
   return (
-    <div className='flex flex-col w-full items-center min-h-screen h-full'>
+    <div className='flex flex-col w-full items-center min-h-screen'>
       <div className='flex flex-row justify-between w-11/12 pt-4 items-center'>
         <div className='text-xl font-bold'>Non Inmates</div>
         <div className='flex flex-row space-x-4 items-center'>
@@ -80,7 +80,7 @@ function AdminNonInmates() {
         </div>
       </div>
 
-      <div className='flex flex-col items-center py-8 space-y-4 w-11/12 mt-8 bg-white rounded-xl'>
+      <div className='flex flex-col items-center py-8 space-y-4 w-11/12 mt-8 admin-dashbord-height bg-white rounded-xl'>
         {/* white box nav bar */}
         <div className='flex flex-row justify-between w-11/12 items-center'>
           <div className='flex flex-row tex-black text-sm font-bold'>
@@ -88,7 +88,7 @@ function AdminNonInmates() {
                 className='cursor-pointer '
               >
                   <div>Non Inmates<span className='ml-2 p-2 text-white bg-stone-800 rounded-lg cursor-default'>200</span></div>
-                  <div className='mt-2 h-1 self-center w-7/12 bg-stone-800 rounded-full'/>
+                  <div className='h-1 self-center w-8/12 bg-stone-800 rounded-full'/>
               </div>
           </div>
 
@@ -123,22 +123,19 @@ function AdminNonInmates() {
         </div>
 
         {/* inmates list */}
-        <div className='w-11/12 h-80 overflow-y-scroll no-scrollbar'>
-          <table className='w-full relative'>
-            <thead className='bg-primary rounded-xl p-3'>
-              <tr className='rounded-xl p-3'>
-                <th>Admission Number</th>
+        <div className='w-11/12 overflow-y-scroll no-scrollbar'>
+          <table className='w-full'>
+              <tr className='bg-primary py-3 text-left sticky top-0'>
+                <th className='py-3'>Admission Number</th>
                 <th>Name</th>
                 <th>Department</th>
                 <th>Batch</th>
                 <th>Phone</th>
                 <th>Email</th>
               </tr>
-            </thead>
-            <tbody className=''>
               {nonInmates.map(user=>(
                 <tr className='border-b border-slate-200 border-solid'>
-                  <td>{user.admNo}</td>
+                  <td className='py-3'>{user.admNo}</td>
                   <td>{user.name}</td>
                   <td>{user.dept}</td>
                   <td>{user.batch}</td>
@@ -146,7 +143,6 @@ function AdminNonInmates() {
                   <td>{user.email}</td>
                 </tr>
               ))}
-            </tbody>
           </table>
         </div>
       </div>

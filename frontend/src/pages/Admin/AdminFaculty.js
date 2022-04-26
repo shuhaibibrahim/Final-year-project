@@ -71,7 +71,7 @@ function AdminFaculty() {
   const [nonInmates, setNonInmates] = useState(dummyData)
 
   return (
-    <div className='flex flex-col w-full items-center min-h-screen h-full'>
+    <div className='flex flex-col w-full items-center min-h-screen'>
       <div className='flex flex-row justify-between w-11/12 pt-4 items-center'>
         <div className='text-xl font-bold'>Non Inmates</div>
         <div className='flex flex-row space-x-4 items-center'>
@@ -124,9 +124,8 @@ function AdminFaculty() {
 
         {/* inmates list */}
         <div className='w-11/12 h-80 overflow-y-scroll no-scrollbar'>
-          <table className='w-full relative'>
-            <thead className='bg-primary rounded-xl p-3'>
-              <tr className='rounded-xl p-3'>
+          <table className='w-full '>
+              <tr className='rounded-xl p-3 sticky top-0'>
                 <th>PEN number</th>
                 <th>Name</th>
                 <th>Department</th>
@@ -134,8 +133,6 @@ function AdminFaculty() {
                 <th>Phone</th>
                 <th>Email</th>
               </tr>
-            </thead>
-            <tbody className=''>
               {nonInmates.map(user=>(
                 <tr className='border-b border-slate-200 border-solid'>
                   <td>{user.admNo}</td>
@@ -146,7 +143,6 @@ function AdminFaculty() {
                   <td>{user.email}</td>
                 </tr>
               ))}
-            </tbody>
           </table>
         </div>
       </div>
