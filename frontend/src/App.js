@@ -15,6 +15,12 @@ import ViewDetails from './pages/Student/ViewDetails';
 import HostelApplication from './pages/Student/HostelApplication';
 import NonInmateCertificate from './pages/Student/NonInmateCertificate';
 import AdminPaths from './pages/Admin/AdminPaths';
+import InmateHome from './pages/Inmate/InmateHome';
+import CertificatePage from './pages/Inmate/CertificatePage';
+import MessPage from './pages/Inmate/MessPage';
+import MessSecretary from './pages/Inmate/MessSecretary'
+import MessDirector from './pages/Inmate/MessDirector'
+import HostelPage from './pages/Inmate/HostelPage';
 function App() {
   return (
     <div className='App'>
@@ -36,6 +42,16 @@ function App() {
             <Route index element={<ViewDetails/>}/>
             <Route path="hostelapply" element={<HostelApplication/>}/>
             <Route path="noninmatecertificate" element={<NonInmateCertificate/>}/>
+          </Route>
+          {/* Inmate Routes */}
+          <Route path="/inmate" element={<InmateHome/>}>
+            <Route index element={<MessPage/>}/>
+            <Route path="mess" element={<MessPage/>}/>
+            <Route path="certificates" element={<CertificatePage/>}/>
+            <Route path="noninmatecertificate" element={<NonInmateCertificate/>}/>
+            <Route path="messsec" element={<MessSecretary/>}/>
+            <Route path="messdirector" element={<MessDirector/>}/>
+            <Route path="hostel" element={<HostelPage/>}/>
           </Route>
         </Routes>
       </BrowserRouter>

@@ -27,7 +27,7 @@ function SideBar({myLinks,myActiveIndex,myOpenedIndex}) {
     // }
 
     return (
-        <div className='flex flex-row bg-primary min-h-screen h-full'>
+        <div className='flex flex-row bg-primary h-screen'>
             <div className='flex flex-col w-full bg-white'>
                 <div className='flex flex-row items-center px-2 py-4 space-x-3'>
                     {/* LOGO */}

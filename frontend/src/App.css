@@ -54,5 +54,5 @@ tbody tr td{
 }
 
 .admin-dashbord-height{
-  height: 30rem;
+  min-height:30rem;
 }
