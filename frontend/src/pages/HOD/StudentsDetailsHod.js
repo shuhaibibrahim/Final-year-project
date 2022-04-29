@@ -1,10 +1,10 @@
 import React from 'react'
 
-function HostelAllotment() {
+function StudentsDetailsHod() {
   return (
     <div className='flex flex-col w-full items-center'>
       <div className='flex flex-row justify-between w-10/12 pt-4 items-center'>
-        <div className='text-xl font-bold'>Hostel allotment details</div>
+        <div className='text-xl font-bold'>Students details</div>
         <div className='flex flex-row space-x-4 items-center'>
             <div className='bg-white border rounded-full w-10 aspect-square'/>
             <div>user Name</div>
@@ -18,4 +18,4 @@ function HostelAllotment() {
   )
 }
 
-export default HostelAllotment
+export default StudentsDetailsHod

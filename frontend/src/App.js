@@ -18,6 +18,9 @@ import ViewDetails from './pages/Student/ViewDetails';
 import HostelApplication from './pages/Student/HostelApplication';
 import NonInmateCertificate from './pages/Student/NonInmateCertificate';
 import AdminPaths from './pages/Admin/AdminPaths';
+import HostelAllotmentHod from './pages/HOD/HostelAllotmentHod';
+import StudentsDetailsHod from './pages/HOD/StudentsDetailsHod';
+import HodHome from './pages/HOD/HODHome';
 function App() {
   return (
     <div className='App'>
@@ -47,9 +50,9 @@ function App() {
             <Route path="noninmatecertificate" element={<NonInmateCertificate/>}/>
           </Route>
           {/* hod Routes */}
-          <Route path="/hod" element={<FacultyHome/>}>
-            <Route index element={<StudentsDetails/>}/>
-            <Route path="hostelallotment" element={<HostelAllotment/>}/>
+          <Route path="/hod" element={<HodHome/>}>
+            <Route index element={<StudentsDetailsHod/>}/>
+            <Route path="hostelallotment" element={<HostelAllotmentHod/>}/>
             <Route path="noninmatecertificate" element={<NonInmateCertificate/>}/>
           </Route>
         </Routes>
