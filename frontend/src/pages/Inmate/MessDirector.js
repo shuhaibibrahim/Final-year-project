@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import MessOutPage from '../../components/MessOutPage'
 import MessBill from '../../components/MessBill'
 import UploadMessBill from '../../components/UploadMessBill'
+import MessOutList from '../../components/MessOutList'
 function MessDirector() {
   const [tabSelected, setTabSelected] = useState(1)
   const [selectedRowIndex, setSelectedRowIndex] = useState(-1)
@@ -16,10 +17,10 @@ function MessDirector() {
         </div>
       </div>
 
-      <div className='flex flex-col items-center py-8 space-y-4 w-11/12 mt-8 bg-white rounded-xl '>
+      <div className='flex flex-col items-center py-8 space-y-4 w-11/12 mt-8 bg-white rounded-xl'>
         {/* white box nav bar */}
         <div className='flex flex-row justify-between w-11/12 items-center'>
-          <div className='flex flex-row tex-black text-sm font-bold relative'>
+          <div className='flex flex-row tex-black text-sm font-bold relative mb-3'>
               <div
                 className='cursor-pointer '
                 onClick={()=>{
@@ -63,7 +64,7 @@ function MessDirector() {
           <br />
         </div>
         {tabSelected===1&&<MessBill/>}
-        {tabSelected===2&&<MessOutPage/>}
+        {tabSelected===2&&<MessOutList/>}
         {tabSelected===3&&<UploadMessBill/>}
 
       </div>

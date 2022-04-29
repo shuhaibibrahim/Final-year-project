@@ -1,10 +1,10 @@
 import MessOutForm from "./MessOutForm"
-import MessOutList from "./MessOutList"
+import MessOutReqs from "./MessOutReqs"
 function MessOutPage() {
   return (
     <div className='w-11/12'>
         <MessOutForm/>
-        <MessOutList/>
+        <MessOutReqs/>
     </div>
   )
 }

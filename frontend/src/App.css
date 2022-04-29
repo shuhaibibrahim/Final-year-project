@@ -56,3 +56,11 @@ tbody tr td{
 .admin-dashbord-height{
   min-height:30rem;
 }
+
+.submit-button-black{
+  padding: 0.55rem;
+  font-size: small;
+  background-color: rgb(41,37,36);
+  color: white;
+  border-radius: 0.75rem;
+}
