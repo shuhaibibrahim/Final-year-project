@@ -32,10 +32,10 @@ function SideBar({myLinks,myActiveIndex,myOpenedIndex}) {
                 <div className='flex flex-row items-center px-2 py-4 space-x-3'>
                     {/* LOGO */}
                     <div className='bg-white border border-solid border-black rounded-full w-12 aspect-square'/>
-                    <div>Logo Name</div>
+                    <div>Name</div>
                 </div>
 
-                <div className='flex flex-col items-start mt-24 w-full px-2' id="main-links">
+                <div className='flex flex-col items-start mt-10 w-full px-2' id="main-links">
                     {links.map((link, index)=>(
                         <div className='flex flex-col w-full'>
                             <Link to={link.subLinks==undefined?link.to:'.'} className="">
