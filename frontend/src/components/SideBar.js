@@ -1,15 +1,3 @@
-import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
-import keySvg from'../icons/key.svg'
-import logoutSvg from'../icons/logout.svg'
-
-function SideBar({myLinks,myActiveIndex,myOpenedIndex}) {
-
-    const [activeIndex, setActiveIndex] = useState(myActiveIndex)
-    const [openedIndex, setOpenedIndex] = useState(myOpenedIndex)//index of link opened that have sub indexes
-
-    const [links, setLinks] = useState(myLinks)
-
     //---Documentation---
     // const links=[
     //     {
@@ -30,10 +18,30 @@ function SideBar({myLinks,myActiveIndex,myOpenedIndex}) {
     //     }
     // }
 
+import React, { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
+import keySvg from'../icons/key.svg'
+import logoutSvg from'../icons/logout.svg'
+import userSvg from'../icons/user.svg'
+
+function SideBar({myLinks, roles, setRole, roleTo, myActiveIndex, myOpenedIndex, roleIndex}) {
+
+    const [activeIndex, setActiveIndex] = useState(myActiveIndex)
+    const [openedIndex, setOpenedIndex] = useState(myOpenedIndex)//index of link opened that have sub indexes
+
+    const [links, setLinks] = useState(myLinks)
+
+    const [rolesOpen, setRolesOpen] = useState(true)
+
+    useEffect(() => {
+      setLinks(myLinks)
+    }, [myLinks])
+    
     const SideBarLink=({link, index})=>{
         return (
             <div 
                 onClick={()=>{
+                    //To close any link that have sublinks
                     if(links[activeIndex].subLinks!=undefined && activeIndex!=index)
                     {
                         console.log("here1")
@@ -43,11 +51,14 @@ function SideBar({myLinks,myActiveIndex,myOpenedIndex}) {
                         setLinks(newLinks)
                     }
 
+                    //If current index has no sublinks, then set the active link to current link
                     if(link.subLinks==undefined)
                     {
                         console.log("here2")
                         setActiveIndex(index)
                     }
+
+                    //To close the opened indexes that may not be active
                     if(index!=openedIndex)
                     {
                         console.log("here3")
@@ -62,6 +73,7 @@ function SideBar({myLinks,myActiveIndex,myOpenedIndex}) {
                         }
                     }
 
+                    //To open the link that have sublinks (Note that the link is not made active. The link is made active only after a sublink is clicked)
                     if(link.subLinks!=undefined)
                     {
                         console.log("here5")
@@ -82,6 +94,8 @@ function SideBar({myLinks,myActiveIndex,myOpenedIndex}) {
                     <img src={link.icon}/>
                     <div>{link.title}</div>
                 </div>
+
+                {/* Arrow down icon */}
                 {link.subLinks!=undefined&&(
                     <div>
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -94,12 +108,12 @@ function SideBar({myLinks,myActiveIndex,myOpenedIndex}) {
     }
 
     return (
-        <div className='flex flex-row bg-primary min-h-screen h-full text-sm'>
-            <div className='flex flex-col w-full bg-white'>
+        <div className='flex flex-row bg-primary min-h-screen h-full text-sm overflow-hidden'>
+            <div className='flex flex-col w-full bg-white overflow-y-auto'>
                 <div className='flex flex-row items-center px-2 py-4 space-x-3'>
                     {/* LOGO */}
                     <div className='bg-white border border-solid border-black rounded-full w-12 aspect-square'/>
-                    <div>Logo Name</div>
+                    <div>Name</div>
                 </div>
                 <hr className='h-px bg-stone-800 w-full' />
 
@@ -121,6 +135,8 @@ function SideBar({myLinks,myActiveIndex,myOpenedIndex}) {
                                         onClick={()=>{
                                             var newLinks=[...links]
                                             newLinks[index].subLinkActiveIndex=subIndex
+
+                                            //When sublink is clicked the current index is made active
                                             setActiveIndex(index)
                                             setLinks(newLinks)
                                         }}
@@ -142,41 +158,54 @@ function SideBar({myLinks,myActiveIndex,myOpenedIndex}) {
                             </div>}
                         </div>
                     ))}
-                    {/* <div className='flex flex-row space-x-4 justify-self-start items-center'>
-                        <div className='text-black'>
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                            </svg>
-                        </div>
-                        <div>Users</div>
-                    </div>
 
-                    <div className='flex flex-row space-x-4 justify-self-start items-center'>
-                        <div className='text-black'>
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                            </svg>
+                    {/* Roles */}
+                    {roles!=undefined&&(<div className='flex flex-col w-full'>
+                        <div 
+                            className='flex flex-row cursor-pointer justify-between py-2 px-2 text-black '
+                            onClick={()=>{setRolesOpen(open=>!open)}}
+                        >
+                            <div className='flex flex-row space-x-4 items-center ml-4'>
+                                {/* <div className='text-black'>
+                                    {link.icon}
+                                </div> */}
+                                <img src={userSvg}/>
+                                <div>Roles</div>
+                            </div>
+                            {/* Arrow down icon */}
+                            <div>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                                </svg>
+                            </div>
                         </div>
-                        <div className='py-2'>Hostel Registry</div>
-                    </div>
 
-                    <div className='flex flex-row space-x-4 justify-self-start items-center'>
-                        <div className='text-black'>
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                            </svg>
-                        </div>
-                        <div className='py-2'>Allotment Rules</div>
-                    </div>
+                        {/* Roles List */}
+                        <div className={'flex flex-col bg-gray-100 ' + (rolesOpen?'dropdown-visible':'dropdown-hidden')}>
+                            {roles.map((role, rIndex)=>(
 
-                    <div className='flex flex-row space-x-4 justify-self-start items-center'>
-                        <div className='text-black'>
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                            </svg>
+                                // Give route address of corresponding home in the 'to' attribute of the following Link
+                                <Link to={role.split(' ').join('')} className="">
+                                <div 
+                                    key={rIndex} 
+                                    className={'ml-8 py-2 px-2 flex flex-row space-x-4 justify-self-start items-center ' +(rIndex==roleIndex?' text-blue-500 ':' text-black ')}
+                                    onClick={()=>{
+                                        setRole(rIndex)
+                                    }}
+                                    onBlur={()=>{
+                                        setRolesOpen(false)
+                                    }}
+                                >
+                                    <div className='text-black'>
+                                        <img src={userSvg}/>
+                                    </div>
+                                    <div>{role}</div>
+                                </div>
+                                </Link>
+                            ))}
                         </div>
-                        <div className='py-2'>Application Paths</div>
-                    </div> */}
+
+                    </div>)}
                 </div>
 
                 

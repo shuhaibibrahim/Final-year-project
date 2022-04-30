@@ -529,9 +529,14 @@ function CreateApplications() {
                     className='text-white font-bold bg-red-500 hover:bg-red-700 text-sm p-3 rounded-xl'
                     onClick={()=>{
                       var newApplications=[...currentApplicationsData]
+                      
+                      if(applicationSelectedIndex==newApplications.length)
+                        setApplicationSelectedIndex(-1)
+
                       newApplications.pop()
                       setCurrentApplicationsData([...newApplications])
                       setCreatedApplicationIndex(-1)
+
                     }}
                   >
                       Delete this application
