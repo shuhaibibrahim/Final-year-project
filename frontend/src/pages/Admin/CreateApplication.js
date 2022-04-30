@@ -104,7 +104,7 @@ function CreateApplications() {
   const [radioFields, setRadioFields] = useState([])
   const [radioItem, setRadioItem] = useState("")
 
-  const [newApplicationName, setNewApplicationName] = useState(null)
+  const [newApplicationName, setNewApplicationName] = useState("")
 
   const [tabSelected, setTabSelected] = useState(0) //selected tab index
   const [modal, setModal] = useState(null) //modal showing columns

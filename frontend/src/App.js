@@ -20,33 +20,69 @@ import HostelRegistry from './pages/Admin/HostelRegistry';
 import CreateApplications from './pages/Admin/CreateApplication';
 import SeatMatrix from './pages/Admin/SeatMatrix';
 import AdminFaculty from './pages/Admin/AdminFaculty';
+import InmateHome from './pages/Inmate/InmateHome';
+import CertificatePage from './pages/Inmate/CertificatePage';
+import MessPage from './pages/Inmate/MessPage';
+import MessSecretary from './pages/Inmate/MessSecretary'
+import MessDirector from './pages/Inmate/MessDirector'
+import HostelPage from './pages/Inmate/HostelPage';
+import { useState } from 'react';
 function App() {
+
+  const [user, setUser] = useState(null)
+  /*
+    user={
+      username:tve18cs061,
+      password:"ppppp",
+      ...,
+      roles:[hod,warden] //roles can be separately returned as an array
+    }
+
+  */
   return (
     <div className='App'>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<LandingPage/>}/>
-          <Route path="/login" element={<LoginPage/>}/>
-          <Route path="/signup" element={<SignUpPage/>}/>
+          {user===null&&(<Route path="/" element={<LandingPage/>}/>)}
+          {user==null&&(<Route path="/login" element={<LoginPage setUser={setUser}/>}/>)}
+          {user==null&&(<Route path="/signup" element={<SignUpPage/>}/>)}
 
           {/* Admin Routes */}
-          <Route path="/admin" element={<AdminHome/>}>
-            <Route index element={<AdminInmates/>} />
-            <Route path="inmates" element={<AdminInmates/>} />
-            <Route path="noninmates" element={<AdminNonInmates/>} />
-            <Route path="faculty" element={<AdminFaculty/>} />
-            <Route path="allotmentrule" element={<AllotmentRule/>} />
-            <Route path="applicationpaths" element={<AdminPaths/>} />
-            <Route path="hostelregistry" element={<HostelRegistry/>} />
-            <Route path="createapplication" element={<CreateApplications/>} />
-            <Route path="seatmatrix" element={<SeatMatrix/>} />
-          </Route>
+          {user!=null&&(
+            <Route path="/admin" element={<AdminHome/>}>
+              <Route index element={<AdminInmates/>} />
+              <Route path="inmates" element={<AdminInmates/>} />
+              <Route path="noninmates" element={<AdminNonInmates/>} />
+              <Route path="faculty" element={<AdminFaculty/>} />
+              <Route path="allotmentrule" element={<AllotmentRule/>} />
+              <Route path="applicationpaths" element={<AdminPaths/>} />
+              <Route path="hostelregistry" element={<HostelRegistry/>} />
+              <Route path="createapplication" element={<CreateApplications/>} />
+              <Route path="seatmatrix" element={<SeatMatrix/>} />
+            </Route>
+          )}
+
           {/* Student Routes */}
-          <Route path="/student" element={<StudentHome/>}>
-            <Route index element={<ViewDetails/>}/>
-            <Route path="hostelapply" element={<HostelApplication/>}/>
-            <Route path="noninmatecertificate" element={<NonInmateCertificate/>}/>
-          </Route>
+          {user!=null&&(
+            <Route path="/student" element={<StudentHome/>}>
+              <Route index element={<ViewDetails/>}/>
+              <Route path="hostelapply" element={<HostelApplication/>}/>
+              <Route path="noninmatecertificate" element={<NonInmateCertificate/>}/>
+            </Route>
+          )}
+
+          {/* Inmate Routes */}
+          {user!=null&&(
+            <Route path="/inmate" element={<InmateHome/>}>
+              <Route index element={<MessPage/>}/>
+              <Route path="mess" element={<MessPage/>}/>
+              <Route path="certificates" element={<CertificatePage/>}/>
+              <Route path="noninmatecertificate" element={<NonInmateCertificate/>}/>
+              <Route path="messsec" element={<MessSecretary/>}/>
+              <Route path="messdirector" element={<MessDirector/>}/>
+              <Route path="hostel" element={<HostelPage/>}/>
+            </Route>
+          )}
         </Routes>
       </BrowserRouter>
     </div>

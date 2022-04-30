@@ -13,7 +13,7 @@ function HostelApplication() {
         </div>
       </div>
 
-      <motion.div initial={{scale:0.8}} animate={{scale:1}} className='w-10/12 mt-12 bg-white rounded-xl text-left p-5'>
+      <motion.div initial={{scale:0.8}} animate={{scale:1}} className='w-10/12 mt-12 bg-white rounded-xl text-left p-5 admin-dashbord-height'>
         {currpage===1 && <div><h2 className="font-bold">Rules</h2>
         <ol className="list-decimal pl-5 pt-2 ">
             <li>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Rerum, ab!</li>
