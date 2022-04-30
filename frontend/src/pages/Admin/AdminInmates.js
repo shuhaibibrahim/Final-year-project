@@ -289,11 +289,13 @@ function AdminInmates() {
 
   return (
     <div className='flex flex-col w-full items-center min-h-screen h-full'>
-      <div className='flex flex-row justify-between w-11/12 pt-4 items-center'>
-        <div className='text-xl font-bold'>Inmates</div>
-        <div className='flex flex-row space-x-4 items-center'>
-            <div className='bg-white border rounded-full w-10 aspect-square'/>
-            <div>user Name</div>
+        <div className='w-full flex justify-center pt-4'>
+          <div className='flex flex-row justify-between w-11/12 items-center'>
+            <div className='text-xl font-bold'>Inmates</div>
+            <div className='flex flex-row space-x-4 items-center'>
+                <div className='bg-white border rounded-full w-10 aspect-square'/>
+                <div>user Name</div>
+            </div>
         </div>
       </div>
 

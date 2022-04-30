@@ -175,19 +175,20 @@ function AdminPaths() {
     
 
     return (
-    <div className='flex flex-col w-full items-center min-h-screen pb-3 overflow-y-scroll'>
+    <div className='flex flex-col w-full text-sm items-center min-h-screen pb-3 overflow-y-scroll'>
 
         {modal&&modal}
-
-        <div className='flex flex-col w-11/12'>
-
-            <div className='flex flex-row justify-between w-full pt-4 items-center'>
+        <div className='w-full flex justify-center pt-4'>
+            <div className='flex flex-row justify-between w-11/12 items-center'>
                 <div className='text-xl font-bold'>Application Paths</div>
                 <div className='flex flex-row space-x-4 items-center'>
                     <div className='bg-white border rounded-full w-10 aspect-square'/>
                     <div>user Name</div>
                 </div>
             </div>
+        </div>
+
+        <div className='flex flex-col w-11/12'>
 
             <div className='flex flex-col items-center py-8 space-y-4 w-full admin-dashbord-height mt-8 bg-white rounded-xl'>
                 {/* white box nav bar */}

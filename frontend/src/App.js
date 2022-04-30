@@ -16,6 +16,10 @@ import HostelApplication from './pages/Student/HostelApplication';
 import NonInmateCertificate from './pages/Student/NonInmateCertificate';
 import AdminPaths from './pages/Admin/AdminPaths';
 import AllotmentRule from './pages/Admin/AllotmentRule';
+import HostelRegistry from './pages/Admin/HostelRegistry';
+import CreateApplications from './pages/Admin/CreateApplication';
+import SeatMatrix from './pages/Admin/SeatMatrix';
+import AdminFaculty from './pages/Admin/AdminFaculty';
 function App() {
   return (
     <div className='App'>
@@ -30,8 +34,12 @@ function App() {
             <Route index element={<AdminInmates/>} />
             <Route path="inmates" element={<AdminInmates/>} />
             <Route path="noninmates" element={<AdminNonInmates/>} />
+            <Route path="faculty" element={<AdminFaculty/>} />
             <Route path="allotmentrule" element={<AllotmentRule/>} />
-            <Route path="paths" element={<AdminPaths/>} />
+            <Route path="applicationpaths" element={<AdminPaths/>} />
+            <Route path="hostelregistry" element={<HostelRegistry/>} />
+            <Route path="createapplication" element={<CreateApplications/>} />
+            <Route path="seatmatrix" element={<SeatMatrix/>} />
           </Route>
           {/* Student Routes */}
           <Route path="/student" element={<StudentHome/>}>

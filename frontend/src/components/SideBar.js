@@ -94,15 +94,16 @@ function SideBar({myLinks,myActiveIndex,myOpenedIndex}) {
     }
 
     return (
-        <div className='flex flex-row bg-primary min-h-screen h-full'>
+        <div className='flex flex-row bg-primary min-h-screen h-full text-sm'>
             <div className='flex flex-col w-full bg-white'>
                 <div className='flex flex-row items-center px-2 py-4 space-x-3'>
                     {/* LOGO */}
                     <div className='bg-white border border-solid border-black rounded-full w-12 aspect-square'/>
                     <div>Logo Name</div>
                 </div>
+                <hr className='h-px bg-stone-800 w-full' />
 
-                <div className='flex flex-col items-start mt-12 w-full px-2' id="main-links">
+                <div className='flex flex-col items-start w-full px-2' id="main-links">
                     {links.map((link, index)=>(
                         <div className='flex flex-col w-full'>
                             
@@ -178,19 +179,23 @@ function SideBar({myLinks,myActiveIndex,myOpenedIndex}) {
                     </div> */}
                 </div>
 
-                <div className='flex flex-col justify-end h-full w-full px-2 mb-3'>
-                    <div className='flex flex-row space-x-4 justify-self-start items-center px-2 py-2'>
-                        <div className='text-black'>
-                            <img src={keySvg} />
+                
+                <div className='flex flex-col justify-end h-full w-full mb-3'>
+                    <hr className='h-px bg-stone-800 w-full' />
+                    <div className='w-full px-2'>
+                        <div className='flex flex-row space-x-4 justify-self-start items-center px-2 py-2'>
+                            <div className='text-black'>
+                                <img src={keySvg} />
+                            </div>
+                            <div className='py-2'>Change Password</div>
                         </div>
-                        <div className='py-2'>Change Password</div>
-                    </div>
 
-                    <div className='flex flex-row space-x-4 justify-self-start items-center px-2 py-2'>
-                        <div className='text-black'>
-                            <img src={logoutSvg}/>
+                        <div className='flex flex-row space-x-4 justify-self-start items-center px-2 py-2'>
+                            <div className='text-black'>
+                                <img src={logoutSvg}/>
+                            </div>
+                            <div className='py-2'>Logout</div>
                         </div>
-                        <div className='py-2'>Logout</div>
                     </div>
                 </div>
 
