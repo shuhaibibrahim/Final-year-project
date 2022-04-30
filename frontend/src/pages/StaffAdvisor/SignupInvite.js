@@ -1,4 +1,5 @@
 import React from 'react'
+import Uploader from '../../components/Uploader'
 
 function SignupInvite() {
   return (
@@ -36,6 +37,10 @@ function SignupInvite() {
           </div>  
         <div className='text-sm font-bold mt-5 w-11/12 p-3'>Send signup link (Using Sheets)</div>
 
+
+      <Uploader/>
+      
+      <div className='py-2 cursor-pointer hover:bg-stone-600 px-3 bg-stone-800 text-white text-sm font-semibold rounded-2xl'>Submit</div>
 
       </div>
     </div>
