@@ -1,5 +1,5 @@
 import React from 'react'
-
+import {motion} from "framer-motion"
 function ViewDetails() {
   return (
     <div className='flex flex-col w-full items-center'>
@@ -11,7 +11,7 @@ function ViewDetails() {
         </div>
       </div>
 
-      <div className='w-10/12 mt-12 bg-white rounded-xl text-left p-5'>
+      <motion.div initial={{scale:0.8}} animate={{scale:1}} className='w-10/12 mt-12 bg-white rounded-xl text-left p-5'>
         <h2 className='font-bold text-lg'>Location</h2>
         <p>The <span className='font-semibold'>Mens hostel</span> is situated behind the college within the campus amidst a glistening panoramic view. The men's hostel has 250 rooms and can accommodate 500 students. </p>
         <p>The <span className='font-semibold'>Ladies hostel</span> is located on the front side of the college at a beautiful location amidst greenish scenery. The ladies hostel has 140 rooms which can accommodate 400 students.</p>
@@ -21,7 +21,7 @@ function ViewDetails() {
         <p>The mess is run by the mess committee elected from among the students under the directions of the General Secretary, Mess Director and other members of the committee.</p>
         <h2 className='font-bold text-lg mt-4'>MH and LH Day</h2>   
         <p>Hostel day (MH day and LH day) festivities are conducted in both hostels with the active participation of inmates and faculty of the college.</p> 
-      </div>
+      </motion.div>
     </div>
   )
 }

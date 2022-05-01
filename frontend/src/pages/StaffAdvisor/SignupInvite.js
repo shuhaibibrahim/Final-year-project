@@ -12,7 +12,7 @@ function SignupInvite() {
         </div>
       </div>
 
-      <div className='w-10/12 mt-12 bg-white rounded-lg'>
+      <div className='w-11/12 mt-12 bg-white rounded-lg'>
 
         
 
@@ -40,8 +40,9 @@ function SignupInvite() {
 
       <Uploader/>
       
-      <div className='py-2 cursor-pointer hover:bg-stone-600 px-3 bg-stone-800 text-white text-sm font-semibold rounded-2xl'>Submit</div>
-
+      <div className="w-full flex items-end justify-end mt-5">
+          <div className='mr-3 mb-3 p-3 py-2 cursor-pointer hover:bg-stone-600 px-3 bg-stone-800 text-white text-sm font-semibold rounded-2xl'>Submit</div>
+        </div>
       </div>
     </div>
   )

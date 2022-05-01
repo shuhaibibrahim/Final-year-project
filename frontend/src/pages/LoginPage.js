@@ -1,7 +1,7 @@
 import LoginForm from "../components/LoginForm"
 import {Link} from "react-router-dom"
 import ImgCarousel from "../components/ImgCarousel"
-function LoginPage() {
+function LoginPage({setUser}) {
   return (
     <div className="bg-slate-200 min-h-screen">
       <nav className="flex w-5/6 ml-auto mr-auto pt-5">
@@ -14,7 +14,7 @@ function LoginPage() {
             <ImgCarousel/>
           </div>
         </div>
-        <LoginForm/>
+        <LoginForm setUser={setUser}/>
       </div>
     </div>
   )

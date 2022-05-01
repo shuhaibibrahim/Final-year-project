@@ -4,7 +4,6 @@
 
 .App {
   min-height: 100vh;
-  overflow:auto;
 }
 
 *{
@@ -27,4 +26,45 @@
 .dropdown-visible{
   max-height: 500px;
   transition: max-height 0.25s ease-in;
+}
+
+thead{
+  border-radius: 3rem;
+  text-align: left;
+}
+
+thead tr th{
+  @apply p-3;
+}
+
+tbody{
+  @apply divide-y-2;
+  height: 24rem;
+  overflow-y: scroll;
+}
+
+tbody tr td{
+  @apply p-3
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+.admin-dashbord-height{
+  height: 30rem;
+  min-height:30rem;
+}
+
+.button-blue{
+  @apply rounded-lg p-2 bg-blue-500 self-start text-white text-base font-medium hover:bg-blue-700
+}
+
+.submit-button-black{
+  padding: 0.55rem;
+  font-size: small;
+  background-color: rgb(41,37,36);
+  color: white;
+  border-radius: 0.75rem;
 }

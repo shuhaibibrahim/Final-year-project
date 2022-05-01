@@ -1,9 +1,10 @@
 import React, { useState } from 'react'
+import {motion} from "framer-motion" 
 
 function AdminInmates() {
   const inmateDataMH=[
     {
-      admNo:"1234",
+      admNo:"1235",
       name:"xyz",
       dept:"cse",
       batch:"batchId",
@@ -11,7 +12,7 @@ function AdminInmates() {
       email:"xyz@gmail.com"
     },
     {
-      admNo:"1234",
+      admNo:"2434",
       name:"xyz",
       dept:"cse",
       batch:"batchId",
@@ -175,43 +176,39 @@ function AdminInmates() {
 
         {/* inmates list */}
         <div className='w-11/12 overflow-y-scroll no-scrollbar'>
-          <table className='w-full relative table-auto'>
-            <thead className='bg-primary rounded-xl p-3'>
-              <tr className='rounded-xl p-3'>
-                <th>Admission Number</th>
+          <table className='w-full table-auto'>
+              <tr className='bg-primary text-left sticky top-0'>
+                <th className='py-3'>Admission Number</th>
                 <th>Name</th>
                 <th>Department</th>
                 <th>Batch</th>
                 <th>Phone</th>
                 <th>Email</th>
               </tr>
-            </thead>
-            <tbody className=''>
-              {hostelDataSelected.map((user, index)=>(
-                <tr 
-                  className={'border-b border-slate-200 border-solid '+(index==selectedRowIndex && selectedHostel==tabSelected ?' bg-blue-300 ':' hover:bg-gray-300')}
-                  onClick={()=>{
-                    if(selectedRowIndex==index && selectedHostel==tabSelected)
-                    {
-                      setSelectedRowIndex(-1)
-                      setSelectedHostel(null)
-                    }
-                    else
-                    {
-                      setSelectedRowIndex(index)
-                      setSelectedHostel(tabSelected) //"MH" or "LH"
-                    }
-                  }}
-                >
-                  <td>{user.admNo}</td>
-                  <td>{user.name}</td>
-                  <td>{user.dept}</td>
-                  <td>{user.batch}</td>
-                  <td>{user.phone}</td>
-                  <td>{user.email}</td>
-                </tr>
-              ))}
-            </tbody>
+                {hostelDataSelected.map((user, index)=>(
+                  <tr 
+                    className={'border-b border-slate-200 border-solid '+(index==selectedRowIndex && selectedHostel==tabSelected ?' bg-blue-300 ':' hover:bg-gray-300')}
+                    onClick={()=>{
+                      if(selectedRowIndex==index && selectedHostel==tabSelected)
+                      {
+                        setSelectedRowIndex(-1)
+                        setSelectedHostel(null)
+                      }
+                      else
+                      {
+                        setSelectedRowIndex(index)
+                        setSelectedHostel(tabSelected) //"MH" or "LH"
+                      }
+                    }}
+                  >
+                    <td className='py-3'>{user.admNo}</td>
+                    <td>{user.name}</td>
+                    <td>{user.dept}</td>
+                    <td>{user.batch}</td>
+                    <td>{user.phone}</td>
+                    <td>{user.email}</td>
+                  </tr>
+                ))}
           </table>
         </div>
       </>
@@ -292,11 +289,13 @@ function AdminInmates() {
 
   return (
     <div className='flex flex-col w-full items-center min-h-screen h-full'>
-      <div className='flex flex-row justify-between w-11/12 pt-4 items-center'>
-        <div className='text-xl font-bold'>Inmates</div>
-        <div className='flex flex-row space-x-4 items-center'>
-            <div className='bg-white border rounded-full w-10 aspect-square'/>
-            <div>user Name</div>
+        <div className='w-full flex justify-center pt-4'>
+          <div className='flex flex-row justify-between w-11/12 items-center'>
+            <div className='text-xl font-bold'>Inmates</div>
+            <div className='flex flex-row space-x-4 items-center'>
+                <div className='bg-white border rounded-full w-10 aspect-square'/>
+                <div>user Name</div>
+            </div>
         </div>
       </div>
 
@@ -312,7 +311,7 @@ function AdminInmates() {
                 }}
               >
                   <div>Mens Hostel <span className='ml-2 p-2 text-white bg-stone-800 rounded-lg cursor-default'>200</span></div>
-                  <div className={tabSelected=="MH"?'mt-2 h-1 self-center w-7/12 bg-stone-800 rounded-full':''}/>
+                  <div className={tabSelected=="MH"?'h-1 self-center w-8/12 bg-stone-800 rounded-full':''}/>
               </div>
 
               <div 
@@ -323,19 +322,18 @@ function AdminInmates() {
                 }}
               >
                 <div>Ladies Hostel <span className='ml-2 p-2 text-white bg-stone-800 rounded-lg cursor-default'>200</span></div>
-                <div className={tabSelected=="LH"?'mt-2 h-1 w-7/12 self-center bg-stone-800 rounded-full':''}/>
+                <div className={tabSelected=="LH"?'h-1 w-8/12 self-center bg-stone-800 rounded-full':''}/>
               </div>
 
-              {selectedRowIndex!=-1&&<div 
+              {selectedRowIndex!=-1&& <motion.div initial={{scale:0.8}} animate={{scale:1}}  
                 className={'ml-5 -mt-2 cursor-pointer text-green-600 bg-primary p-3 flex items-center rounded-xl '+(tabSelected=="roles"?' bg-green-600 text-white ':'')}
                 onClick={()=>{
-                  setHostelDataSelected(inmateDataLH)
                   setTabSelected("roles")
                 }}
               >
                 <div>Assign Role</div>
                 {/* <div className={tabSelected=="roles"?'mt-2 h-1 w-full self-center bg-stone-800 rounded-full':''}/> */}
-              </div>}
+              </motion.div>}
           </div>
 
           {tabSelected!="roles"&&<div className='text-sm mb-2'>Showing 1-8 out of 200 results</div>}

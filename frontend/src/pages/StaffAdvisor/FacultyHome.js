@@ -19,6 +19,11 @@ function FacultyHome() {
         icon: editSvg,
     },
     {
+        title:"Signup Invite",
+        to:"signupinvite",
+        icon: editSvg,
+    },
+    {
       title:"Faculty Roles",
       to:"",
       icon:userSvg,
@@ -52,9 +57,9 @@ function FacultyHome() {
   ]
   return (
     <div className='flex w-full flex-row bg-primary min-h-screen h-full'>
-        <div className='w-3/12'>
+        {/* <div className='w-3/12'>
             <SideBar myLinks={links} myActiveIndex={0} myOpenedIndex={0}/>
-        </div>
+        </div> */}
         <Outlet/>
     </div>
   )

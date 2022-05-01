@@ -1,6 +1,6 @@
 import {useState} from "react"
 import {Link} from "react-router-dom"
-function LoginForm() {
+function LoginForm({setUser}) {
     
     const [admissionno,setAdmissionNo]=useState("")
     const [password,setPassword]=useState("")
@@ -24,7 +24,20 @@ function LoginForm() {
                     <p className="text-blue-500 underline cursor-pointer">Forgot Password?</p>
                 </div>
                 <div className="flex items-center justify-center mt-4">
-                    <button className="rounded-xl text-white py-2 px-4 w-3/6 bg-stone-800">Login</button>
+                    <Link to="/" className="rounded-xl text-white py-2 px-4 w-3/6 bg-stone-800">
+                        <button 
+                            className="w-full h-full"
+                            onClick={()=>{
+                                setUser({
+                                    userName:"",
+                                    password:"",
+                                    roles:["hod","warden","staff advisor"]
+                                })
+                            }}
+                        >
+                                Login
+                        </button>
+                    </Link>
                 </div>
                 <div className="mt-4 flex">
                     <p className="mr-2">Create new account?</p><Link to="/signup">Sign Up</Link>
