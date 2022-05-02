@@ -32,6 +32,15 @@ import HostelPage from './pages/Inmate/HostelPage';
 import { useState } from 'react';
 import SignupInvite from './pages/StaffAdvisor/SignupInvite';
 import CommonHome from './pages/CommonHome';
+import Matron from './pages/Matron/Matron';
+import MatronHome from './pages/Matron/MatronHome';
+import MessBill from './components/MessBill';
+import MessOutList from './components/MessOutList';
+import UploadMessBill from './components/UploadMessBill';
+import MessBillPage from './pages/Matron/MessBillPage';
+import MessOutPage from './components/MessOutPage';
+import UploadMessBillPage from './pages/Matron/UploadMessBillPage';
+import MessOutListPage from './pages/Matron/MessOutListPage';
 function App() {
 
   const [user, setUser] = useState(null)
@@ -91,6 +100,9 @@ function App() {
             <Route path="noninmatecertificate" element={<NonInmateCertificate/>}/>
           </Route>
 
+
+         
+
           {/* Inmate Routes */}
           <Route path="/inmate" element={<InmateHome/>}>
             <Route index element={<MessPage/>}/>
@@ -100,6 +112,14 @@ function App() {
             <Route path="messsec" element={<MessSecretary/>}/>
             <Route path="messdirector" element={<MessDirector/>}/>
             <Route path="hostel" element={<HostelPage/>}/>
+          </Route>
+
+           {/* Matron Routes */}
+           <Route path="matron" element={<MatronHome/>}>
+            <Route index element={<MessBillPage/>}/>
+            <Route path="messbill" element={<MessBillPage/>}/>
+            <Route path="messoutlist" element={<MessOutListPage/>}/>
+            <Route path="uploadmessbill" element={<UploadMessBillPage/>}/>
           </Route>
           
         </Routes>

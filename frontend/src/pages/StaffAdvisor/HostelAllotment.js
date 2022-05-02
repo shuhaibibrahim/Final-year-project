@@ -462,8 +462,6 @@ function HostelAllotment() {
   const [tabSelected, setTabSelected] = useState("MH")
   const [selectedRowIndex, setSelectedRowIndex] = useState(-1)
   const [selectedHostel, setSelectedHostel] = useState(null)
-  // const [currpage,setCurrPage]=useState(1)
-  // const [show, setShow] = useState(false);
   const [visible, setVisible] = useState(false);
   const [hidden, setHidden] = useState(false);
 
