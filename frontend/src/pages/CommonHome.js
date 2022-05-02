@@ -7,7 +7,8 @@ import bookSvg from'../icons/book.svg'
 import fitnessSvg from'../icons/fitness.svg'
 import { adminLinks } from './Admin/AdminLinks'
 import { saLinks } from './StaffAdvisor/StaffAdvisorLinks'
-import { studentLinks } from './Student/StudentLinks'
+import { wardenLinks } from './Warden/WardenLinks'
+import { hostelOfficeLinks } from './HostelOffice/HostelOfficeLinks'
 
 function CommonHome({user}) {
   
@@ -15,7 +16,7 @@ function CommonHome({user}) {
     const [role, setRole] = useState(0) //index of the role selected in the user.roles array
     const [roleTo, setRoleTo] = useState(".")
 
-    const roles=["admin", "staff advisor", "student", "inmate"]
+    const roles=["admin", "staff advisor", "student", "inmate", "warden", "hosteloffice"]
 
     useEffect(() => {
         if(roles[role]==="admin")
@@ -28,11 +29,15 @@ function CommonHome({user}) {
             // setRoleTo("staffadvisor")
             setLinks(saLinks)
         }
-        else if(roles[role]==="student")
-        {
-            // setRoleTo("staffadvisor")
-            setLinks(studentLinks)
+        else if(roles[role]==="warden"){
+            // setRoleTo("warden")
+            setLinks(wardenLinks)
         }
+        else if(roles[role]==="hosteloffice"){
+            // setRoleTo("warden")
+            setLinks(hostelOfficeLinks)
+        }
+
     }, [role])
     
     return (

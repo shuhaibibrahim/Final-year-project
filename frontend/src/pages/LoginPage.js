@@ -1,6 +1,6 @@
 import LoginForm from "../components/LoginForm"
 import {Link} from "react-router-dom"
-import ImgCarousel from "../components/ImgCarousel"
+import Hostel from '../icons/hostel-image.jpeg'
 function LoginPage({setUser}) {
   return (
     <div className="bg-slate-200 min-h-screen">
@@ -8,10 +8,10 @@ function LoginPage({setUser}) {
         <Link to="/">HostelCompanion</Link>   
       </nav>
       <div className="flex items-center justify-between m-auto w-5/6" style={{minHeight:"80vh"}}>
-        <div>
-          <h2 className="font-bold text-3xl">Perfect Solution for Hostel Activities</h2>
-          <div className="w-full ml-auto mr-auto bg-green-200">
-            <ImgCarousel/>
+        <div className="flex flex-col items-center justify-around">
+          <h2 className="font-bold text-3xl mb-5 pb-5">Perfect Solution for Hostel Activities</h2>
+          <div className='bg-stone-800 w-96 h-72 p-5 rounded-lg rotate-12 mt-5 pt-5'>
+            <img src={Hostel} className="w-full h-72 rounded-lg -rotate-12 -translate-y-2 -translate-x-2" alt="" />
           </div>
         </div>
         <LoginForm setUser={setUser}/>

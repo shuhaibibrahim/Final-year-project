@@ -6,14 +6,13 @@ import Sheets from '../icons/sheets.png'
 
 function Uploader(props) {
   const [files, setFiles] = useState([]);
-  const [uploaded,setUploaded]=useState(false);
   const {getRootProps, getInputProps} = useDropzone({
     accept: '.xlsx',
     onDrop: acceptedFiles => {
       setFiles(acceptedFiles.map(file => Object.assign(file, {
         preview: URL.createObjectURL(file)
       })));
-      setUploaded(true);
+      props.setUploaded(true);
     }
   });
 
@@ -32,10 +31,10 @@ function Uploader(props) {
 
   return (
     <>
-      {uploaded?
+      {props.uploaded?
         <motion.div className='flex items-center justify-center w-12/12 bg-gray-100 h-40'>
           <img src={Sheets} className="w-8"/>{thumbs}
-          <DeleteForeverIcon onClick={()=>{setUploaded(false)}} className="ml-2"/>
+          <DeleteForeverIcon onClick={()=>{props.setUploaded(false)}} className="ml-2"/>
         </motion.div>:
         <motion.div className="bg-gray-100 w-12/12 h-40 p-5 rounded-lg">
           <div {...getRootProps({className:'dropzone'})} className="border-dashed border-2 border-teal-500 rounded-lg w-full h-full flex items-center justify-center">

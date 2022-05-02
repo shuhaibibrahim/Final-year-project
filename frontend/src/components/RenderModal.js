@@ -1,18 +1,4 @@
-
-  const [modal, setModal] = useState(null) //modal showing columns
-  const backdropClickHandler = (event) => {
-    if (event.target === event.currentTarget) {
-        setModal(null)
-    }
-  }
-
-  useEffect(() => {
-    if(modal!=null)
-      RenderModal()
-  }, [])
-  
-
-  const RenderModal=(item)=>{
+const RenderModal=(item)=>{
     setModal(
         <div onClick={backdropClickHandler} className="bg-slate-500/[.8] z-20 fixed inset-0 flex justify-center items-center">
           <div className='flex flex-col bg-white rounded-2xl w-5/12 h-1/2 pt-3 relative overflow-hidden'>

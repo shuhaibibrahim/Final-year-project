@@ -19,6 +19,7 @@
     "react-scripts": "5.0.0",
     "react-slick": "^0.28.1",
     "react-spreadsheet": "^0.7.0",
+    "react-xarrows": "^2.0.2",
     "scheduler": "^0.21.0",
     "slick-carousel": "^1.8.1",
     "web-vitals": "^2.1.4"

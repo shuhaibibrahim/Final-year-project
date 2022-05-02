@@ -3,6 +3,7 @@ import MessOutPage from '../../components/MessOutPage'
 import MessBill from '../../components/MessBill'
 import UploadMessBill from '../../components/UploadMessBill'
 import MessOutList from '../../components/MessOutList'
+import {motion} from 'framer-motion'
 function MessDirector() {
   const [tabSelected, setTabSelected] = useState(1)
   const [selectedRowIndex, setSelectedRowIndex] = useState(-1)
@@ -17,7 +18,7 @@ function MessDirector() {
         </div>
       </div>
 
-      <div className='flex flex-col items-center py-8 space-y-4 w-11/12 mt-8 bg-white rounded-xl'>
+      <motion.div initial={{opacity:0}} animate={{opacity:1}} transition={{duration:0.3}}  className='flex flex-col items-center py-8 space-y-4 w-11/12 mt-8 bg-white rounded-xl'>
         {/* white box nav bar */}
         <div className='flex flex-row justify-between w-11/12 items-center'>
           <div className='flex flex-row tex-black text-sm font-bold relative mb-3'>
@@ -67,7 +68,7 @@ function MessDirector() {
         {tabSelected===2&&<MessOutList/>}
         {tabSelected===3&&<UploadMessBill/>}
 
-      </div>
+      </motion.div>
     </div>
   )
 }

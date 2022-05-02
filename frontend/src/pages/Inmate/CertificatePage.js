@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import CertificateForm from '../../components/CertificateForm'
 import DownloadIcon from '@mui/icons-material/Download';
+import {motion} from 'framer-motion'
 function CertificatePage() {
   const applications=[
     {
@@ -124,7 +125,7 @@ function CertificatePage() {
         </div>
       </div>
 
-      <div className='flex flex-col items-center py-8 space-y-4 w-11/12 mt-8 bg-white rounded-xl admin-dashbord-height'>
+      <motion.div initial={{opacity:0}} animate={{opacity:1}} transition={{duration:0.3}}  className='flex flex-col items-center py-8 space-y-4 w-11/12 mt-8 bg-white rounded-xl admin-dashbord-height'>
         {/* white box nav bar */}
         <div className='flex flex-row justify-between w-11/12 items-center'>
           <div className='flex flex-row tex-black text-sm font-bold relative mb-3'>
@@ -155,7 +156,7 @@ function CertificatePage() {
           <br />
         </div>
         {tabSelected===1?<ApplicationList/>:<CertificateForm/>}
-      </div>
+      </motion.div>
     </div>
   )
 }
