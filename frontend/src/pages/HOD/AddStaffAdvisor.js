@@ -81,13 +81,13 @@ function AddStaffAdvisor() {
             </div>
           </div>
           
-          <div className='text-stone-800 font-bold text-sm'>Click on a user row to assign role</div>
+          {/* <div className='text-stone-800 font-bold text-sm'>Click on a user row to assign role</div> */}
 
           {/* filter and export*/}
-          <div className='flex flex-row space-x-2 items-center'>
+          {/* <div className='flex flex-row space-x-2 items-center'>
             <div className='py-2 cursor-pointer hover:bg-stone-600 px-3 bg-stone-800 text-white text-sm font-semibold rounded-2xl'>Filter</div>
             <div className='py-2 cursor-pointer hover:bg-stone-600 px-3 bg-stone-800 text-white text-sm font-semibold rounded-2xl'>Export</div>
-          </div>
+          </div> */}
         </div>
 
         {/* inmates list */}
@@ -194,7 +194,7 @@ function AddStaffAdvisor() {
                   setTabSelected("faculty")
                 }}
               >
-                  <div>Faculty <span className='ml-2 p-2 text-white bg-stone-800 rounded-lg cursor-default'>200</span></div>
+                  <div>Faculty <span className='ml-2 p-2 text-white bg-stone-800 rounded-lg cursor-default'>20</span></div>
                   <div className={tabSelected=="faculty"?'h-1 self-center w-6/12 bg-stone-800 rounded-full':''}/>
               </div>
 
