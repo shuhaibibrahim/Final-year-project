@@ -33,7 +33,7 @@ function Uploader(props) {
   return (
     <>
       {uploaded?
-        <motion.div className='flex items-center justify-center w-10/12 bg-gray-100 h-40 '>
+        <motion.div className='flex items-center justify-center w-12/12 bg-gray-100 h-40 '>
           <img src={Sheets} className="w-8"/>{thumbs}
           <DeleteForeverIcon onClick={()=>{setUploaded(false)}} className="ml-2"/>
         </motion.div>:

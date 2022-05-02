@@ -41,6 +41,10 @@ import MessBillPage from './pages/Matron/MessBillPage';
 import MessOutPage from './components/MessOutPage';
 import UploadMessBillPage from './pages/Matron/UploadMessBillPage';
 import MessOutListPage from './pages/Matron/MessOutListPage';
+import StudentsDetailsHod from './pages/HOD/StudentsDetailsHod';
+import HostelAllotmentHod from './pages/HOD/HostelAllotmentHod';
+import SignupInviteHod from './pages/HOD/SignupInviteHod';
+import AddStaffAdvisor from './pages/HOD/AddStaffAdvisor';
 function App() {
 
   const [user, setUser] = useState(null)
@@ -86,9 +90,10 @@ function App() {
 
             {/* hod Routes */}
             <Route path="/hod" element={<FacultyHome/>}>
-              <Route index element={<StudentsDetails/>}/>
-              <Route path="signupinvite" element={<SignupInvite/>}/>
-              <Route path="noninmatecertificate" element={<NonInmateCertificate/>}/>
+              <Route index element={<StudentsDetailsHod/>}/>
+              <Route path="studentsdetails" element={<StudentsDetailsHod/>}/>
+              <Route path="addstaffadvisor" element={<AddStaffAdvisor/>}/>
+              <Route path="hostelallotment" element={<HostelAllotmentHod/>}/>
             </Route>
           </Route>
           )} 
