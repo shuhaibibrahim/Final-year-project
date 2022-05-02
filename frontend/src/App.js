@@ -37,6 +37,7 @@ import WardenHome from './pages/Warden/WardenHome';
 import HostelAdmission from './pages/Warden/HostelAdmission';
 import HostelOfficeHome from './pages/HostelOffice/HostelOfficeHome'
 import AdmissionHostelOffice from './pages/HostelOffice/AdmissionHostelOffice';
+import HostelOfficeMess from './pages/HostelOffice/HostelOfficeMess';
 function App() {
 
   const [user, setUser] = useState(null)
@@ -99,6 +100,7 @@ function App() {
               <Route index element={<AdmissionHostelOffice/>}/>
               <Route path="admission" element={<AdmissionHostelOffice/>}/>
               <Route path="hostelregistry" element={<HostelRegistry/>}/>
+              <Route path="mess" element={<HostelOfficeMess/>}/>
             </Route>
 
           </Route>

@@ -1,113 +1,84 @@
-import {useState} from "react"
-function CurrentInmates() {
-   const messouts=[
-       {
-         SlNo:"1234",
-         Month:"xyz",
-         Attendance:"cse",
-         MessCharge:15426,
-         Extras:125,
-         Feast:1265,
-         LF:123,
-         AF:12,
-         Total:122545,
-         Dues:12354
-       },
-       {
-        SlNo:"1234",
-        Month:"xyz",
-        Attendance:"cse",
-        MessCharge:15426,
-        Extras:125,
-        Feast:1265,
-        LF:123,
-        AF:12,
-        Total:122545,
-        Dues:12354
-       },
-       {
-        SlNo:"1234",
-        Month:"xyz",
-        Attendance:"cse",
-        MessCharge:15426,
-        Extras:125,
-        Feast:1265,
-        LF:123,
-        AF:12,
-        Total:122545,
-        Dues:12354
-      },
-      {
-        SlNo:"1234",
-        Month:"xyz",
-        Attendance:"cse",
-        MessCharge:15426,
-        Extras:125,
-        Feast:1265,
-        LF:123,
-        AF:12,
-        Total:122545,
-        Dues:12354
-      },
-       
-       
-     ]
-
-     const [hostelDataSelected, setHostelDataSelected] = useState(messouts)
-     const [tabSelected, setTabSelected] = useState(1)
-     const [selectedRowIndex, setSelectedRowIndex] = useState(-1)
-     const [selectedHostel, setSelectedHostel] = useState(null)
-   
-       return (
-         // <div className='w-full'>
-         <>
-           {/* inmates list */}
-           <div className='w-11/12'>
-             <table className='w-full relative table-auto'>
-                 <tr className='rounded-xl p-3 bg-primary text-center'>
-                   <th className='p-3'>Sl.No</th>
-                   <th className='p-3'>Month</th>
-                   <th className='p-3'>Attendance</th>
-                   <th className='p-3'>Mess Charge</th>
-                   <th className='p-3'>Extras</th>
-                   <th className='p-3'>Feast</th>
-                   <th className='p-3'>L.F</th>
-                   <th className='p-3'>A.F</th>
-                   <th className='p-3'>Total</th>
-                   <th className='p-3'>Dues</th>
-                 </tr>
-                 {hostelDataSelected.map((user, index)=>(
-                   <tr 
-                     className={'border-b text-center border-slate-200 border-solid '+(index==selectedRowIndex && selectedHostel==tabSelected ?' bg-blue-300 ':' hover:bg-gray-300')}
-                     onClick={()=>{
-                       if(selectedRowIndex==index && selectedHostel==tabSelected)
-                       {
-                         setSelectedRowIndex(-1)
-                         setSelectedHostel(null)
-                       }
-                       else
-                       {
-                         setSelectedRowIndex(index)
-                         setSelectedHostel(tabSelected) //"MH" or "LH"
-                       }
-                     }}
-                   >
-                     <td className='p-3'>{user.SlNo}</td>
-                     <td className='p-3'>{user.Month}</td>
-                     <td className='p-3'>{user.Attendance}</td>
-                     <td className='p-3'>{user.MessCharge}</td>
-                     <td className='p-3'>{user.Extras}</td>
-                     <td className='p-3'>{user.Feast}</td>
-                     <td className='p-3'>{user.LF}</td>
-                     <td className='p-3'>{user.AF}</td>
-                     <td className='p-3'>{user.Total}</td>
-                   </tr>
-                 ))}
-             </table>
-           </div>
-         </>
-       )
-     }
-
-
+import {useState} from 'react'
+const CurrentInmates = (props)=>{
+    const applications=[
+        {
+          SlNo:1,
+          Name:"Marc",
+          AdmissionNo:180245,
+          Income:10000,
+          ExamRank:510,
+          Branch:"CSE",
+          Rank:1
+        },
+        {
+          SlNo:2,
+          Name:"Steven",
+          AdmissionNo:180287,
+          Income:100000,
+          ExamRank:610,
+          Branch:"CSE",
+          Rank:2
+        },
+        {
+          SlNo:3,
+          Name:"Jake",
+          AdmissionNo:180201,
+          Income:100000,
+          ExamRank:710,
+          Branch:"CSE",
+          Rank:3
+        },
+        {
+          SlNo:4,
+          Name:"Jake",
+          AdmissionNo:180201,
+          Income:100000,
+          ExamRank:710,
+          Branch:"CSE",
+          Rank:4
+        },
+        {
+          SlNo:5,
+          Name:"Jake",
+          AdmissionNo:180201,
+          Income:100000,
+          ExamRank:710,
+          Branch:"CSE",
+          Rank:5
+        },
+        {
+          SlNo:6,
+          Name:"Jake",
+          AdmissionNo:180201,
+          Income:100000,
+          ExamRank:710,
+          Branch:"CSE",
+          Rank:6
+        }
+        
+        
+    ]
+      const [ranks, setRanks] = useState(applications)
+    return(
+        <table className='w-11/12 relative table-auto'>
+              <tr className='rounded-xl p-3 bg-primary text-center'>
+                <th className='p-3'>Sl.No</th>
+                <th className='p-3'>Name</th>
+                <th className='p-3'>Admission No.</th>
+                <th className='p-3'>Branch</th>
+       \
+              </tr>
+              {ranks.map((user, index)=>(
+                <tr 
+                  className={'border-b text-center border-slate-200 border-solid hover:bg-gray-300 '+(user.AdmissionNo===props.admno?' bg-teal-200 hover:bg-teal-300':'')}
+                >
+                  <td className='p-3'>{user.SlNo}</td>
+                  <td className='p-3'>{user.Name}</td>
+                  <td className='p-3'>{user.AdmissionNo}</td>
+                  <td className='p-3'>{user.Branch}</td>
+                </tr>
+              ))}
+          </table>
+    )
+}
 export default CurrentInmates

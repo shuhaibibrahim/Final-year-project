@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
-import MessOutPage from '../../components/MessOutPage'
-import MessBill from '../../components/MessBill'
 import UploadMessBill from '../../components/UploadMessBill'
 import MessOutList from '../../components/MessOutList'
 import {motion} from 'framer-motion'
+import MessDuesView from '../../components/MessDuesView'
+import CurrentInmates from '../../components/CurrentInmates'
 function MessDirector() {
   const [tabSelected, setTabSelected] = useState(1)
   const [selectedRowIndex, setSelectedRowIndex] = useState(-1)
@@ -64,9 +64,10 @@ function MessDirector() {
           {tabSelected===1&&<div className='text-sm mb-2'>Showing 1-8 out of 200 results</div>}
           <br />
         </div>
-        {tabSelected===1&&<MessBill/>}
+        {tabSelected===1&&<CurrentInmates/>}
         {tabSelected===2&&<MessOutList/>}
         {tabSelected===3&&<UploadMessBill/>}
+        {tabSelected===4&&<MessDuesView/>}
 
       </motion.div>
     </div>
