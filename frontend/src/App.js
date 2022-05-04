@@ -48,11 +48,11 @@ function App() {
     <div className='App'>
       <BrowserRouter>
         <Routes>
-          {user===null&&(<Route path="/" element={<LandingPage/>}/>)}
+          {/* {user===null&&(<Route path="/" element={<LandingPage/>}/>)}
           {user==null&&(<Route path="/login" element={<LoginPage setUser={setUser}/>}/>)}
-          {user==null&&(<Route path="/signup" element={<SignUpPage/>}/>)}
+          {user==null&&(<Route path="/signup" element={<SignUpPage/>}/>)} */}
 
-          {user!=null&&(
+          {/* {user!=null&&( */}
           <Route path="/" element={<CommonHome user={user}/>}>
             {/* Admin Routes */}
             <Route path="admin" element={<AdminHome/>}>
@@ -82,7 +82,7 @@ function App() {
               <Route path="noninmatecertificate" element={<NonInmateCertificate/>}/>
             </Route>
           </Route>
-          )} 
+          {/* )}  */}
 
           {/* Student Routes */}
           <Route path="/student" element={<StudentHome/>}>
