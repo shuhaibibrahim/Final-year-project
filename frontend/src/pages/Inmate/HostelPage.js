@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import ComplaintBox from '../../components/ComplaintBox';
 import RoomChange from './RoomChange';
 import HostelOut from '../../components/HostelOut'
+import {motion} from 'framer-motion'
 function HostelPage() {
   const [tabSelected, setTabSelected] = useState(1)
   return (
@@ -14,7 +15,7 @@ function HostelPage() {
         </div>
       </div>
 
-      <div className='flex flex-col items-center py-8 space-y-4 w-11/12 mt-8 bg-white rounded-xl admin-dashbord-height'>
+      <motion.div initial={{opacity:0}} animate={{opacity:1}} transition={{duration:0.3}}  className='flex flex-col items-center py-8 space-y-4 w-11/12 mt-8 bg-white rounded-xl admin-dashbord-height'>
         {/* white box nav bar */}
         <div className='flex flex-row justify-between w-11/12 items-center'>
           <div className='flex flex-row text-black text-sm font-bold relative mb-3'>
@@ -52,7 +53,7 @@ function HostelPage() {
         {tabSelected===1&&<RoomChange/>}
         {tabSelected===2&&<ComplaintBox/>}
         {tabSelected===3&&<HostelOut/>}
-      </div>
+      </motion.div>
     </div>
   )
 }

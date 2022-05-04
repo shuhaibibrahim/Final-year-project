@@ -1,5 +1,5 @@
 import {useState} from 'react'
-const CurrentInmates = (props)=>{
+const RankList = (props)=>{
     const applications=[
         {
           SlNo:1,
@@ -60,13 +60,15 @@ const CurrentInmates = (props)=>{
     ]
       const [ranks, setRanks] = useState(applications)
     return(
-        <table className='w-11/12 relative table-auto'>
+        <table className='w-full relative table-auto'>
               <tr className='rounded-xl p-3 bg-primary text-center'>
                 <th className='p-3'>Sl.No</th>
                 <th className='p-3'>Name</th>
                 <th className='p-3'>Admission No.</th>
+                <th className='p-3'>Annual Income</th>
+                <th className='p-3'>Qualifying Exam Rank</th>
                 <th className='p-3'>Branch</th>
-       \
+                <th className='p-3'>Rank</th>
               </tr>
               {ranks.map((user, index)=>(
                 <tr 
@@ -75,10 +77,13 @@ const CurrentInmates = (props)=>{
                   <td className='p-3'>{user.SlNo}</td>
                   <td className='p-3'>{user.Name}</td>
                   <td className='p-3'>{user.AdmissionNo}</td>
+                  <td className='p-3'>{user.Income}</td>
+                  <td className='p-3'>{user.ExamRank}</td>
                   <td className='p-3'>{user.Branch}</td>
+                  <td className='p-3'>{user.Rank}</td>
                 </tr>
               ))}
           </table>
     )
 }
-export default CurrentInmates
+export default RankList

@@ -11,7 +11,7 @@ function ViewDetails() {
         </div>
       </div>
 
-      <motion.div initial={{scale:0.8}} animate={{scale:1}} className='w-10/12 mt-12 bg-white rounded-xl text-left p-5'>
+      <motion.div initial={{opacity:0}} animate={{opacity:1}} transition={{duration:0.5}} className='w-10/12 mt-12 bg-white rounded-xl text-left p-5'>
         <h2 className='font-bold text-lg'>Location</h2>
         <p>The <span className='font-semibold'>Mens hostel</span> is situated behind the college within the campus amidst a glistening panoramic view. The men's hostel has 250 rooms and can accommodate 500 students. </p>
         <p>The <span className='font-semibold'>Ladies hostel</span> is located on the front side of the college at a beautiful location amidst greenish scenery. The ladies hostel has 140 rooms which can accommodate 400 students.</p>

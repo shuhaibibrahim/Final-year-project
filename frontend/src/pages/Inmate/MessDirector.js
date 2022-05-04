@@ -1,8 +1,9 @@
 import React, { useState } from 'react'
-import MessOutPage from '../../components/MessOutPage'
-import MessBill from '../../components/MessBill'
 import UploadMessBill from '../../components/UploadMessBill'
 import MessOutList from '../../components/MessOutList'
+import {motion} from 'framer-motion'
+import MessDuesView from '../../components/MessDuesView'
+import CurrentInmates from '../../components/CurrentInmates'
 function MessDirector() {
   const [tabSelected, setTabSelected] = useState(1)
   const [selectedRowIndex, setSelectedRowIndex] = useState(-1)
@@ -17,7 +18,7 @@ function MessDirector() {
         </div>
       </div>
 
-      <div className='flex flex-col items-center py-8 space-y-4 w-11/12 mt-8 bg-white rounded-xl'>
+      <motion.div initial={{opacity:0}} animate={{opacity:1}} transition={{duration:0.3}}  className='flex flex-col items-center py-8 space-y-4 w-11/12 mt-8 bg-white rounded-xl'>
         {/* white box nav bar */}
         <div className='flex flex-row justify-between w-11/12 items-center'>
           <div className='flex flex-row tex-black text-sm font-bold relative mb-3'>
@@ -63,11 +64,12 @@ function MessDirector() {
           {tabSelected===1&&<div className='text-sm mb-2'>Showing 1-8 out of 200 results</div>}
           <br />
         </div>
-        {tabSelected===1&&<MessBill/>}
+        {tabSelected===1&&<CurrentInmates/>}
         {tabSelected===2&&<MessOutList/>}
         {tabSelected===3&&<UploadMessBill/>}
+        {tabSelected===4&&<MessDuesView/>}
 
-      </div>
+      </motion.div>
     </div>
   )
 }

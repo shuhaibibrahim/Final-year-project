@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
-import MessOutPage from '../../components/MessOutPage';
 import CurrentInmates from '../../components/CurrentInmates';
 import MessOutReqs from '../../components/MessOutReqs';
+import {motion} from 'framer-motion'
 function MessSecretary() {
   const applications=[
     {
@@ -59,14 +59,14 @@ function MessSecretary() {
   return (
     <div className='flex flex-col w-full items-center min-h-screen h-full overflow-y-scroll'>
       <div className='flex flex-row justify-between w-11/12 pt-4 items-center'>
-        <div className='text-xl font-bold'>Mess</div>
+        <div className='text-xl font-bold'>Mess Secretary</div>
         <div className='flex flex-row space-x-4 items-center'>
             <div className='bg-white border rounded-full w-10 aspect-square'/>
             <div>user Name</div>
         </div>
       </div>
 
-      <div className='flex flex-col items-center py-8 space-y-4 w-11/12 mt-8 bg-white rounded-xl admin-dashbord-height'>
+      <motion.div initial={{opacity:0}} animate={{opacity:1}} transition={{duration:0.3}}  className='flex flex-col items-center py-8 space-y-4 w-11/12 mt-8 bg-white rounded-xl'>
         {/* white box nav bar */}
         <div className='flex flex-row justify-between w-11/12 items-center'>
           <div className='flex flex-row tex-black text-sm font-bold relative'>
@@ -97,7 +97,7 @@ function MessSecretary() {
           <br />
         </div>
         {tabSelected===1?<CurrentInmates/>:<MessOutReqs/>}
-      </div>
+      </motion.div>
     </div>
   )
 }

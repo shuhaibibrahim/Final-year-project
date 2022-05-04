@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import MessOutPage from '../../components/MessOutPage';
 import MessBill from '../../components/MessBill'
+import {motion} from 'framer-motion'
 function MessPage() {
   const [tabSelected, setTabSelected] = useState(1)
   return (
@@ -13,7 +14,7 @@ function MessPage() {
         </div>
       </div>
 
-      <div className='flex flex-col items-center py-8 space-y-4 w-11/12 mt-8 bg-white rounded-xl'>
+      <motion.div initial={{opacity:0}} animate={{opacity:1}} transition={{duration:0.3}}  className='flex flex-col items-center py-8 space-y-4 w-11/12 mt-8 bg-white rounded-xl'>
         {/* white box nav bar */}
         <div className='flex flex-row justify-between w-11/12 items-center'>
           <div className='flex flex-row tex-black text-sm font-bold relative'>
@@ -42,7 +43,7 @@ function MessPage() {
           <br />
         </div>
         {tabSelected===1?<MessBill/>:<MessOutPage/>}
-      </div>
+      </motion.div>
     </div>
   )
 }

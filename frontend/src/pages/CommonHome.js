@@ -8,6 +8,8 @@ import fitnessSvg from'../icons/fitness.svg'
 import { adminLinks } from './Admin/AdminLinks'
 import { saLinks } from './StaffAdvisor/StaffAdvisorLinks'
 import { createBrowserHistory } from 'history'
+import { wardenLinks } from './Warden/WardenLinks'
+import { hostelOfficeLinks } from './HostelOffice/HostelOfficeLinks'
 
 function CommonHome({user, userRole}) {
   
@@ -15,7 +17,7 @@ function CommonHome({user, userRole}) {
     const [role, setRole] = useState(0) //index of the role selected in the user.roles array
     const [roleTo, setRoleTo] = useState(".")
 
-    const roles=["admin", "staff advisor"]
+    const roles=["admin", "staff advisor", "warden", "hosteloffice"]
 
     var history=createBrowserHistory();
 
@@ -46,6 +48,15 @@ function CommonHome({user, userRole}) {
             // setRoleTo("staffadvisor")
             setLinks(saLinks)
         }
+        else if(roles[role]==="warden"){
+            // setRoleTo("warden")
+            setLinks(wardenLinks)
+        }
+        else if(roles[role]==="hosteloffice"){
+            // setRoleTo("warden")
+            setLinks(hostelOfficeLinks)
+        }
+
     }, [role])
     
     return (

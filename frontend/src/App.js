@@ -32,6 +32,12 @@ import HostelPage from './pages/Inmate/HostelPage';
 import { useState } from 'react';
 import SignupInvite from './pages/StaffAdvisor/SignupInvite';
 import CommonHome from './pages/CommonHome';
+import Page404 from './pages/Page404'
+import WardenHome from './pages/Warden/WardenHome';
+import HostelAdmission from './pages/Warden/HostelAdmission';
+import HostelOfficeHome from './pages/HostelOffice/HostelOfficeHome'
+import AdmissionHostelOffice from './pages/HostelOffice/AdmissionHostelOffice';
+import HostelOfficeMess from './pages/HostelOffice/HostelOfficeMess';
 function App() {
 
   const [user, setUser] = useState(null)
@@ -81,6 +87,22 @@ function App() {
               <Route path="signupinvite" element={<SignupInvite/>}/>
               <Route path="noninmatecertificate" element={<NonInmateCertificate/>}/>
             </Route>
+
+            {/* Warden Routes */}
+            <Route path="/warden" element={<WardenHome/>}>
+              <Route index element={<HostelAdmission/>}/>
+              <Route path="admission" element={<HostelAdmission/>}/>
+              <Route path="hostelregistry" element={<HostelRegistry/>}/>
+            </Route>
+
+            {/* Hostel Office Routes */}
+            <Route path="/hosteloffice" element={<HostelOfficeHome/>}>
+              <Route index element={<AdmissionHostelOffice/>}/>
+              <Route path="admission" element={<AdmissionHostelOffice/>}/>
+              <Route path="hostelregistry" element={<HostelRegistry/>}/>
+              <Route path="mess" element={<HostelOfficeMess/>}/>
+            </Route>
+
           </Route>
           {/* )}  */}
 
@@ -101,7 +123,7 @@ function App() {
             <Route path="messdirector" element={<MessDirector/>}/>
             <Route path="hostel" element={<HostelPage/>}/>
           </Route>
-          
+          <Route path="*" element={<Page404/>}/>
         </Routes>
       </BrowserRouter>
     </div>

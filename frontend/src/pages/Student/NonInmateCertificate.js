@@ -10,7 +10,7 @@ function NonInmateCertificate() {
           </div>
         </div>
   
-        <motion.div  className='w-10/12 mt-12 bg-white rounded-xl p-5'>
+        <motion.div initial={{opacity:0}} animate={{opacity:1}} transition={{duration:0.5}} className='w-10/12 mt-12 bg-white rounded-xl p-5'>
           <form action="">
             <div className="grid grid-cols-2 gap-y-4 w-6/12">
                 <label htmlFor="">Nature of Certificate:</label>

@@ -1,8 +1,9 @@
 import React, { useState } from 'react'
 import CertificateForm from '../../components/CertificateForm'
 import DownloadIcon from '@mui/icons-material/Download';
+import MessDuesClear from '../../components/MessDuesClear';
 import {motion} from 'framer-motion'
-function CertificatePage() {
+function HostelOfficeMess() {
   const applications=[
     {
       SlNo:"1234",
@@ -118,7 +119,7 @@ function CertificatePage() {
   return (
     <div className='flex flex-col w-full items-center min-h-screen h-full'>
       <div className='flex flex-row justify-between w-11/12 pt-4 items-center'>
-        <div className='text-xl font-bold'>Certificates</div>
+        <div className='text-xl font-bold'>Mess</div>
         <div className='flex flex-row space-x-4 items-center'>
             <div className='bg-white border rounded-full w-10 aspect-square'/>
             <div>user Name</div>
@@ -136,29 +137,17 @@ function CertificatePage() {
                   setTabSelected(1)
                 }}
               >
-                  <div>View Applications <span className='ml-2 p-2 text-white bg-stone-800 rounded-lg cursor-default'>200</span></div>
-                  <div className={tabSelected===1?'mt-2 h-1 self-center w-9/12 bg-stone-800 rounded-full':''}/>
+                  <div>Mess Dues </div>
+                  <div className={tabSelected===1?'mt-2 h-1 self-center w-12/12 bg-stone-800 rounded-full':''}/>
               </div>
-
-              <div 
-                className='ml-5 cursor-pointer'
-                onClick={()=>{
-                  setHostelDataSelected(applications)
-                  setTabSelected(2)
-                }}
-              >
-                <div>Apply for New Certificate</div>
-                <div className={tabSelected===2?'mt-2 h-1 w-12/12 self-center bg-stone-800 rounded-full':''}/>
-              </div>    
+   
           </div>
-
-          {tabSelected===1&&<div className='text-sm mb-2'>Showing 1-8 out of 200 results</div>}
-          <br />
         </div>
-        {tabSelected===1?<ApplicationList/>:<CertificateForm/>}
+        <MessDuesClear/>
+        
       </motion.div>
     </div>
   )
 }
 
-export default CertificatePage
+export default HostelOfficeMess
