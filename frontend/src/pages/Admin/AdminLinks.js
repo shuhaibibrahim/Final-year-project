@@ -55,7 +55,7 @@ const adminLinks=[
       icon: editSvg,
     },
     {
-      title:"Seat Matrix",
+      title:"Hostel Blocks",
       to:"admin/seatmatrix",
       icon: editSvg,
     }
