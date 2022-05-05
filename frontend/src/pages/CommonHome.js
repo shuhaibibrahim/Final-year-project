@@ -7,16 +7,35 @@ import bookSvg from'../icons/book.svg'
 import fitnessSvg from'../icons/fitness.svg'
 import { adminLinks } from './Admin/AdminLinks'
 import { saLinks } from './StaffAdvisor/StaffAdvisorLinks'
+import { createBrowserHistory } from 'history'
 import { wardenLinks } from './Warden/WardenLinks'
 import { hostelOfficeLinks } from './HostelOffice/HostelOfficeLinks'
 
-function CommonHome({user}) {
+function CommonHome({user, userRole}) {
   
     const [links, setLinks] = useState(adminLinks)
     const [role, setRole] = useState(0) //index of the role selected in the user.roles array
     const [roleTo, setRoleTo] = useState(".")
 
-    const roles=["admin", "staff advisor", "student", "inmate", "warden", "hosteloffice"]
+    const roles=["admin", "staff advisor", "warden", "hosteloffice"]
+
+    var history=createBrowserHistory();
+
+    history.listen(({ location, action }) => {
+      // this is called whenever new locations come in
+      // the action is POP, PUSH, or REPLACE
+    //   console.log("location",location, " action : ",action)
+        if(roles[role]==="admin")
+        {
+            // setRoleTo("admin")
+            setLinks(adminLinks)
+        }
+        else if(roles[role]==="staff advisor")
+        {
+            // setRoleTo("staffadvisor")
+            setLinks(saLinks)
+        }
+    });
 
     useEffect(() => {
         if(roles[role]==="admin")

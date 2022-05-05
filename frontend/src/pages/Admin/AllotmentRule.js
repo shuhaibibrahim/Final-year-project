@@ -1,3 +1,4 @@
+import { UpdateTwoTone } from '@mui/icons-material';
 import React, { useEffect, useState } from 'react'
 import Spreadsheet from "react-spreadsheet";
 
@@ -22,10 +23,20 @@ function AllotmentRule() {
   ]
 
   const derivedColumns=[
-    "derivedCol1",
-    "derivedCol2",
-    "derivedCol3"
+    {
+      colName:"derivedCol1",
+      equation:""
+    },
+    {
+      colName:"derivedCol2",
+      equation:""
+    },
+    {
+      colName:"derivedCol3",
+      equation:""
+    }
   ]
+  
   
   const tabs=["Current Rule", "Update Rule"]
 
@@ -34,13 +45,36 @@ function AllotmentRule() {
   //current rules states
   const [columnsData, setColumnsData] = useState(columns)
   const [derivedColumnsData, setDerivedColumnsData] = useState(derivedColumns)
+  const [combinedColumnsData, setCombinedColumnsData] = useState()
   
   //udated rules states
   const [updatedColumnsData, setUpdatedColumnsData] = useState(columns)
   const [updatedDerivedColumnsData, setUpdatedDerivedColumnsData] = useState(derivedColumns)
   const [selectedColumnIndex, setSelectedColumnIndex] = useState(-1)
 
-  const [rankRule, setRankRule] = useState("Keam Rank, Family Annual Income, Location, derivedCol1")
+  const [newEquation, setNewEquation] = useState("")
+  const [newAttribute, setNewAttribute] = useState("")
+  const [newOrder, setNewOrder] = useState("Asc")
+  const [updatedRule, setUpdatedRule] = useState([])
+
+  const [rankRule, setRankRule] = useState([
+    {
+      name:"Keam Rank",
+      order:"Asc"
+    },
+    {
+      name:"Family Annual Income",
+      order:"Asc"
+    },
+    {
+      name:"Location",
+      order:"Asc"
+    },
+    {
+      name:"derivedCol1",
+      order:"Asc"
+    }
+  ])
   const [rankSortOrder, setRankSortOrder] = useState("Ascending")
   
   
@@ -59,7 +93,12 @@ function AllotmentRule() {
   useEffect(() => {
     if(modal!=null)
       RenderModal()
-  }, [selectedColumnIndex, modalType])
+  }, [selectedColumnIndex, modalType, newAttribute, newOrder, updatedRule, newEquation])
+
+  useEffect(() => {
+    var newDerivedList=derivedColumns.map(item=>{return item.colName})
+    setCombinedColumnsData([...columns, ...newDerivedList])
+  }, [derivedColumns, columns])
   
 
   const RenderModal=(item)=>{
@@ -122,14 +161,14 @@ function AllotmentRule() {
     else  if(modalType===1)
       setModal(
         <div onClick={backdropClickHandler} className="bg-slate-500/[.8] z-20 fixed inset-0 flex justify-center items-center">
-            <div className='flex flex-col bg-white rounded-2xl w-5/12 h-1/2 pt-3 relative overflow-hidden'>
+            <div className='flex flex-col bg-white rounded-2xl w-1/2 h-auto pt-3 relative overflow-hidden'>
 
                 <div
                     // className='absolute top-1 right-1 flex justify-center items-center bg-red-500 aspect-square w-7 h-7 cursor-pointer text-center text-xs font-bold text-white rounded-full hover:bg-red-700'
                     className='absolute top-1 right-1 cursor-pointer text-red-500 cursor-pointer rounded-full hover:text-red-700'
                     onClick={()=>{
                         setModal(null)
-                        setSelectedColumnIndex(-1)
+                        setNewAttribute("")
                     }}
                 >
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -141,33 +180,143 @@ function AllotmentRule() {
                   Functions Available : SUM(), AVG(), COUNT(), MAX(), MIN()
                 </div>
 
-                <div className='flex flex-col mt-2 bg-white rounded-lg text-sm px-2'>
+                <div className='w-fit text-stone-800 font-bold px-2 mt-2'>Columns :</div>
+                <div className='text-stone-500 text-base px-2 font-semibold w-full flex flex-row flex-wrap'>
+                  {/* All columns */}
+                  {combinedColumnsData.map((col, index)=>(
+                    <div className='mr-3'>{String.fromCharCode(65+index)} : {col}</div>
+                  ))}
+                </div>
+
+                <div className='flex flex-col mt-4 bg-white rounded-lg text-sm px-2'>
                     <div className='text-stone-800'>Attribute Name</div>
                     <input 
                       placeholder='Search by name or by admission number'
                       className='p-2 w-80 outline-none ring-slate-200 ring-2 rounded-xl'
+                      onChange={(e)=>{setNewAttribute(e.target.value)}}
+                      value={newAttribute}
                     />
 
                     <div className='mt-2 text-stone-800'>Attribute Formula</div>
                     <input 
                       placeholder='Search by name or by admission number'
                       className='p-2 w-80 outline-none ring-slate-200 ring-2 rounded-xl'
+                      onChange={(e)=>{setNewEquation(e.target.value)}}
+                      value={newEquation}
                     />
                 </div>
 
                 {/* Add button */}
-                <div className='flex p-2 justify-end'>
+                <div className='flex p-2 self-end'>
                   <button 
                     className='button-blue self-end'
                     onClick={()=>{
-                      if(selectedColumnIndex!=-1)
+                        setDerivedColumnsData([...derivedColumnsData,
+                          {
+                            colName:newAttribute,
+                            equation:newEquation
+                          }
+                        ])
+                        setNewAttribute("")
+                        setNewEquation("")
+                        setModal(null)
+                      }}
+                  >
+                    Add column
+                  </button>
+                </div>
+            </div>
+        </div>
+      )
+      else  if(modalType===2)
+      setModal(
+        <div onClick={backdropClickHandler} className="bg-slate-500/[.8] z-20 fixed inset-0 flex justify-center items-center">
+            <div className='flex flex-col bg-white rounded-2xl w-1/2 h-auto pt-3 relative overflow-hidden'>
+
+                <div
+                    // className='absolute top-1 right-1 flex justify-center items-center bg-red-500 aspect-square w-7 h-7 cursor-pointer text-center text-xs font-bold text-white rounded-full hover:bg-red-700'
+                    className='absolute top-1 right-1 cursor-pointer text-red-500 cursor-pointer rounded-full hover:text-red-700'
+                    onClick={()=>{
+                        setModal(null)
+                        setNewAttribute("")
+                        setNewOrder("Asc")
+                    }}
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                </div>
+                
+                <div className='text-stone-800 border-b border-solid border-stone-800 text-lg p-2 font-semibold w-full'>
+                  Rank Rule - Add columns and order of sorting
+                </div>
+
+                <div className='flex flex-col text-stone-800 text-base p-2 font-semibold w-full'>
+                  {updatedRule.map((item,index)=>(
+                    <div key={index}>{index+1} . {item.name} - {item.order}</div>
+                  ))}
+                </div>
+                <div className='flex flex-row w-full space-x-4 items-center ml-2'>
+                  <div className='flex flex-col justify-start'>
+                    <label className='mt-2 text-stone-800 font-semibold'>Column</label>
+                    <select
+                      className='p-2 w-72 outline-none ring-slate-200 ring-2 rounded-xl'
+                      required={true}
+                      onChange={e=>setNewAttribute(e.target.value)}
+                      value={newAttribute}
+                    >
+                      <option value=""></option>
+                      {combinedColumnsData.map((item,index)=>(
+                        <option value={item} key={index}>{item}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div className='flex flex-col'>
+                    <label className='mt-2 text-stone-800 font-semibold'>Order By</label>
+                    <select
+                      className='p-2 w-24 outline-none ring-slate-200 ring-2 rounded-xl'
+                      required={true}
+                      onChange={e=>setNewOrder(e.target.value)}
+                      value={newOrder}
+                    >
+                      <option value="Asc">Asc</option>
+                      <option value="Desc">Desc</option>
+                    </select>
+                  </div>
+
+                  <div 
+                    className='rounded-lg p-2 bg-blue-500 self-end text-white text-base font-medium hover:bg-blue-700'
+                    onClick={()=>{
+                      setUpdatedRule([
+                        ...updatedRule,
+                        {
+                          name:newAttribute,
+                          order:newOrder
+                        }
+                      ])
+                    }}
+                  >
+                    Add
+                  </div>
+                </div>
+
+
+                {/* Add button */}
+                <div className='flex p-2 self-end'>
+                  <button 
+                    className='button-blue self-end'
+                    onClick={()=>{
+                      if(newAttribute!="")
                       {
-                        setUpdatedColumnsData([...updatedColumnsData,allColumnsData[selectedColumnIndex]])
+                        setRankRule(updatedRule)
+                        setNewAttribute("")
+                        setNewOrder("Asc")
                         setModal(null)
                       }
                     }}
                   >
-                    Add column
+                    Update
                   </button>
                 </div>
             </div>
@@ -205,7 +354,7 @@ function AllotmentRule() {
         {/* sfasfsdfsd */}
           {derivedColumnsData.map((item, index)=>(
             <div key={index} className='text-center mr-2 mt-2 py-2 px-3 bg-stone-800 text-white text-sm font-medium rounded-full'>
-              {item}
+              {item.colName}
             </div>
           ))}
         </div>
@@ -218,8 +367,10 @@ function AllotmentRule() {
           Rank Rule
         </div>
         
-        <div className='mt-5 text-stone-800'>
-          <span className='text-stone-800 font-semibold text-base'>( {rankRule} )</span> sort by <span className='text-stone-800 font-semibold text-base'>{rankSortOrder}</span> order
+        <div className='mt-5 text-stone-800 font-semibold text-base flex flex-row flex-wrap space-x-2'>
+          {rankRule.map((item, index)=>(
+            <div key={index}>{item.name} {item.order} ,</div>
+          ))}
         </div>
         
       </div>
@@ -273,16 +424,16 @@ function AllotmentRule() {
         </div>
 
         <div className='flex flex-wrap w-full mt-5'>  
-          {updatedDerivedColumnsData.map((item, index)=>(
+          {derivedColumnsData.map((item, index)=>(
             <div key={index} className='flex flex-row justify-between items-center mr-2 py-2 px-3 bg-stone-800 text-white text-sm font-medium rounded-full'>
-              <div>{item}</div>
+              <div>{item.colName}</div>
               {/* remove button */}
               <div
                   className='ml-2 text-white cursor-pointer rounded-full hover:text-red-600'
                   onClick={()=>{
-                      var newUpdatedDerivedColumnsData=[...updatedDerivedColumnsData]
-                      newUpdatedDerivedColumnsData.splice(index,1)
-                      setUpdatedDerivedColumnsData(newUpdatedDerivedColumnsData)
+                      var newDerivedColumnsData=[...derivedColumnsData]
+                      newDerivedColumnsData.splice(index,1)
+                      setDerivedColumnsData(newDerivedColumnsData)
                   }}
               >
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -311,10 +462,23 @@ function AllotmentRule() {
           Rank Rule
         </div>
         
-        <div className='mt-5 text-stone-800'>
-          <span className='text-stone-800 font-semibold text-base'>( {rankRule} )</span> sort by <span className='text-stone-800 font-semibold text-base'>{rankSortOrder}</span> order
+          
+        <div className='text-stone-800 font-semibold text-base flex flex-row flex-wrap space-x-2'>
+          <div className='mr-3'>Current Rule : </div>
+          {rankRule.map((item, index)=>(
+            <div key={index}>{item.name} {item.order} ,</div>
+          ))}
         </div>
         
+        <div 
+          className='button-blue mt-3'
+          onClick={()=>{
+            setModalType(2)
+            RenderModal()
+          }}
+        >
+          Update Rule
+        </div>
       </div>
     )
   }

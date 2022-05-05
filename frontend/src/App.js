@@ -104,7 +104,7 @@ function App() {
             </Route>
 
           </Route>
-          )} 
+          )}
 
           {/* Student Routes */}
           <Route path="/student" element={<StudentHome/>}>

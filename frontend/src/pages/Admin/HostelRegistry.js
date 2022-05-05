@@ -180,8 +180,6 @@ function HostelRegistry() {
               </svg>
             </div>
           </div>
-          
-          <div className='text-stone-800 font-bold text-sm'>Click on a user row to assign role</div>
 
           {/* filter and export*/}
           <div className='flex flex-row space-x-2 items-center'>
