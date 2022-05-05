@@ -1,7 +1,7 @@
 import React from 'react'
 import Uploader from '../../components/Uploader'
 
-function SignupInvite() {
+function SignupInviteHod() {
   return (
     <div className='flex flex-col w-full items-center'>
       <div className='flex flex-row justify-between w-10/12 pt-4 items-center'>
@@ -48,4 +48,4 @@ function SignupInvite() {
   )
 }
 
-export default SignupInvite
+export default SignupInviteHod

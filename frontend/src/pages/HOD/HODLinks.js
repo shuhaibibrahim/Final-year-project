@@ -3,22 +3,22 @@ import userSvg from'../../icons/user.svg'
 import bookSvg from'../../icons/book.svg'
 import fitnessSvg from'../../icons/fitness.svg'
 
-const saLinks=[
+const hodLinks=[
     {
         title:"Students Details",
-        to:"staffadvisor/studentsdetails",
+        to:"hod/studentsdetails",
         icon: fitnessSvg,
     },
     {
-        title:"Signup Invite",
-        to:"staffadvisor/signupinvite",
+        title:"Add Staff Advisor",
+        to:"hod/addstaffadvisor",
         icon: editSvg,
     },
     {
         title:" Hostel Allotment",
-        to:"staffadvisor/hostelallotment",
+        to:"hod/hostelallotment",
         icon: bookSvg,
     }
 ]
 
-export {saLinks}
+export {hodLinks}

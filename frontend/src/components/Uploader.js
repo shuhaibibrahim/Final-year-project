@@ -36,7 +36,7 @@ function Uploader(props) {
           <img src={Sheets} className="w-8"/>{thumbs}
           <DeleteForeverIcon onClick={()=>{props.setUploaded(false)}} className="ml-2"/>
         </motion.div>:
-        <motion.div className="bg-gray-100 w-12/12 h-40 p-5 rounded-lg">
+        <motion.div className="bg-gray-100 w-12/12 h-40 p-5 rounded-lg m-5">
           <div {...getRootProps({className:'dropzone'})} className="border-dashed border-2 border-teal-500 rounded-lg w-full h-full flex items-center justify-center">
             <input {...getInputProps()} className="w-full h-full"/>
             <img src={Sheets} className="w-8" alt="" />

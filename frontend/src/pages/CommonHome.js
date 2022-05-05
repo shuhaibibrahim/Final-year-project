@@ -10,6 +10,8 @@ import { saLinks } from './StaffAdvisor/StaffAdvisorLinks'
 import { createBrowserHistory } from 'history'
 import { wardenLinks } from './Warden/WardenLinks'
 import { hostelOfficeLinks } from './HostelOffice/HostelOfficeLinks'
+import { hodLinks } from './HOD/HODLinks'
+// import { studentLinks } from './Student/StudentLinks'
 
 function CommonHome({user, userRole}) {
   
@@ -17,7 +19,7 @@ function CommonHome({user, userRole}) {
     const [role, setRole] = useState(0) //index of the role selected in the user.roles array
     const [roleTo, setRoleTo] = useState(".")
 
-    const roles=["admin", "staff advisor", "warden", "hosteloffice"]
+    const roles=["admin", "staff advisor", "warden", "hosteloffice", "hod"]
 
     var history=createBrowserHistory();
 
@@ -47,6 +49,11 @@ function CommonHome({user, userRole}) {
         {
             // setRoleTo("staffadvisor")
             setLinks(saLinks)
+        }
+        else if(roles[role]==="hod")
+        {
+            // setRoleTo("staffadvisor")
+            setLinks(hodLinks)
         }
         else if(roles[role]==="warden"){
             // setRoleTo("warden")

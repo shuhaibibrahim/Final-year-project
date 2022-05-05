@@ -10,7 +10,7 @@ import {
 import StudentHome from './pages/Student/StudentHome';
 import FacultyHome from './pages/StaffAdvisor/FacultyHome';
 import StudentsDetails from './pages/StaffAdvisor/StudentsDetails';
-import HostelAllotment from './pages/StaffAdvisor/SignupInvite';
+import HostelAllotment from './pages/StaffAdvisor/HostelAllotment';
 import AdminHome from './pages/Admin/AdminHome';
 import AdminInmates from './pages/Admin/AdminInmates';
 import AdminNonInmates from './pages/Admin/AdminNonInmates';
@@ -38,6 +38,19 @@ import HostelAdmission from './pages/Warden/HostelAdmission';
 import HostelOfficeHome from './pages/HostelOffice/HostelOfficeHome'
 import AdmissionHostelOffice from './pages/HostelOffice/AdmissionHostelOffice';
 import HostelOfficeMess from './pages/HostelOffice/HostelOfficeMess';
+import Matron from './pages/Matron/Matron';
+import MatronHome from './pages/Matron/MatronHome';
+import MessBill from './components/MessBill';
+import MessOutList from './components/MessOutList';
+import UploadMessBill from './components/UploadMessBill';
+import MessBillPage from './pages/Matron/MessBillPage';
+import MessOutPage from './components/MessOutPage';
+import UploadMessBillPage from './pages/Matron/UploadMessBillPage';
+import MessOutListPage from './pages/Matron/MessOutListPage';
+import StudentsDetailsHod from './pages/HOD/StudentsDetailsHod';
+import HostelAllotmentHod from './pages/HOD/HostelAllotmentHod';
+import SignupInviteHod from './pages/HOD/SignupInviteHod';
+import AddStaffAdvisor from './pages/HOD/AddStaffAdvisor';
 function App() {
 
   const [user, setUser] = useState(null)
@@ -78,14 +91,15 @@ function App() {
               <Route index element={<StudentsDetails/>}/>
               <Route path="studentsdetails" element={<StudentsDetails/>}/>
               <Route path="signupinvite" element={<SignupInvite/>}/>
-              <Route path="noninmatecertificate" element={<NonInmateCertificate/>}/>
+              <Route path="hostelallotment" element={<HostelAllotment/>}/>
             </Route>
 
             {/* hod Routes */}
             <Route path="/hod" element={<FacultyHome/>}>
-              <Route index element={<StudentsDetails/>}/>
-              <Route path="signupinvite" element={<SignupInvite/>}/>
-              <Route path="noninmatecertificate" element={<NonInmateCertificate/>}/>
+              <Route index element={<StudentsDetailsHod/>}/>
+              <Route path="studentsdetails" element={<StudentsDetailsHod/>}/>
+              <Route path="addstaffadvisor" element={<AddStaffAdvisor/>}/>
+              <Route path="hostelallotment" element={<HostelAllotmentHod/>}/>
             </Route>
 
             {/* Warden Routes */}
@@ -113,6 +127,9 @@ function App() {
             <Route path="noninmatecertificate" element={<NonInmateCertificate/>}/>
           </Route>
 
+
+         
+
           {/* Inmate Routes */}
           <Route path="/inmate" element={<InmateHome/>}>
             <Route index element={<MessPage/>}/>
@@ -124,6 +141,15 @@ function App() {
             <Route path="hostel" element={<HostelPage/>}/>
           </Route>
           <Route path="*" element={<Page404/>}/>
+
+           {/* Matron Routes */}
+           <Route path="matron" element={<MatronHome/>}>
+            <Route index element={<MessBillPage/>}/>
+            <Route path="messbill" element={<MessBillPage/>}/>
+            <Route path="messoutlist" element={<MessOutListPage/>}/>
+            <Route path="uploadmessbill" element={<UploadMessBillPage/>}/>
+          </Route>
+          
         </Routes>
       </BrowserRouter>
     </div>

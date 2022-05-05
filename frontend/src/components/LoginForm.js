@@ -29,8 +29,8 @@ function LoginForm({setUser}) {
                             className="w-full h-full"
                             onClick={()=>{
                                 setUser({
-                                    userName:"tve18cs061",
-                                    password:"ppppp",
+                                    userName:"",
+                                    password:"",
                                     roles:["hod","warden","staff advisor"]
                                 })
                             }}
