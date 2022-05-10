@@ -230,7 +230,7 @@ function AdminInmates() {
                               :inmateDataLH[selectedRowIndex].name}
               </div>
 
-              <div className='text-stone-800 font-bold'>Adminssion No</div>
+              <div className='text-stone-800 font-bold'>Admission No</div>
               <div> 
                 <span className='text-stone-800 font-bold mr-3'>:</span>
                 {selectedHostel=="MH"?

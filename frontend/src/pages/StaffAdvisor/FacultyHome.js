@@ -19,6 +19,11 @@ function FacultyHome() {
         icon: editSvg,
     },
     {
+        title:"Signup Invite",
+        to:"signupinvite",
+        icon: editSvg,
+    },
+    {
       title:"Faculty Roles",
       to:"",
       icon:userSvg,

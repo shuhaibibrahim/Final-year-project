@@ -13,6 +13,11 @@ const saLinks=[
         title:"Signup Invite",
         to:"staffadvisor/signupinvite",
         icon: editSvg,
+    },
+    {
+        title:" Hostel Allotment",
+        to:"staffadvisor/hostelallotment",
+        icon: bookSvg,
     }
 ]
 

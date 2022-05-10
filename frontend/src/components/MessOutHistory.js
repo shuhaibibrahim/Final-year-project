@@ -33,7 +33,7 @@ function MessOutHistory() {
        return (
          <>
            {/* inmates list */}
-           <div className='w-11/12'>
+           <div className='w-12/12'>
              <h1 className="font-semibold text-black text-lg mb-3 mt-3">Mess Out History</h1>
              <table className='w-full relative table-auto'>
                  <tr className='rounded-xl p-3 bg-primary text-center'>

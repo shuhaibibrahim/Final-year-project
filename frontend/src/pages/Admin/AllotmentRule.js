@@ -189,7 +189,7 @@ function AllotmentRule() {
                 </div>
 
                 <div className='flex flex-col mt-4 bg-white rounded-lg text-sm px-2'>
-                    <div className='text-stone-800'>Attribute Name</div>
+                    <div className='text-stone-800'>Coulmn Name</div>
                     <input 
                       placeholder='Search by name or by admission number'
                       className='p-2 w-80 outline-none ring-slate-200 ring-2 rounded-xl'
@@ -197,7 +197,7 @@ function AllotmentRule() {
                       value={newAttribute}
                     />
 
-                    <div className='mt-2 text-stone-800'>Attribute Formula</div>
+                    <div className='mt-2 text-stone-800'>Column Formula</div>
                     <input 
                       placeholder='Search by name or by admission number'
                       className='p-2 w-80 outline-none ring-slate-200 ring-2 rounded-xl'
@@ -383,7 +383,7 @@ function AllotmentRule() {
         <div
           className='text-left w-11/12 text-stone-800 mt-3 text-lg font-bold mt-2 mb-1'
         >
-          Existing Attributes
+          Existing Column
         </div>
 
         <div className='flex flex-wrap w-full mt-5'>  
@@ -412,7 +412,7 @@ function AllotmentRule() {
               RenderModal()
             }}
           >
-            Add Attribute
+            Add Column
           </button>
         </div>
         <hr className='w-full mt-7 self-center h-px bg-stone-800' />
@@ -420,7 +420,7 @@ function AllotmentRule() {
         <div
           className='text-left w-11/12 text-stone-800 mt-3 text-lg font-bold mt-2 mb-1'
         >
-          Derived Attributes
+          Derived Column
         </div>
 
         <div className='flex flex-wrap w-full mt-5'>  
@@ -450,7 +450,7 @@ function AllotmentRule() {
               RenderModal()
             }}
           >
-            Add Derived Attribute
+            Add Derived Column
           </button>
         </div>
 

@@ -8,7 +8,7 @@ function HostelRegistry() {
       name:"xyz",
       dept:"cse",
       phone:"9876857465",
-      email:"xsafsdfsfsfsdfsdfsdfdsfgsdfsdfsdyz@gmail.com",
+      email:"xyz@gmail.com",
       from:"01-02-2022",
       to:"09-02-2022"
     },

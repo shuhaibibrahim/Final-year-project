@@ -210,6 +210,10 @@ function AdmissionHostelOffice() {
                   <div className={tabSelected===2?'mt-2 h-1 self-center w-12/12 bg-stone-800 rounded-full':''}/>
               </div>
 
+              <div>
+              
+              </div>
+
               {/* <div
                 className='ml-5 cursor-pointer '
                 onClick={()=>{
@@ -222,6 +226,12 @@ function AdmissionHostelOffice() {
 
           </div>
           </div>
+          <div className='flex items-center justify-start w-11/12'>
+          <select className='p-3 ring-slate-200 ring-2 rounded-xl outline-none'>
+                <option value="mh">Mens Hostel</option>
+                <option value="lh">Ladies Hostel</option>
+          </select>     
+          </div>
           {tabSelected===1&& <div className='w-11/12'>
             <table className='w-full relative table-auto'>
             <tr className='rounded-xl p-3 bg-primary text-center'>
@@ -232,6 +242,7 @@ function AdmissionHostelOffice() {
                 <th className='p-3'>Qualifying Exam Rank</th>
                 <th className='p-3'>Branch</th>
                 <th className='p-3'>Rank</th>
+                <th className='p-3'></th>
                 <th className='p-3'></th>
               </tr>
               {ranks.map((user, index)=>(
@@ -245,6 +256,7 @@ function AdmissionHostelOffice() {
                   <td className='p-3'>{user.Branch}</td>
                   <td className='p-3'>{user.Rank}</td>
                   <td className='p-3'><button className='submit-button-black'>Verify</button></td>
+                  <td className='p-3'><button className='submit-button-black'>Remove</button></td>
                 </tr>
               ))}
           </table>

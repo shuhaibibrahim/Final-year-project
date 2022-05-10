@@ -115,7 +115,7 @@ function SideBar({myLinks, roles, setRole, roleTo, myActiveIndex, myOpenedIndex,
                     <div className='bg-white border border-solid border-black rounded-full w-12 aspect-square'/>
                     <div>Name</div>
                 </div>
-                <hr className='h-px bg-stone-800 w-full' />
+                {/* <hr className='h-px bg-stone-800 w-full' /> */}
 
                 <div className='flex flex-col items-start w-full px-2' id="main-links">
                     {links.map((link, index)=>(
@@ -210,7 +210,7 @@ function SideBar({myLinks, roles, setRole, roleTo, myActiveIndex, myOpenedIndex,
 
                 
                 <div className='flex flex-col justify-end h-full w-full mb-3'>
-                    <hr className='h-px bg-stone-800 w-full' />
+                    {/* <hr className='h-px bg-stone-800 w-full' /> */}
                     <div className='w-full px-2'>
                         <div className='flex flex-row space-x-4 justify-self-start items-center px-2 py-2'>
                             <div className='text-black'>
