@@ -33,7 +33,7 @@ function CommonHome({user}) {
         history.listen(({ location, action }) => {
           // this is called whenever new locations come in
           // the action is POP, PUSH, or REPLACE
-          console.log("location",location, " action : ",action)
+        //   console.log("location"z,location, " action : ",action)
             if(user.roles[role]==="admin")
             {
                 // setRoleTo("admin")
