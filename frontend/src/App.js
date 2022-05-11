@@ -29,7 +29,7 @@ import MessPage from './pages/Inmate/MessPage';
 import MessSecretary from './pages/Inmate/MessSecretary'
 import MessDirector from './pages/Inmate/MessDirector'
 import HostelPage from './pages/Inmate/HostelPage';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import SignupInvite from './pages/StaffAdvisor/SignupInvite';
 import CommonHome from './pages/CommonHome';
 import Page404 from './pages/Page404'
@@ -51,8 +51,9 @@ import StudentsDetailsHod from './pages/HOD/StudentsDetailsHod';
 import HostelAllotmentHod from './pages/HOD/HostelAllotmentHod';
 import SignupInviteHod from './pages/HOD/SignupInviteHod';
 import AddStaffAdvisor from './pages/HOD/AddStaffAdvisor';
-function App() {
+import axios from 'axios';
 
+function App() {
   const [user, setUser] = useState(null)
   /*
     user={
@@ -63,6 +64,21 @@ function App() {
     }
 
   */
+
+  // useEffect(() => {
+  //   console.log("Im inside useffect isauthenticated")
+  //   axios.get('http://localhost:8081/auth/isAuthenticated',{
+  //       withCredentials: true
+  //   })
+  //   .then(function (response) {
+  //       console.log("success" , response.data);
+  //       // setUser(response.data)
+  //   })
+  //   .catch(function (error) {
+  //       console.log("FAILED!!! ",error);
+  //   });
+  // }, [])
+  
   return (
     <div className='App'>
       <BrowserRouter>

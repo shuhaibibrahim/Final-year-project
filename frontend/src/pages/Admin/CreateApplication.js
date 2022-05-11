@@ -160,13 +160,13 @@ function CreateApplications() {
                         value={newLabel}
                         />
 
-                        <label className='mt-2 text-stone-800 font-semibold'>Field Name (small letters with no space)</label>
+                        {/* <label className='mt-2 text-stone-800 font-semibold'>Field Name (small letters with no space)</label>
                         <input 
                         className='p-2 w-80 outline-none ring-slate-200 ring-2 rounded-xl'
                         required={true}
                         onChange={e=>setNewName(e.target.value)}
                         value={newName}
-                        />
+                        /> */}
 
                         <label className='mt-2 text-stone-800 font-semibold'>Field Type</label>
                         <select
@@ -241,7 +241,7 @@ function CreateApplications() {
                         className='button-blue self-end'
                         onClick={(e)=>{
                             e.preventDefault()
-                            if(newLabel!=""&&newName!=""&&newType!="")
+                            if(newLabel!=""&&newType!="")
                             {
                                 console.log(currentApplicationsData[applicationIndex].fields)
                                 const fields=JSON.parse(currentApplicationsData[applicationIndex].fields)
@@ -255,11 +255,13 @@ function CreateApplications() {
                                 }
 
                                 var newFieldItem={
-                                "fieldName":newName,
+                                "fieldName":newLabel.split(' ').join('').toLocaleLowerCase(),
                                 "label": newLabel,
-                                "name": newName,
+                                "name": newLabel.split(' ').join('').toLocaleLowerCase(),
                                 "type": newType
                                 }
+
+                                console.log("newfield item : ",newFieldItem)
 
                                 if(newType==="radio")
                                 {
