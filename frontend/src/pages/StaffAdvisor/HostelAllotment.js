@@ -754,25 +754,40 @@ function HostelAllotment() {
         <form action="">
             <div className="grid grid-cols-2 w-6/12">
               <label htmlFor="" className="mt-2">S1</label>
-              <input type="number" min="0" max="10" step="0.01" className="border-solid border-2 rounded-lg mt-2 px-1"/>
+              {/* <input type="number" min="0" max="10" step="0.01" className="border-solid border-2 rounded-lg mt-2 px-1"/> */}
+              <div>7.86</div>
               <label htmlFor="" className="mt-2">S2</label>
-              <input type="number" min="0" max="10" className="border-solid border-2 rounded-lg mt-2 px-1"/>
+              {/* <input type="number" min="0" max="10" className="border-solid border-2 rounded-lg mt-2 px-1"/> */}
+              <div>8.35</div>
+
               <label htmlFor="" className="mt-2">S3</label>
-              <input type="number" min="0" max="10" className="border-solid border-2 rounded-lg mt-2 px-1"/>
+              {/* <input type="number" min="0" max="10" className="border-solid border-2 rounded-lg mt-2 px-1"/> */}
+              <div>9.51</div>
+
               <label htmlFor="" className="mt-2">S4</label>
-              <input type="number" min="0" max="10" className="border-solid border-2 rounded-lg mt-2 px-1"/>
+              {/* <input type="number" min="0" max="10" className="border-solid border-2 rounded-lg mt-2 px-1"/> */}
+              <div>6.94</div>
+
               <label htmlFor="" className="mt-2">S5</label>
-              <input type="number" min="0" max="10" className="border-solid border-2 rounded-lg mt-2 px-1"/>
+              {/* <input type="number" min="0" max="10" className="border-solid border-2 rounded-lg mt-2 px-1"/> */}
+              <div>10.00</div>
+
               <label htmlFor="" className="mt-2">S6</label>
-              <input type="number" min="0" max="10" className="border-solid border-2 rounded-lg mt-2 px-1"/>
+              {/* <input type="number" min="0" max="10" className="border-solid border-2 rounded-lg mt-2 px-1"/> */}
+              <div>6.84</div>
+
               <label htmlFor="" className="mt-2">S7</label>
-              <input type="number" min="0" max="10" className="border-solid border-2 rounded-lg mt-2 px-1"/>
+              {/* <input type="number" min="0" max="10" className="border-solid border-2 rounded-lg mt-2 px-1"/> */}
+              <div>7.32</div>
+
               <label htmlFor="" className="mt-2">S8</label>
-              <input type="number" min="0" max="10" className="border-solid border-2 rounded-lg mt-2 px-1"/>
+              {/* <input type="number" min="0" max="10" className="border-solid border-2 rounded-lg mt-2 px-1"/> */}
+              <div>9.99</div>
+
             </div>
           <div className=" flex items-end justify-end mt-5">
               {/* <motion.button whileHover={{x:-10, backgroundColor:'red'}}  className="p-3 bg-stone-800 text-white rounded-xl ml-5" onClick={()=>setCurrPage(currpage-1)}>Back</motion.button> */}
-              <motion.button whileHover={{x:10, backgroundColor:'green'}}  className="p-1.5 bg-stone-800 text-white font-semibold rounded-2xl mr-5" >Submit</motion.button>
+              <motion.button whileHover={{x:10, backgroundColor:'green'}}  className="p-1.5 bg-stone-800 text-white font-semibold rounded-2xl mr-5" onClick={(e)=>{e.preventDefault()}}>Submit</motion.button>
           </div>
         </form></div>}  
         </div>

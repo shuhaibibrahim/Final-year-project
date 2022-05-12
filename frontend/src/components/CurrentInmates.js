@@ -66,7 +66,6 @@ const CurrentInmates = (props)=>{
                 <th className='p-3'>Name</th>
                 <th className='p-3'>Admission No.</th>
                 <th className='p-3'>Branch</th>
-       \
               </tr>
               {ranks.map((user, index)=>(
                 <tr 

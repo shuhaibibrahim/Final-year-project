@@ -71,7 +71,7 @@ function StudentsDetailsHod() {
   const inmateDataLH=[
     {
       admNo:"1289",
-      name:"N Athul Kumar",
+      name:"Athulya",
       dept:"cse",
       batch:"batchId",
       phone:"9876857465",

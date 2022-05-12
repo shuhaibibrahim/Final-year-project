@@ -162,11 +162,47 @@ function AddStaffAdvisor() {
             </div>
           </div>
 
-          <div className='mt-5 mb-1 text-stone-800 text-md font-semibold'>Select Role</div>
-          <select className='p-3 ring-slate-200 ring-2 rounded-xl w-1/4 outline-none'>
-            <option value={null}>NIL</option>
-            <option value="sa">Staff Advisor</option>
-          </select>
+         <div className='flex flex-row'>
+          <div className='mr-5'>
+            <div className='mt-5 mb-1 text-stone-800 text-md font-semibold'>Select Role</div>
+              <select className='p-3 ring-slate-200 ring-2 rounded-xl outline-none'>
+                <option value={null}>NIL</option>
+                <option value="sa">Staff Advisor</option>
+              </select>
+          </div>
+          <div className='ml-5 mr-5'>
+            <div className='mt-5 mb-1 text-stone-800 text-md font-semibold'>Select Programme</div>
+              <select className='p-3 ring-slate-200 ring-2 rounded-xl outline-none'>
+                <option value={null}>NIL</option>
+                <option value="sa">B.Tech</option>
+                <option value="sa">M.Tech</option>
+                <option value="sa">PhD</option>
+              </select>
+          </div>
+          <div className='ml-5'>
+            <div className='mt-5 mb-1 text-stone-800 text-md font-semibold'>Select Year</div>
+              <select className='p-3 ring-slate-200 ring-2 rounded-xl outline-none'>
+                <option value={null}>NIL</option>
+                <option value="sa">1</option>
+                <option value="sa">2</option>
+                <option value="sa">3</option>
+                <option value="sa">4</option>
+              </select>
+          </div>
+          <div className='ml-5'>
+            <div className='mt-5 mb-1 text-stone-800 text-md font-semibold'>Select Batch</div>
+              <select className='p-3 ring-slate-200 ring-2 rounded-xl outline-none'>
+                <option value={null}>NIL</option>
+                <option value="sa">A</option>
+                <option value="sa">B</option>
+                
+              </select>
+          </div>
+          </div>
+          
+          
+       
+          
 
           <button className='mt-5 rounded-xl p-2 bg-green-500 w-2/12 text-white font-bold hover:bg-green-700'>Update</button>
           

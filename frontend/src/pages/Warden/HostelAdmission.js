@@ -18,7 +18,7 @@ function HostelAdmission() {
   const RenderModal=(item)=>{
     setModal(
         <div onClick={backdropClickHandler} className="bg-slate-500/[.8] z-20 fixed inset-0 flex justify-center items-center">
-          <div className='flex flex-col bg-white rounded-2xl w-6/12 h-3/4 p-3 relative overflow-hidden'>
+          <div className='flex flex-col bg-white rounded-2xl w-6/12 h-3/4 p-3 relative overflow-scroll'>
 
             <div
                       // className='absolute top-1 right-1 flex justify-center items-center bg-red-500 aspect-square w-7 h-7 cursor-pointer text-center text-xs font-bold text-white rounded-full hover:bg-red-700'
@@ -161,6 +161,12 @@ function HostelAdmission() {
               </div>
 
           </div>
+          </div>
+          <div className='flex items-center justify-start w-11/12'>
+          <select className='p-3 ring-slate-200 ring-2 rounded-xl outline-none'>
+                <option value="mh">Mens Hostel</option>
+                <option value="lh">Ladies Hostel</option>
+          </select>     
           </div>
           {tabSelected===1&& <div className='w-11/12'>
             <div className="flex items-center justify-end mb-5">

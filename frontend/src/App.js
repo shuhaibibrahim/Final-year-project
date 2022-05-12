@@ -127,9 +127,6 @@ function App() {
             <Route path="noninmatecertificate" element={<NonInmateCertificate/>}/>
           </Route>
 
-
-         
-
           {/* Inmate Routes */}
           <Route path="/inmate" element={<InmateHome/>}>
             <Route index element={<MessPage/>}/>
@@ -142,8 +139,8 @@ function App() {
           </Route>
           <Route path="*" element={<Page404/>}/>
 
-           {/* Matron Routes */}
-           <Route path="matron" element={<MatronHome/>}>
+          {/* Matron Routes */}
+          <Route path="matron" element={<MatronHome/>}>
             <Route index element={<MessBillPage/>}/>
             <Route path="messbill" element={<MessBillPage/>}/>
             <Route path="messoutlist" element={<MessOutListPage/>}/>

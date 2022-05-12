@@ -16,26 +16,6 @@ function AdminPaths() {
         {
             path:"SA-HOD-WD",
             certificates:"1,2,3,4"
-        },
-        {
-            path:"SA-HOD-WD",
-            certificates:"1,2,3,4"
-        },
-        {
-            path:"SA-HOD-WD",
-            certificates:"1,2,3,4"
-        },
-        {
-            path:"SA-HOD-WD",
-            certificates:"1,2,3,4"
-        },
-        {
-            path:"SA-HOD-WD",
-            certificates:"1,2,3,4"
-        },
-        {
-            path:"SA-HOD-WD",
-            certificates:"1,2,3,4"
         }
     ])
 

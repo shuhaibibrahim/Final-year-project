@@ -122,7 +122,7 @@ function SeatMatrix() {
                     </div>
 
                     <form className='flex flex-col h-full justify-center mt-2 bg-white rounded-lg text-sm px-2'>
-                        <label className='text-stone-800 font-semibold'>Field No</label>
+                        <label className='text-stone-800 font-semibold'>Floor No</label>
                         <input 
                             type="number"
                             className='p-2 w-80 outline-none ring-slate-200 ring-2 rounded-xl'
@@ -159,7 +159,7 @@ function SeatMatrix() {
                         <div className='flex p-2 justify-end'>
                             <input
                             type="submit"
-                            value="Add Field"
+                            value="Add Floor"
                             className='button-blue self-end'
                             onClick={(e)=>{
                                 e.preventDefault()
@@ -395,6 +395,7 @@ function SeatMatrix() {
                   key={index}
                   className='mr-5 cursor-pointer'
                   onClick={()=>{
+                    setBlockSelected(null)
                     setTabSelected(index)
                   }}
                 >

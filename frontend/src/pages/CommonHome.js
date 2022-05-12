@@ -13,31 +13,53 @@ import { hostelOfficeLinks } from './HostelOffice/HostelOfficeLinks'
 import { hodLinks } from './HOD/HODLinks'
 // import { studentLinks } from './Student/StudentLinks'
 
-function CommonHome({user, userRole}) {
+function CommonHome({user}) {
   
     const [links, setLinks] = useState(adminLinks)
     const [role, setRole] = useState(0) //index of the role selected in the user.roles array
     const [roleTo, setRoleTo] = useState(".")
 
     const roles=["admin", "staff advisor", "warden", "hosteloffice", "hod"]
+    // const user.roles=["admin", "staff advisor", "warden", "hosteloffice", "hod"]
 
-    var history=createBrowserHistory();
+    useEffect(() => {
+        var history=createBrowserHistory();
 
-    history.listen(({ location, action }) => {
-      // this is called whenever new locations come in
-      // the action is POP, PUSH, or REPLACE
-    //   console.log("location",location, " action : ",action)
-        if(roles[role]==="admin")
-        {
-            // setRoleTo("admin")
-            setLinks(adminLinks)
-        }
-        else if(roles[role]==="staff advisor")
-        {
-            // setRoleTo("staffadvisor")
-            setLinks(saLinks)
-        }
-    });
+        history.push(user.roles[0])
+    }, [])
+    
+    useEffect(() => {
+        var history=createBrowserHistory();
+
+        history.listen(({ location, action }) => {
+          // this is called whenever new locations come in
+          // the action is POP, PUSH, or REPLACE
+        //   console.log("location"z,location, " action : ",action)
+            if(user.roles[role]==="admin")
+            {
+                // setRoleTo("admin")
+                setLinks(adminLinks)
+            }
+            else if(user.roles[role]==="staff advisor")
+            {
+                // setRoleTo("staffadvisor")
+                setLinks(saLinks)
+            }
+        });
+    }, [])
+
+    // useEffect(() => {
+    //     if(user.roles[role]==="admin")
+    //     {
+    //         // setRoleTo("admin")
+    //         setLinks(adminLinks)
+    //     }
+    //     else if(user.roles[role]==="staff advisor")
+    //     {
+    //         // setRoleTo("staffadvisor")
+    //         setLinks(saLinks)
+    //     }
+    // });
 
     useEffect(() => {
         if(roles[role]==="admin")
@@ -50,6 +72,7 @@ function CommonHome({user, userRole}) {
             // setRoleTo("staffadvisor")
             setLinks(saLinks)
         }
+        
         else if(roles[role]==="hod")
         {
             // setRoleTo("staffadvisor")
