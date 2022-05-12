@@ -45,13 +45,17 @@ app.get('/auth',(req,res)=>{
 
 app.post('/auth/login', passport.authenticate('local') ,(req, res, next)=>{
   console.log(req.user)
-  res.cookie('user', req.user.username , {signed: true})
+  //Uncomment the follwing to use cookie to store username at client
+  // res.cookie('user', req.user.username , {signed: true})
   res.status(200).send(req.user)
 });
 
+
+//passport.session() missleware calls deSerializeUser function and passes the user to req.user if the user is authenticated
 app.get('/auth/isAuthenticated' ,passport.session(), (req, res, next)=>{
   console.log("req.user : ",req.session.passport)
-  console.log("cookie is : ",req.signedCookies)
+  //Uncomment the follwing to retrieve username from the cookie from client browser
+  // console.log("cookie is : ",req.signedCookies)
   if(req.user!=undefined)
     res.send(req.user)
   else
