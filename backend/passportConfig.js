@@ -39,6 +39,12 @@ module.exports = function(passport){
   
   passport.deserializeUser(function(username, done) {
     console.log("user deserialized : ",username)
-    return done(null, username)
+    const user={
+        "user": username,
+        "password" : "1234",
+        roles:["admin", "staff advisor", "hod", "warden", "hosteloffice"]
+    }
+    console.log(user)
+    return done(null, user)
   });
 }

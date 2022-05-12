@@ -54,7 +54,7 @@ import AddStaffAdvisor from './pages/HOD/AddStaffAdvisor';
 import axios from 'axios';
 
 function App() {
-  const [user, setUser] = useState(null)
+  const [user, setUser] = useState(undefined)
   /*
     user={
       username:tve18cs061,
@@ -65,19 +65,22 @@ function App() {
 
   */
 
-  // useEffect(() => {
-  //   console.log("Im inside useffect isauthenticated")
-  //   axios.get('http://localhost:8081/auth/isAuthenticated',{
-  //       withCredentials: true
-  //   })
-  //   .then(function (response) {
-  //       console.log("success" , response.data);
-  //       // setUser(response.data)
-  //   })
-  //   .catch(function (error) {
-  //       console.log("FAILED!!! ",error);
-  //   });
-  // }, [])
+  useEffect(() => {
+    console.log("Im inside useffect isauthenticated")
+    axios.get('http://localhost:8080/auth/isAuthenticated',{
+        withCredentials: true
+    })
+    .then(function (response) {
+        console.log("success" , response ,"response.data");
+        if(response.data!="")
+          setUser(response.data)
+        else 
+          setUser(null)
+    })
+    .catch(function (error) {
+        console.log("FAILED!!! ",error);
+    });
+  }, [])
   
   return (
     <div className='App'>
@@ -153,7 +156,7 @@ function App() {
             <Route path="messdirector" element={<MessDirector/>}/>
             <Route path="hostel" element={<HostelPage/>}/>
           </Route>
-          <Route path="*" element={<Page404/>}/>
+          {user!=undefined&&(<Route path="*" element={<Page404/>}/>)}
 
           {/* Matron Routes */}
           <Route path="matron" element={<MatronHome/>}>

@@ -26,7 +26,7 @@ app.use(sessions({
 
 app.use(cookieParser("secretkey"));
 app.use(passport.initialize())
-app.use(passport.session())
+// app.use(passport.session())
 
 const configurePassport=require('./passportConfig')
 configurePassport(passport)
@@ -45,12 +45,14 @@ app.get('/auth',(req,res)=>{
 
 app.post('/auth/login', passport.authenticate('local') ,(req, res, next)=>{
   console.log(req.user)
+  res.cookie('user', req.user.username , {signed: true})
   res.status(200).send(req.user)
 });
 
-app.get('/auth/isAuthenticated' ,(req, res, next)=>{
-  // console.log("user is : ",req)
-  if(req.user)
+app.get('/auth/isAuthenticated' ,passport.session(), (req, res, next)=>{
+  console.log("req.user : ",req.session.passport)
+  console.log("cookie is : ",req.signedCookies)
+  if(req.user!=undefined)
     res.send(req.user)
   else
     res.send(null)

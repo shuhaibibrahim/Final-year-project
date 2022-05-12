@@ -20,12 +20,6 @@ function CommonHome({user}) {
     const [roleTo, setRoleTo] = useState(".")
 
     // const user.roles=["admin", "staff advisor", "warden", "hosteloffice", "hod"]
-
-    useEffect(() => {
-        var history=createBrowserHistory();
-
-        history.push(user.roles[0])
-    }, [])
     
     useEffect(() => {
         var history=createBrowserHistory();
