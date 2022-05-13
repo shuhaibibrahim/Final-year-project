@@ -2,7 +2,7 @@ const users=[
     {
         username: "user",
         password: "1234",
-        roles:["admin", "warden", "staff advisor", "hod", "hosteloffice"]
+        roles:["admin", "staff advisor", "hod", "warden", "hosteloffice"]
     }
 ]
 

@@ -29,7 +29,7 @@ import MessPage from './pages/Inmate/MessPage';
 import MessSecretary from './pages/Inmate/MessSecretary'
 import MessDirector from './pages/Inmate/MessDirector'
 import HostelPage from './pages/Inmate/HostelPage';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import SignupInvite from './pages/StaffAdvisor/SignupInvite';
 import CommonHome from './pages/CommonHome';
 import Page404 from './pages/Page404'
@@ -51,9 +51,10 @@ import StudentsDetailsHod from './pages/HOD/StudentsDetailsHod';
 import HostelAllotmentHod from './pages/HOD/HostelAllotmentHod';
 import SignupInviteHod from './pages/HOD/SignupInviteHod';
 import AddStaffAdvisor from './pages/HOD/AddStaffAdvisor';
-function App() {
+import axios from 'axios';
 
-  const [user, setUser] = useState(null)
+function App() {
+  const [user, setUser] = useState(undefined)
   /*
     user={
       username:tve18cs061,
@@ -63,6 +64,24 @@ function App() {
     }
 
   */
+
+  useEffect(() => {
+    console.log("Im inside useffect isauthenticated")
+    axios.get('http://localhost:8080/auth/isAuthenticated',{
+        withCredentials: true
+    })
+    .then(function (response) {
+        console.log("success" , response ,"response.data");
+        if(response.data!="")
+          setUser(response.data)
+        else 
+          setUser(null)
+    })
+    .catch(function (error) {
+        console.log("FAILED!!! ",error);
+    });
+  }, [])
+  
   return (
     <div className='App'>
       <BrowserRouter>
@@ -137,7 +156,7 @@ function App() {
             <Route path="messdirector" element={<MessDirector/>}/>
             <Route path="hostel" element={<HostelPage/>}/>
           </Route>
-          <Route path="*" element={<Page404/>}/>
+          {user!=undefined&&(<Route path="*" element={<Page404/>}/>)}
 
           {/* Matron Routes */}
           <Route path="matron" element={<MatronHome/>}>

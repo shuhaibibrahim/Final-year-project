@@ -2,7 +2,7 @@ import {useState} from "react"
 import {Link} from "react-router-dom"
 import axios from 'axios'
 
-function LoginForm({setUser}) {
+function LoginForm({setUser, }) {
     
     const [admissionno,setAdmissionNo]=useState("")
     const [username, setUsername] = useState("")
@@ -11,8 +11,10 @@ function LoginForm({setUser}) {
     const login=()=>{
         console.log("here login")
         axios.post('http://localhost:8080/auth/login', {
-            'username': username,
-            'password': password
+                'username': username,
+                'password': password
+        },{
+            withCredentials: true
         })
         .then(function (response) {
             console.log("success" , response.data);
