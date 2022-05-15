@@ -21,7 +21,7 @@ import AdminPaths from './pages/Admin/AdminPaths';
 import AllotmentRule from './pages/Admin/AllotmentRule';
 import HostelRegistry from './pages/Admin/HostelRegistry';
 import CreateApplications from './pages/Admin/CreateApplication';
-import SeatMatrix from './pages/Admin/SeatMatrix';
+import HostelBlocks from './pages/Admin/HostelBlocks';
 import AdminFaculty from './pages/Admin/AdminFaculty';
 import InmateHome from './pages/Inmate/InmateHome';
 import CertificatePage from './pages/Inmate/CertificatePage';
@@ -52,6 +52,7 @@ import HostelAllotmentHod from './pages/HOD/HostelAllotmentHod';
 import SignupInviteHod from './pages/HOD/SignupInviteHod';
 import AddStaffAdvisor from './pages/HOD/AddStaffAdvisor';
 import axios from 'axios';
+import SeatMatrix from './pages/Admin/SeatMatrix';
 
 function App() {
   const [user, setUser] = useState(undefined)
@@ -102,6 +103,7 @@ function App() {
               <Route path="applicationpaths" element={<AdminPaths/>} />
               <Route path="hostelregistry" element={<HostelRegistry/>} />
               <Route path="createapplication" element={<CreateApplications/>} />
+              <Route path="hostelblocks" element={<HostelBlocks/>} />
               <Route path="seatmatrix" element={<SeatMatrix/>} />
             </Route>
 

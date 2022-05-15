@@ -56,6 +56,11 @@ const adminLinks=[
     },
     {
       title:"Hostel Blocks",
+      to:"admin/hostelblocks",
+      icon: editSvg,
+    },
+    {
+      title:"Seat Matrix",
       to:"admin/seatmatrix",
       icon: editSvg,
     }
