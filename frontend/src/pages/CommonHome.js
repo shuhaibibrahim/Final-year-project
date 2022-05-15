@@ -19,29 +19,13 @@ function CommonHome({user}) {
     const [role, setRole] = useState(0) //index of the role selected in the user.roles array
     const [roleTo, setRoleTo] = useState(".")
 
-    // const user.roles=["admin", "staff advisor", "warden", "hosteloffice", "hod"]
     
-    useEffect(() => {
-        var history=createBrowserHistory();
 
-        history.listen(({ location, action }) => {
-          // this is called whenever new locations come in
-          // the action is POP, PUSH, or REPLACE
-        //   console.log("location"z,location, " action : ",action)
-            if(user.roles[role]==="admin")
-            {
-                // setRoleTo("admin")
-                setLinks(adminLinks)
-            }
-            else if(user.roles[role]==="staff advisor")
-            {
-                // setRoleTo("staffadvisor")
-                setLinks(saLinks)
-            }
-        });
-    }, [])
+    // const user.roles=["admin", "staff advisor", "warden", "hosteloffice", "hod"]
+
 
     useEffect(() => {
+        
         if(user.roles[role]==="admin")
         {
             // setRoleTo("admin")
