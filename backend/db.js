@@ -19,4 +19,4 @@ const users=[
     }
 ]
 
-module.exports = pool
+module.exports = {pool, users}
