@@ -52,6 +52,8 @@ import HostelAllotmentHod from './pages/HOD/HostelAllotmentHod';
 import SignupInviteHod from './pages/HOD/SignupInviteHod';
 import AddStaffAdvisor from './pages/HOD/AddStaffAdvisor';
 import axios from 'axios';
+import SergeantHome from './pages/Sergeant/SergeantHome';
+import ViewComplaints from './pages/Sergeant/ViewComplaints';
 
 function App() {
   const [user, setUser] = useState(undefined)
@@ -126,6 +128,11 @@ function App() {
               <Route index element={<HostelAdmission/>}/>
               <Route path="admission" element={<HostelAdmission/>}/>
               <Route path="hostelregistry" element={<HostelRegistry/>}/>
+            </Route>
+
+            <Route path="/sergeant" element={<SergeantHome/>}>
+              <Route index element={<ViewComplaints/>}/>
+              <Route path="complaints" element={<ViewComplaints/>}/>
             </Route>
 
             {/* Hostel Office Routes */}
