@@ -1,4 +1,6 @@
 import {useState} from "react"
+import EditIcon from '@mui/icons-material/Edit';
+import CheckIcon from '@mui/icons-material/Check';
 function MessOutReqs() {
    const messouts=[
        {
@@ -65,11 +67,21 @@ function MessOutReqs() {
      const [tabSelected, setTabSelected] = useState(1)
      const [selectedRowIndex, setSelectedRowIndex] = useState(-1)
      const [selectedHostel, setSelectedHostel] = useState(null)
+     const [noofDays,setNoofDays]=useState(4)
+     const [isEdit,setIsEdit]=useState(false)
    
        return (
          <>
            {/* inmates list */}
            <div className='w-11/12'>
+             <div className="flex items-center mt-5 mb-5">
+                <p className="font-semibold">Minimum Number of Days for Mess Out: 
+                  {isEdit?<input type="number" min="1" max="100" className="border-solid border-2 rounded-lg ml-3 p-1 w-20" 
+                    value={noofDays} onChange={(e)=>{setNoofDays(e.target.value)}}/>:<span className="ml-3">{noofDays}</span>}
+                </p>
+                <button type="submit" className="submit-button-black text-sm ml-5" onClick={()=>{setIsEdit(!isEdit)}}>{isEdit?<p><CheckIcon className="text-sm"/> <span>Confirm</span></p>:<p><EditIcon className="text-sm"/> <span>Edit</span></p>}</button> 
+             </div>
+             <h2 className="text-black font-semibold text-lg mt-5 mb-3">Mess Out Requests</h2>
              <table className='w-full relative table-auto'>
                  <tr className='rounded-xl p-3 bg-primary text-center'>
                    <th className='p-3'>Sl.No</th>

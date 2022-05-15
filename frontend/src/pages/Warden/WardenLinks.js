@@ -19,8 +19,8 @@ const wardenLinks=[
         title:"Users",
         to:null,
         icon:userSvg,
-        subLinkOpen:true,
-        subLinkActiveIndex:0,
+        subLinkOpen:false,
+        subLinkActiveIndex:-1,
         subLinks:[
             {
                 title:"Inmate",

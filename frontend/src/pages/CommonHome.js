@@ -15,39 +15,56 @@ import { hodLinks } from './HOD/HODLinks'
 
 function CommonHome({user}) {
   
-    const [links, setLinks] = useState(adminLinks)
-    const [role, setRole] = useState(0) //index of the role selected in the user.roles array
-    const [roleTo, setRoleTo] = useState(".")
+    const [links, setLinks] = useState([])
+    const [role, setRole] = useState(-1) //index of the role selected in the user.roles array
 
     
 
     // const user.roles=["admin", "staff advisor", "warden", "hosteloffice", "hod"]
 
-
     useEffect(() => {
+        if(localStorage.getItem('role')==null){
+            setRole(0)
+            localStorage.setItem('role','0')
+        }
+        else{
+            var localRole=parseInt(localStorage.getItem('role'))
+            setRole(localRole)
+        }
+
         
-        if(user.roles[role]==="admin")
+    }, [])
+    
+    useEffect(() => {
+
+        if(roles[role]==="admin")
         {
             // setRoleTo("admin")
-            setLinks(adminLinks)
+            console.log("new links : ",adminLinks)
+            setLinks(adminLinks.map(item=>({...item})))
         }
-        else if(user.roles[role]==="staff advisor")
+        else if(roles[role]==="staff advisor")
         {
             // setRoleTo("staffadvisor")
-            setLinks(saLinks)
+            console.log("new links : ",saLinks)
+            setLinks(saLinks.map(item=>({...item})))
         }
-        else if(user.roles[role]==="hod")
+        
+        else if(roles[role]==="hod")
         {
             // setRoleTo("staffadvisor")
-            setLinks(hodLinks)
+            console.log("new links : ",hodLinks)
+            setLinks(hodLinks.map(item=>({...item})))
         }
-        else if(user.roles[role]==="warden"){
+        else if(roles[role]==="warden"){
             // setRoleTo("warden")
-            setLinks(wardenLinks)
+            console.log("new links : ",wardenLinks)
+            setLinks(wardenLinks.map(item=>({...item})))
         }
-        else if(user.roles[role]==="hosteloffice"){
+        else if(roles[role]==="hosteloffice"){
             // setRoleTo("warden")
-            setLinks(hostelOfficeLinks)
+            console.log("new links : ",hostelOfficeLinks)
+            setLinks(hostelOfficeLinks.map(item=>({...item})))
         }
 
     }, [role])
@@ -59,7 +76,7 @@ function CommonHome({user}) {
                 {/*myOpenedIndex is the index of the link(with sublinks) that is made open */}
                 {/* roleIndex is the index of the role selected */}
                 {/* roleTo is the route of the home page of the corresponding role */}
-                <SideBar myLinks={links} roles={user.roles} setRole={setRole} roleTo={roleTo} myActiveIndex={0} myOpenedIndex={0} roleIndex={role}/>
+                <SideBar myLinks={links} roles={roles} setRole={setRole} roleIndex={role}/>
             </div>
             <Outlet/>
         </div>

@@ -2,26 +2,18 @@ import {useState} from "react"
 function MessOutHistory() {
    const messouts=[
        {
-         SlNo:"1234",
-         FromDate:"xyz",
-         ToDate:"cse"
+         SlNo:"1",
+         FromDate:"02-04-2022",
+         ToDate:"11-04-2022",
+         days:9
        },
        {
-        SlNo:"1234",
-        FromDate:"xyz",
-        ToDate:"cse"
+        SlNo:"2",
+        FromDate:"01-03-2022",
+        ToDate:"12-03-2022",
+        days:11
       },
-      {
-        SlNo:"1234",
-        FromDate:"xyz",
-        ToDate:"cse"
-      },
-      {
-        SlNo:"1234",
-        FromDate:"xyz",
-        ToDate:"cse"
-      }
-       
+ 
        
      ]
 
@@ -50,7 +42,7 @@ function MessOutHistory() {
                      <td className='p-3'>{user.SlNo}</td>
                      <td className='p-3'>{user.FromDate}</td>
                      <td className='p-3'>{user.ToDate}</td>
-                     <td className='p-3'>days</td>
+                     <td className='p-3'>{user.days}</td>
                      <td className='p-3'><button className="submit-button-black">Cancel</button></td>
                    </tr>
                  ))}

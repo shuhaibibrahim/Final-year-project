@@ -4,6 +4,9 @@ const cookieParser = require("cookie-parser");
 const sessions = require('express-session');
 const cors = require('cors')
 const app = express()
+// const auth=require('./routes/auth')
+const student=require('./routes/student')
+const inmate=require('./routes/inmate')
 const bodyParser = require('body-parser')
 var passport = require('passport');
 
@@ -62,6 +65,12 @@ app.get('/auth/isAuthenticated' ,passport.session(), (req, res, next)=>{
     res.send(null)
 });
 
+
+//student routes
+app.use('/student',student)
+
+//inmate routes
+app.use('/inmate',inmate)
 
 app.listen(port, () => {
   console.log(`App listening on port ${port}`)
