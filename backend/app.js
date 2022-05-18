@@ -5,6 +5,7 @@ const sessions = require('express-session');
 const cors = require('cors')
 const app = express()
 // const auth=require('./routes/auth')
+const admin=require('./routes/admin')
 const student=require('./routes/student')
 const inmate=require('./routes/inmate')
 const bodyParser = require('body-parser')
@@ -41,7 +42,7 @@ app.get('/', (req, res) => {
   res.send('Hello World!')
 })
 
-//auth routes
+//----------------------auth routes----------------------
 app.get('/auth',(req,res)=>{
   res.send('Auth is up!')
 })
@@ -64,14 +65,20 @@ app.get('/auth/isAuthenticated' ,passport.session(), (req, res, next)=>{
   else
     res.send(null)
 });
+//----------------------End of auth routes----------------------
 
+//----------------------admin routes----------------------
+app.use('/admin', admin)
+//----------------------End of auth routes----------------------
 
-//student routes
+//----------------------student routes----------------------
 app.use('/student',student)
+//----------------------End of student----------------------
 
-//inmate routes
+//----------------------inmate routes----------------------
 app.use('/inmate',inmate)
 
 app.listen(port, () => {
   console.log(`App listening on port ${port}`)
 })
+//----------------------End of student----------------------

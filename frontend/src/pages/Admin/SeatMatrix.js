@@ -71,8 +71,11 @@ function SeatMatrix() {
     const [seatLHData, setSeatLHData] = useState(seatLH)
 
     const [blockSelected, setBlockSelected] = useState(null)
-    const [addBlock, setAddBlock] = useState(false)
-    const [newBlockName, setNewBlockName] = useState("")
+    const [floorIndexSelected, setFloorIndexSelected] = useState(null)
+    const [selectAll, setSelectAll] = useState(false)
+    const [selectedCount, setSelectedCount] = useState(0)
+    const [roomData, setRoomData] = useState([])
+    const [userType, setUserType] = useState("First Year")
 
     //modal fields
     const [rangeFrom, setRangeFrom] = useState(0)
@@ -82,166 +85,156 @@ function SeatMatrix() {
     const [modal, setModal] = useState(null) //modal showing columns
 
     const [modalType, setModalType] = useState(0) //0 for existing attribute modal 1 for derived attribute modal
-
-    const backdropClickHandler = (event) => {
-        if (event.target === event.currentTarget) {
-            // setModal(<div/>)
-            setModal(null)
-        }
-    }
+    
 
     useEffect(() => {
-        if(modal!=null)
-            RenderModal()
-    }, [rangeFrom, rangeTo, modalType])
+        //Fetch this data from database hostel_room table
+        const rangeArray = [...Array(rangeTo - rangeFrom + 1).keys()].map(x => x + rangeFrom);
+        var roomDataFetched=[]
+        rangeArray.forEach((roomNo, index)=>{
+            roomDataFetched.push({
+                roomNo:roomNo,
+                selected:false,
+                userType:null
+            })
+        })
 
-    const RenderModal=(fieldInsertIndex)=>{
+        setRoomData([...roomDataFetched])
+    }, [rangeFrom, rangeTo])
     
-        if(modalType===0) //modaltype=0 to add floor
+    useEffect(() => {
+        var hostelData=tabSelected==0?{...seatMHData}:{...seatLHData}
+        if(hostelData[blockSelected]!=undefined && hostelData[blockSelected][floorIndexSelected]!=undefined)
         {
-            const hostelData=tabSelected==0?seatMHData:seatLHData
-            setModal(
-                <div onClick={backdropClickHandler} className="bg-slate-500/[.8] z-20 fixed inset-0 flex justify-center items-center">
-                    <div className='flex flex-col bg-white rounded-2xl w-5/12 h-auto pt-3 relative overflow-hidden'>
+            var range=hostelData[blockSelected][floorIndexSelected].roomRange.split('-')
+            setRangeFrom(parseInt(range[0]))
+            setRangeTo(parseInt(range[1]))
+                
+        }
+    }, [blockSelected, floorIndexSelected])
 
-                        <div
-                            // className='absolute top-1 right-1 flex justify-center items-center bg-red-500 aspect-square w-7 h-7 cursor-pointer text-center text-xs font-bold text-white rounded-full hover:bg-red-700'
-                            className='absolute top-1 right-1 cursor-pointer text-red-500 cursor-pointer rounded-full hover:text-red-700'
-                            onClick={()=>{
-                                setModal(null)
-                                // setSelectedColumnIndex(-1)
-                            }}
-                        >
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
+    useEffect(() => {
+        var hostelData=tabSelected==0?{...seatMHData}:{...seatLHData}
+        if(hostelData[blockSelected]!=undefined && hostelData[blockSelected][floorIndexSelected]!=undefined)
+        {
+            var newRoomData=[...roomData]
+         
+            if(selectAll==false)
+            {
+                newRoomData.forEach((room, index)=>{
+                    newRoomData[index].selected=false
+                })
+
+                setSelectedCount(0)
+            }
+            else
+            {
+                newRoomData.forEach((room, index)=>{
+                    newRoomData[index].selected=true
+                })
+
+                setSelectedCount(rangeTo-rangeFrom+1)
+            }
+
+            setRoomData([...newRoomData])
+            
+        }
+    }, [selectAll])
+    
+    
+    const Matrix=({hostelData})=>{
+        if(hostelData[blockSelected]!=undefined && hostelData[blockSelected][floorIndexSelected]!=undefined)
+        {
+
+            return(
+                <div className='w-full p-3'>
+                    <div classNaSme='font-bold text-stone-800 text-base'>{blockSelected} : Floor No - {hostelData[blockSelected][floorIndexSelected].floorNo}</div>
+
+                    <div className='flex flex-row space-x-32'>
+                        <div className='flex flex-row space-x-2 items-center'>
+                            <input 
+                                type="checkbox" 
+                                value={selectAll} 
+                                onChange={(e)=>{setSelectAll(value=>!value)}}
+                                checked={selectAll}
+                            />
+                            <div className='text-stone-800 text-sm font-bold'>Sellect All</div>
+                        </div>
+
+                        <div className='flex flex-row space-x-2 items-center'>
+                            <div className='text-stone-800 text-sm font-bold'>Assign To</div>
+                            <select 
+                                className=' p-2 outline-none rounded-xl '
+                                value={userType}
+                                onChange={e=>{setUserType(e.target.value)}}
+                            >
+                                <option value="1">First year</option>
+                                <option value="2">Second year</option>
+                                <option value="3">Third year</option>
+                                <option value="4">Fourth year</option>
+                                <option value="5">Fifth year</option>
+                                <option value="pg">PG</option>
+                                <option value="phd">PHD</option>
+                            </select>
+
+                            <div 
+                                className='button-blue'
+                                onClick={()=>{
+                                    var newRoomData=[...roomData]
+                                    newRoomData.forEach((room,index)=>{
+                                        if(room.selected==true)
+                                        {
+                                            newRoomData[index].userType=userType
+                                        }
+                                    })
+                                    setRoomData([...roomData])
+                                }}
+                            >
+                                Assign selected rooms
+                            </div>
                         </div>
                         
-                        <div className='text-stone-800 border-b border-solid border-stone-800 text-lg p-2 font-semibold w-full'>
-                            Enter Floor Details
-                        </div>
-
-                        <form className='flex flex-col h-full justify-center mt-2 bg-white rounded-lg text-sm px-2'>
-                            <label className='text-stone-800 font-semibold'>Floor No</label>
-                            <input 
-                                type="number"
-                                className='p-2 w-80 outline-none ring-slate-200 ring-2 rounded-xl'
-                                required={true}
-                                value={hostelData[blockSelected].length}
-                            />
-
-                            <label className='mt-2 text-stone-800 font-semibold'>Room Range</label>
-                            <div className='flex flex-row space-x-2 mt-2'>
-                                <div className='flex flex-row space-x-2'>
-                                    <label className='mt-2 text-stone-800 font-semibold'>From : </label>
-                                    <input 
-                                        className='p-2 w-3/12 outline-none ring-slate-200 ring-2 rounded-xl'
-                                        required={true}
-                                        type="number"
-                                        onChange={e=>setRangeFrom(e.target.value)}
-                                        value={rangeFrom}
-                                    />
-                                </div>
-
-                                <div className='flex flex-row space-x-2'>
-                                    <label className='mt-2 text-stone-800 font-semibold'>To : </label>
-                                    <input 
-                                        className='p-2 w-3/12 outline-none ring-slate-200 ring-2 rounded-xl'
-                                        required={true}
-                                        type="number"
-                                        onChange={e=>setRangeTo(e.target.value)}
-                                        value={rangeTo}
-                                    />
-                                </div>
-                            </div>
-                            
-                            {/* Add button */}
-                            <div className='flex p-2 justify-end'>
-                                <input
-                                type="submit"
-                                value="Add Floor"
-                                className='button-blue self-end'
-                                onClick={(e)=>{
-                                    e.preventDefault()
-                                    if(rangeFrom>=0&&rangeTo>=0)
+                    </div>
+                    <div className='mt-8 grid grid-cols-10 gap-4 '>
+                        {roomData.length!=0&&roomData.map((room, index)=>(
+                            <div 
+                                key={index} 
+                                className={'flex rounded-xl items-center cursor-pointer justify-center font-bold w-10 h-10 relative '+(room.selected?'bg-blue-500 text-white':'bg-blue-200 text-stone-800')}
+                                onClick={()=>{
+                                    var newRoomData=[...roomData]
+                                    if(newRoomData[index].selected==true)
                                     {
-                                        var newHostelData={...hostelData}
-                                        var newBlockData=[...newHostelData[blockSelected]]
-
-                                        newBlockData.push({
-                                            floorNo:hostelData[blockSelected].length,
-                                            roomRange:rangeFrom+"-"+rangeTo
-                                        })
-
-                                        newHostelData[blockSelected]=newBlockData
-                                        
-                                        if(tabSelected==0)
-                                            setSeatMHData({...newHostelData})
-                                        else
-                                            setSeatLHData({...newHostelData})
-                                        setModal(null)
-                                        setRangeFrom(-1)
-                                        setRangeTo(-1)
+                                        setSelectedCount(count=>count-1)
                                     }
-                                }}
-                                />
-                            </div>
-                        </form>
+                                    else
+                                    {
+                                        if(selectedCount==rangeTo-rangeFrom)
+                                            setSelectAll(true)
+                                        setSelectedCount(count=>count+1)
+                                    }
 
+                                    newRoomData[index].selected=!newRoomData[index].selected
+                                    setRoomData([...newRoomData])
+                                }}
+                            >
+                                <div>{room.roomNo}</div>
+
+                                <div className='absolute flex items-center justify-center text-xs -top-4 -right-4 bg-green-500 h-8 w-8 p-1 text-white font-bold rounded-full'>
+                                    <div>{room.userType?room.userType:"nil"}</div>
+                                </div>
+                            </div>
+                        ))}
                     </div>
                 </div>
             )
         }
-    
+        else
+            return (<></>)
     }
-
-    //function to capitalize first letter of a word
-    const capitalize=(word)=>{
-        const lower = word.toLowerCase();
-        return word.charAt(0).toUpperCase() + lower.slice(1);
-    }
-
-    //function to capitalize eaach word of a string joined using splitChar
-    const capitalizeString=(str,splitChar)=>{
-        return str.split(splitChar).map(word=>capitalize(word)).join(' ')
-    }
-
-    const renderBlocks=(hostelData)=>{
-    var render=[]
-    for(var blockName in hostelData)
-    {
-        render.push({
-            blockName:blockName,
-            floorsData:[...hostelData[blockName]]
-        })
-    }
-
-    return render.map((item, index)=>(
-        <tr 
-        className='border-b border-slate-200 border-solid'
-        >
-            <td className='py-3'>{item.blockName}</td>
-            <td className='py-2'>
-                <div 
-                className='flex flex-row space-x-1 cursor-pointer items-center w-fit p-3 text-white font-bold bg-blue-500 hover:bg-blue-700 rounded-xl'
-                onClick={()=>{
-                    // setblockSelected([...item.blockSelected])
-                    setBlockSelected(item.blockName)
-                    // console.log(JSON.parse(currentApplicationsData[index].fields))
-                }}
-                >
-                <div>View</div>
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-                    </svg>
-                </div>
-            </td>
-        </tr>
-    ))}
 
     //Function to show select the block and floor and to show seat matrix
     const showMatrix=()=>{
-        var hostelData=tabSelected==0?seatMHData:seatLHData
+        var hostelData=tabSelected==0?{...seatMHData}:{...seatLHData}
         var blocks=[]
 
         for(var blockName in hostelData)
@@ -261,8 +254,8 @@ function SeatMatrix() {
                         <select 
                             className=' p-2 outline-none rounded-xl w-full'
                             onChange={(e)=>{setBlockSelected(e.target.value)}}
-                            value={blockSelected}
                         >
+                            <option value={null}>-- select --</option>
                             {blocks.map((blockName, index)=>(
                                 <option key={index} value={blockName}>{blockName}</option>
                             ))}
@@ -273,14 +266,19 @@ function SeatMatrix() {
                         <div className='text-stone-800 font-bold text-md'>Select a floor</div>
                         <select 
                             className=' p-2 outline-none rounded-xl w-full'
-                            // onChange={(e)=>{setBlockSelected(e.target.value)}}
-                            // value={floorSelected}
+                            onChange={(e)=>{setFloorIndexSelected(e.target.value)}}
                         >
-                            {hostelData[blockSelected].map((floorItem, index)=>(
-                                <option key={index} value={floorItem.floorNo}>{floorItem.floorNo}</option>
+                            <option value={null}>-- select --</option>
+                            {hostelData[blockSelected]&&hostelData[blockSelected].map((floorItem, floorIndex)=>(
+                                <option key={floorIndex} value={floorIndex}>{floorItem.floorNo}</option>
                             ))}
                         </select>
                     </div>
+                </div>
+
+                <div className='w-full h-full overflow-y-auto bg-slate-100 rounded-xl mt-4'>
+                    {/* show seat matrix */}
+                    {Matrix({hostelData})} 
                 </div>
 
             </div>
@@ -318,6 +316,7 @@ function SeatMatrix() {
                         className='mr-5 cursor-pointer'
                         onClick={()=>{
                             setBlockSelected(null)
+                            setFloorIndexSelected(null)
                             setTabSelected(index)
                         }}
                         >
