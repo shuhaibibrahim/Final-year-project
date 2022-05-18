@@ -4,16 +4,25 @@ import Draggable from 'react-draggable';
 
 function AdminPaths() {
 
+    // S: Students
+    // IN: Inmates
+    // NIN: Non-Inmates
+    // SA: Staff Advisor
+    // HOD: HOD
+    // WD: Warden
     const [pathData, setPathData] = useState([
         {
+            start:"S",
             path:"SA-HOD-WD",
             certificates:"1,2,3,4"
         },
         {
+            start:"S",
             path:"SA-HOD-WD",
             certificates:"1,2,3,4"
         },
         {
+            start:"S",
             path:"SA-HOD-WD",
             certificates:"1,2,3,4"
         }
@@ -23,6 +32,7 @@ function AdminPaths() {
     const [selectedcertificateIndex, setSelectedCertificateIndex] = useState(-1)
     const [path, setPath] = useState([])
     const [newPathItem, setNewPathItem] = useState("SA")
+    const [newStartItem, setNewStartItem] = useState("S")
 
     const [modal, setModal] = useState(null)
 
@@ -64,12 +74,24 @@ function AdminPaths() {
                     </div>
 
                     <div className='mb-1 flex flex-col space-y-2 w-full px-3'>
+                        <div className='text-stone-800 font-bold text-md'>Start from</div>
+                        <div  className='flex flex-row space-x-8 items-center'>    
+                            <select 
+                                className=' p-2 outline-none rounded-xl'
+                                onChange={(e)=>{setNewStartItem(e.target.value)}}
+                            >
+                                <option value="S">Student</option>
+                                <option value="IN">Inmate</option>
+                                <option value="NIN">Non Inmate</option>
+                            </select>
+                        </div>
+
                         <div className='text-stone-800 font-bold text-md'>Select a role</div>
                         <div className='w-full flex flex-row justify-between'>
                             <div  className='flex flex-row space-x-8 items-center'>    
                                 <select 
                                     className=' p-2 outline-none rounded-xl'
-                                    onClick={(e)=>{setNewPathItem(e.target.value)}}
+                                    onChange={(e)=>{setNewPathItem(e.target.value)}}
                                 >
                                     <option value="SA">Staff Advisor</option>
                                     <option value="HOD">HOD</option>
@@ -89,9 +111,15 @@ function AdminPaths() {
                                 className='bg-blue-500 p-2 text-md font-bold text-white rounded-xl cursor-pointer hover:bg-blue-700'
                                 onClick={()=>{
                                     setPathData([...pathData,{
+                                        start:newStartItem,
                                         path:path.join("-"),
-                                        certificates:""
+                                        certificates:"",
                                     }])
+
+                                    setModal(null)
+                                    setNewPathItem("SA")
+                                    setNewStartItem("S")
+                                    setPath([])
                                 }}
                             >
                                 Add Path
@@ -104,7 +132,7 @@ function AdminPaths() {
                             <Xwrapper>
                                 {/* <Draggable onDrag={updateXarrow} onStop={updateXarrow}> */}
                                     <div onScroll={updateXarrow} id={"arrowItem0"} className='rounded-full aspect-square w-16 bg-primary text-center flex justify-center items-center'>
-                                        <div>S</div>
+                                        <div>{newStartItem}</div>
                                     </div>
                                 {/* </Draggable> */}
 
@@ -151,7 +179,7 @@ function AdminPaths() {
     useEffect(() => {
         if(modal!=null)
             RenderModal()
-    }, [path, newPathItem])
+    }, [path, newPathItem, newStartItem])
     
 
     return (
@@ -195,8 +223,33 @@ function AdminPaths() {
                     </tr>
                     {pathData.map((pathItem,index)=>(
                         <tr key={index} className='border-b border-slate-200 border-solid'>
-                            <td>{pathItem.path}</td>
-                            <td>{pathItem.certificates}</td>
+                            <td>{pathItem.start}-{pathItem.path}</td>
+                            <td>
+                                <div className='flex flex-row space-x-2'>
+                                    {pathItem.certificates!=""&&pathItem.certificates.split(',').map((certificateNo, certIndex)=>(
+                                        <div 
+                                            key={certificateNo}
+                                            className='bg-slate-200 text-stone-800 font-bold w-8 h-8 rounded-full flex items-center justify-center relative'
+                                        >
+                                            <div>{certificateNo}</div>
+                                            <div
+                                                className='absolute -top-2 -right-2 cursor-pointer text-red-500 cursor-pointer rounded-full hover:bg-black'
+                                                onClick={()=>{
+                                                    var newCertificates=pathItem.certificates.split(',')
+                                                    newCertificates.splice(certIndex,1)
+                                                    var newPathData=[...pathData]
+                                                    newPathData[index].certificates=[...newCertificates].join(',')
+                                                    setPathData([...newPathData])
+                                                }}
+                                            >
+                                                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                </svg>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </td>
                             <td>
                                 <div className='flex flex-row space-x-3 py-3'>
                                     <select 
@@ -205,10 +258,16 @@ function AdminPaths() {
                                     >
                                         <option value={null}>NIL</option>
                                         {certificates.map((item, index)=>(
-                                            <option key={index} value={index+1}>{item}</option>
+                                            <option 
+                                                key={index} 
+                                                value={index+1}
+                                            >
+                                                {item}
+                                            </option>
                                         ))}
                                     </select>
 
+                                    {/* Button to map a certificate to a path */}
                                     <button 
                                         // className='rounded-xl p-2 bg-blue-500 w-2/12 text-white font-bold hover:bg-blue-700'
                                         className='button-blue w-2/12 '
@@ -217,7 +276,10 @@ function AdminPaths() {
                                             {
                                                 var newPathItem={...pathItem}
                                                 var myCertificates=newPathItem.certificates
-                                                newPathItem.certificates=[...myCertificates.split(','),selectedcertificateIndex].join(',')
+                                                if(myCertificates!="")
+                                                    newPathItem.certificates=[...myCertificates.split(','),selectedcertificateIndex].join(',')
+                                                else
+                                                    newPathItem.certificates=[selectedcertificateIndex].join(',')
                                                 console.log("newpathitem : ",newPathItem)
                                                 var newPathData=[...pathData]
                                                 newPathData.splice(index,1,newPathItem)
@@ -226,6 +288,18 @@ function AdminPaths() {
                                         }}
                                     >
                                         Add
+                                    </button>
+
+                                    <button 
+                                        // className='rounded-xl p-2 bg-blue-500 w-2/12 text-white font-bold hover:bg-blue-700'
+                                        className='button-red bg-red-600 w-fit '
+                                        onClick={()=>{
+                                            var newPathData=[...pathData]
+                                            newPathData.splice(index,1)
+                                            setPathData([...newPathData])
+                                        }}
+                                    >
+                                        Delete Path
                                     </button>
                                 </div>
                             </td>

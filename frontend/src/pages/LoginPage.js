@@ -1,7 +1,7 @@
 import LoginForm from "../components/LoginForm"
 import {Link} from "react-router-dom"
 import Hostel from '../icons/hostel-image.jpeg'
-function LoginPage({setUser}) {
+function LoginPage() {
   return (
     <div className="bg-slate-200 min-h-screen">
       <nav className="flex w-5/6 ml-auto mr-auto pt-5">
@@ -14,7 +14,7 @@ function LoginPage({setUser}) {
             <img src={Hostel} className="w-full h-72 rounded-lg -rotate-12 -translate-y-2 -translate-x-2" alt="" />
           </div>
         </div>
-        <LoginForm setUser={setUser}/>
+        <LoginForm/>
       </div>
     </div>
   )

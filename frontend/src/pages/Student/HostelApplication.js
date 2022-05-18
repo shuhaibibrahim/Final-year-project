@@ -1,5 +1,6 @@
 import {useState} from "react"
 import {motion} from "framer-motion" 
+import axios from 'axios'
 import RankList from "../../components/RankList"
 
 function HostelApplication() {
@@ -7,11 +8,10 @@ function HostelApplication() {
   const [tabSelected, setTabSelected] = useState(1)
   const [admno,setAdmno]=useState(180287)
   const [details,setDetails]=useState({})
-  
-  const submitHandler = ()=>{
 
+  const submitHandler =()=>{
+    axios.post('http://localhost:8080/student/hostelapplication',details)
   }
-
 
   return (
     <div className='flex flex-col w-full items-center'>
@@ -93,8 +93,8 @@ function HostelApplication() {
               <input type="text" name="caste"  value={details.caste} onChange={(e)=>{setDetails({...details,[e.target.name]:e.target.value})}} className="border-solid border-2 outline-0 rounded-md mt-2 px-1"/>
               <label htmlFor="" className="mt-2">BPL ?</label>
               <div className="flex items-center">
-                <input type="radio"  value={details.isbpl} onChange={(e)=>{setDetails({...details,[e.target.name]:e.target.value})}} name="isbpl"  className="border-solid border-2 mt-2 px-1"/><label htmlFor="" className="ml-1 mr-4">Yes</label>
-                <input type="radio"  value={details.isbpl} onChange={(e)=>{setDetails({...details,[e.target.name]:e.target.value})}} name="isbpl"  className="border-solid border-2 mt-2 px-1"/><label htmlFor="" className="ml-1">No</label>
+                <input type="radio" onChange={(e)=>{setDetails({...details,[e.target.name]:e.target.value})}} name="isbpl" value="Yes" className="border-solid border-2 mt-2 px-1"/><label htmlFor="" className="ml-1 mr-4">Yes</label>
+                <input type="radio" onChange={(e)=>{setDetails({...details,[e.target.name]:e.target.value})}} name="isbpl" value="No" className="border-solid border-2 mt-2 px-1"/><label htmlFor="" className="ml-1">No</label>
               </div>
               <label htmlFor="" className="mt-2">Eligible for Fee Concession?</label>
               <div className="flex items-center">
@@ -131,7 +131,7 @@ function HostelApplication() {
             </div>
             <div className="w-full flex items-center justify-between mt-5">
               <motion.button whileHover={{x:-10, backgroundColor:'red'}}  className="p-3 bg-stone-800 text-white rounded-xl" onClick={()=>setCurrPage(currpage-1)}>Back</motion.button>
-              <motion.button whileHover={{x:10, backgroundColor:'green'}}  className="p-3 bg-stone-800 text-white rounded-xl" onClick={()=>setCurrPage(currpage+1)}>Submit Application</motion.button>
+              <motion.button whileHover={{x:10, backgroundColor:'green'}}  className="p-3 bg-stone-800 text-white rounded-xl" onClick={submitHandler} type="submit">Submit Application</motion.button>
           </div>
         </form></div>}  
         {currpage===5 && <div>

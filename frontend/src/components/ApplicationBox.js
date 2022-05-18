@@ -1,7 +1,7 @@
 import {motion} from 'framer-motion'
 import {useState} from 'react'
 import FormDialog from './FormDialog'
-export default function ApplicationBox({applicationTitle,description}){
+export default function ApplicationBox({applicationTitle,description,fields}){
     const [open,setOpen]=useState(false)
     return(
         <motion.div  whileHover={{scale:1.02}} className="border border-stone-700 bg-sky-100 p-3 rounded-md">
@@ -10,7 +10,7 @@ export default function ApplicationBox({applicationTitle,description}){
             <div className="flex items-center justify-end">
                 <button onClick={()=>{setOpen(true)}} className="submit-button-black">Apply</button>
             </div>
-            <FormDialog open={open} setOpen={setOpen} modalHeading={applicationTitle}/>
+            <FormDialog open={open} setOpen={setOpen} field={fields} modalHeading={applicationTitle}/>
         </motion.div>
     )
 }

@@ -21,7 +21,7 @@ import AdminPaths from './pages/Admin/AdminPaths';
 import AllotmentRule from './pages/Admin/AllotmentRule';
 import HostelRegistry from './pages/Admin/HostelRegistry';
 import CreateApplications from './pages/Admin/CreateApplication';
-import SeatMatrix from './pages/Admin/SeatMatrix';
+import HostelBlocks from './pages/Admin/HostelBlocks';
 import AdminFaculty from './pages/Admin/AdminFaculty';
 import InmateHome from './pages/Inmate/InmateHome';
 import CertificatePage from './pages/Inmate/CertificatePage';
@@ -54,6 +54,8 @@ import AddStaffAdvisor from './pages/HOD/AddStaffAdvisor';
 import axios from 'axios';
 import SergeantHome from './pages/Sergeant/SergeantHome';
 import ViewComplaints from './pages/Sergeant/ViewComplaints';
+import SeatMatrix from './pages/Admin/SeatMatrix';
+import {UserContext, userContext} from './Contexts/UserContext'
 
 function App() {
   const [user, setUser] = useState(undefined)
@@ -86,14 +88,15 @@ function App() {
   
   return (
     <div className='App'>
+      <UserContext.Provider value={{user,setUser}}>
       <BrowserRouter>
         <Routes>
           {user===null&&(<Route path="/" element={<LandingPage/>}/>)}
-          {user==null&&(<Route path="/login" element={<LoginPage setUser={setUser}/>}/>)}
+          {user==null&&(<Route path="/login" element={<LoginPage/>}/>)}
           {user==null&&(<Route path="/signup" element={<SignUpPage/>}/>)}
 
           {user!=null&&(
-          <Route path="/" element={<CommonHome user={user}/>}>
+          <Route path="/" element={<CommonHome/>}>
             {/* Admin Routes */}
             <Route path="admin" element={<AdminHome/>}>
               <Route index element={<AdminInmates/>} />
@@ -104,6 +107,7 @@ function App() {
               <Route path="applicationpaths" element={<AdminPaths/>} />
               <Route path="hostelregistry" element={<HostelRegistry/>} />
               <Route path="createapplication" element={<CreateApplications/>} />
+              <Route path="hostelblocks" element={<HostelBlocks/>} />
               <Route path="seatmatrix" element={<SeatMatrix/>} />
             </Route>
 
@@ -175,6 +179,7 @@ function App() {
           
         </Routes>
       </BrowserRouter>
+      </UserContext.Provider>
     </div>
   );
 }

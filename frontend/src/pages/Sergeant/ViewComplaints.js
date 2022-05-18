@@ -20,7 +20,7 @@ const ViewComplaints = (props)=>{
         {
             Name:"Shuhaib",
             Roomno:"B212",
-            Complaint:"Broken Table"
+            Complaint:"lksj flkjsldkfj alskfj lkasj flksj flksajf "
         }
         
         
@@ -30,7 +30,7 @@ const ViewComplaints = (props)=>{
     return(
         <div className='flex flex-col w-full items-center min-h-screen h-full'>
       <div className='flex flex-row justify-between w-11/12 pt-4 items-center'>
-        <div className='text-xl font-bold'>Certificates</div>
+        <div className='text-xl font-bold'>Complaints</div>
         <div className='flex flex-row space-x-4 items-center'>
             <div className='bg-white border rounded-full w-10 aspect-square'/>
             <div>user Name</div>
@@ -49,11 +49,11 @@ const ViewComplaints = (props)=>{
               {complaints.map((user, index)=>(
                 <tr
                   key={index} 
-                  className={'border-b text-center border-slate-200 border-solid hover:bg-gray-300 '+(user.AdmissionNo===props.admno?' bg-teal-200 hover:bg-teal-300':'')}
+                  className={'border-b text-center border-slate-200 border-solid hover:bg-gray-300'}
                 >
                   <td className='p-3'>{index+1}</td>
                   <td className='p-3'>{user.Name}</td>
-                  <td className='p-3'>{user.RoomNo}</td>
+                  <td className='p-3'>{user.Roomno}</td>
                   <td className='p-3'>{user.Complaint}</td>
                 </tr>
               ))}

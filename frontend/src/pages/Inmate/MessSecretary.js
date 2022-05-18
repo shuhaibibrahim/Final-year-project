@@ -1,7 +1,8 @@
-import React, { useState } from 'react'
+import React, { useState,useEffect } from 'react'
 import CurrentInmates from '../../components/CurrentInmates';
 import MessOutReqs from '../../components/MessOutReqs';
 import {motion} from 'framer-motion'
+import axios from 'axios'
 function MessSecretary() {
   const applications=[
     {
@@ -53,6 +54,14 @@ function MessSecretary() {
   const [tabSelected, setTabSelected] = useState(1)
   const [selectedRowIndex, setSelectedRowIndex] = useState(-1)
   const [selectedHostel, setSelectedHostel] = useState(null)
+  const [noofDays,setNoofDays]=useState(0)
+
+  useEffect(() => {
+    axios.get('http://localhost:8080/inmate/messoutdays')
+    .then((res)=>{
+      setNoofDays(res.data[0].value)
+    })
+  }, [])
 
 
 
@@ -96,7 +105,7 @@ function MessSecretary() {
           {tabSelected===1&&<div className='text-sm mb-2'>Showing 1-8 out of 200 results</div>}
           <br />
         </div>
-        {tabSelected===1?<CurrentInmates/>:<MessOutReqs/>}
+        {tabSelected===1?<CurrentInmates/>:<MessOutReqs noofDays={noofDays} setNoofDays={setNoofDays}/>}
       </motion.div>
     </div>
   )

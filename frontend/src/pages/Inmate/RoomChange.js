@@ -8,9 +8,9 @@ export default function RoomChange(){
             <form action="">
                 <div className="grid grid-cols-2 gap-y-4 w-6/12">
                 <label htmlFor="">New preferred room:</label>
-                <input type="text" name="" id="" placeholder="Enter preferred room" className="border-solid border-2 rounded-lg ml-3 p-1" value={preferredRoom} onChange={(e)=>{setPreferredRoom(e.target.value)}} required/>
+                <input type="text" name="" id="" placeholder="Enter preferred room" className="w-full py-2 px-3 rounded-xl ring-2 ring-slate-300 focus:outline-none" value={preferredRoom} onChange={(e)=>{setPreferredRoom(e.target.value)}} required/>
                 <label htmlFor="">Reason for Room Change:</label>
-                <textarea name="" id="" rows="5" placeholder="Type a valid reason.." className="border-solid border-2 rounded-lg ml-3 p-1" value={changeReason} onChange={(e)=>{setChangeReason(e.target.value)}} required></textarea>
+                <textarea name="" id="" rows="5" placeholder="Type a valid reason.." className="w-full py-2 px-3 rounded-xl ring-2 ring-slate-300 focus:outline-none" value={changeReason} onChange={(e)=>{setChangeReason(e.target.value)}} required></textarea>
                 </div>
                 <div className="w-full flex items-end justify-end mt-5">
                     <button className="ml-auto p-3 bg-stone-800 text-white rounded-xl">Submit Request</button>

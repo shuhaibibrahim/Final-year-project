@@ -3,9 +3,9 @@ import axios from 'axios';
 import {useState} from 'react'
 import AlertDialog from './AlertDialog';
 import ConfirmDialog from './ConfirmDialog';
-function MessOutForm() {
-    const [fromDate,setFromDate]=useState(null)
-    const [toDate,setToDate]=useState(null)
+function MessOutForm({noofDays}) {
+    const [fromDate,setFromDate]=useState("")
+    const [toDate,setToDate]=useState("")
     const [modalText,setModalText]=useState("")
     const [modalHeading,setModalHeading]=useState("")
     const [days,setDays]=useState(0)
@@ -34,7 +34,7 @@ function MessOutForm() {
         else{
             var days=(tdate.getTime()-fdate.getTime())/(1000 * 3600 * 24)
             setDays(days)
-            if(days<4){
+            if(days<noofDays){
                 setModalHeading("Not Applicable")
                 setModalText("Mess Out not allowed for "+days+" days")
                 setOpen1(true)
@@ -53,10 +53,10 @@ function MessOutForm() {
             <h2 className='font-semibold text-lg mb-2'>Apply for Mess Out</h2>
             <form onSubmit={submitHandler}>
                 <div className='grid grid-cols-2 w-6/12 gap-4 mb-3'>
-                    <label htmlFor="">Period of Leave From:</label>  <input type="date" value={fromDate} onChange={(e)=>{setFromDate(e.target.value)}} className="border-solid border-2 rounded-lg ml-3 p-1" required/>
-                    <label htmlFor="">To:</label> <input type="date" value={toDate} onChange={(e)=>{setToDate(e.target.value)}} className="border-solid border-2 rounded-lg ml-3 p-1" required/>
+                    <label htmlFor="">Period of Leave From:</label>  <input type="date" value={fromDate} onChange={(e)=>{setFromDate(e.target.value)}} className="w-full py-2 px-3 rounded-xl ring-2 ring-slate-300 focus:outline-none" required/>
+                    <label htmlFor="">To:</label> <input type="date" value={toDate} onChange={(e)=>{setToDate(e.target.value)}} className="w-full py-2 px-3 rounded-xl ring-2 ring-slate-300 focus:outline-none" required/>
                 </div>
-                <p className="flex items-center"><InfoIcon className="text-sm"/>Minimum 4 days of leave is required for Mess Out</p>
+                <p className="flex items-center"><InfoIcon className="text-sm mr-1"/> Minimum {noofDays} days of leave is required for Mess Out</p>
                 <div className="w-full flex items-end justify-end mt-5">
                     <button type="submit" className="ml-auto p-3 bg-stone-800 text-white rounded-xl">Submit</button>
                 </div>

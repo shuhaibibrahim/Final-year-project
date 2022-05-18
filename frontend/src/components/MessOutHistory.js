@@ -37,6 +37,7 @@ function MessOutHistory() {
                  </tr>
                  {hostelDataSelected.map((user, index)=>(
                    <tr 
+                      key={index}
                      className={'border-b text-center border-slate-200 border-solid hover:bg-gray-300'}
                    >
                      <td className='p-3'>{user.SlNo}</td>

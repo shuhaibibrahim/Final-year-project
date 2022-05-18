@@ -54,7 +54,7 @@ app.post('/auth/login', passport.authenticate('local') ,(req, res, next)=>{
 });
 
 
-//passport.session() missleware calls deSerializeUser function and passes the user to req.user if the user is authenticated
+//passport.session() middleware calls deSerializeUser function and passes the user to req.user if the user is authenticated
 app.get('/auth/isAuthenticated' ,passport.session(), (req, res, next)=>{
   console.log("req.user : ",req.session.passport)
   //Uncomment the follwing to retrieve username from the cookie from client browser

@@ -1,9 +1,11 @@
+import {useState,useEffect} from 'react'
 import MessOutForm from "./MessOutForm"
 import MessOutHistory from "./MessOutHistory"
-function MessOutPage() {
+import axios from 'axios'
+function MessOutPage({noofDays}) {
   return (
     <div className='w-11/12'>
-        <MessOutForm/>
+        <MessOutForm noofDays={noofDays}/>
         <hr/>
         <MessOutHistory/>
     </div>
