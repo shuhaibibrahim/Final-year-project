@@ -64,7 +64,7 @@ router.get('/messoutdays',async (req,res)=>{
 })
 
 //Apply for MessOut
-router.post('/messout',async (req,res)=>{
+router.post('/applymessout',async (req,res)=>{
     try{
         const {fromDate,toDate} = req.body
         // console.log(pool.query())
@@ -77,6 +77,20 @@ router.post('/messout',async (req,res)=>{
     }
     
 })
+
+
+//INMATE - CERTIFICATE ROUTES
+
+router.post('/applycertificate',(req,res)=>{
+    try{
+        console.log(req.body)
+    }
+    catch(e){
+        console.error(e)
+    }
+})
+
+
 
 
 //MESS SECRETARY
@@ -92,17 +106,32 @@ router.put('/messoutdays',async (req,res)=>{
     }
 })
 
-
-//INMATE - CERTIFICATE ROUTES
-
-router.post('/applycertificate',(req,res)=>{
+//View Messout Requests
+router.get('/messoutrequests', async(req,res)=>{
     try{
-        console.log(req,res)
+        
     }
-    catch(e){
+    catch (e){
         console.error(e)
     }
 })
+
+//View Current Inmates (Also for Mess Director)
+router.get('/viewinmates', async(req,res)=>{
+    try{
+        
+    }
+    catch (e){
+        console.error(e)
+    }
+})
+
+//MESS DIRECTOR
+
+
+
+
+
 
 
 
