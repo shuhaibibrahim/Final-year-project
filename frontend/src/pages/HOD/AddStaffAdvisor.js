@@ -163,14 +163,7 @@ function AddStaffAdvisor() {
           </div>
 
          <div className='flex flex-row'>
-          <div className='mr-5'>
-            <div className='mt-5 mb-1 text-stone-800 text-md font-semibold'>Select Role</div>
-              <select className='p-3 ring-slate-200 ring-2 rounded-xl outline-none'>
-                <option value={null}>NIL</option>
-                <option value="sa">Staff Advisor</option>
-              </select>
-          </div>
-          <div className='ml-5 mr-5'>
+          <div className=''>
             <div className='mt-5 mb-1 text-stone-800 text-md font-semibold'>Select Programme</div>
               <select className='p-3 ring-slate-200 ring-2 rounded-xl outline-none'>
                 <option value={null}>NIL</option>
@@ -204,7 +197,7 @@ function AddStaffAdvisor() {
        
           
 
-          <button className='mt-5 rounded-xl p-2 bg-green-500 w-2/12 text-white font-bold hover:bg-green-700'>Update</button>
+          <button className='mt-5 rounded-xl p-2 bg-green-500 w-2/12 text-white font-bold hover:bg-green-700'>Add as advisor</button>
           
         </div>
     )

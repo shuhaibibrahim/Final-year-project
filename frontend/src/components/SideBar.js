@@ -24,53 +24,77 @@ import keySvg from'../icons/key.svg'
 import logoutSvg from'../icons/logout.svg'
 import userSvg from'../icons/user.svg'
 
-function SideBar({myLinks, roles, setRole, roleTo, myActiveIndex, myOpenedIndex, roleIndex}) {
+function SideBar({myLinks, roles, setRole, myActiveIndex, roleIndex}) {
 
-    const [activeIndex, setActiveIndex] = useState(myActiveIndex)
-    const [openedIndex, setOpenedIndex] = useState(myOpenedIndex)//index of link opened that have sub indexes
+    const [activeIndex, setActiveIndex] = useState(-1)
 
     const [links, setLinks] = useState(myLinks)
 
     const [rolesOpen, setRolesOpen] = useState(true)
 
     useEffect(() => {
-      setLinks(myLinks)
+        if(localStorage.getItem('activeIndex')==null){
+            localStorage.setItem('activeIndex',JSON.stringify(0))
+        }
+        else{
+            var localActiveIndex=localStorage.getItem('activeIndex')
+            setActiveIndex(parseInt(localActiveIndex))
+        }
+            
+    }, [])
+    
+    useEffect(() => {
+        // setLinks(myLinks)
+
+        var myActiveIndex=localStorage.getItem('activeIndex')==null?0:parseInt(localStorage.getItem('activeIndex'))
+
+        var newLinks=myLinks.map(item=>({...item}))
+
+        newLinks.forEach((link, linkIndex) => {
+            if(linkIndex!=myActiveIndex && link.subLinks!=undefined && link.subLinkOpen==true)
+            {
+                console.log("enterd in here")
+                newLinks[linkIndex].subLinkOpen=false
+            }
+        });
+
+        console.log("newlinksefs : ",newLinks, "myactiveindex : ",myActiveIndex)
+
+        setLinks([...newLinks])
+
+        //if the link 0 (active link on initial load) has sublinks, set active subLinkindex to 0 in localstorage
+        if((localStorage.getItem('subIndex')==null || localStorage.getItem('subIndex')==="-1") && myLinks.length >0 && myLinks[0].subLinks!=undefined)
+            localStorage.setItem('subIndex',JSON.stringify(0))
     }, [myLinks])
     
     const SideBarLink=({link, index})=>{
         return (
             <div 
                 onClick={()=>{
+
                     //To close any link that have sublinks
-                    if(links[activeIndex].subLinks!=undefined && activeIndex!=index)
-                    {
-                        console.log("here1")
-                        var newLinks=[...links]
-                        newLinks[activeIndex].subLinkActiveIndex=-1
-                        newLinks[activeIndex].subLinkOpen=false
-                        setLinks(newLinks)
-                    }
+                    links.forEach((link, linkIndex) => {
+                        if(index!=linkIndex && link.subLinks!=undefined && link.subLinkOpen==true)
+                        {
+                            var newLinks=[...links]
+                            newLinks[linkIndex].subLinkOpen=false
+                            
+                            if(linkIndex==activeIndex)
+                            {
+                                newLinks[activeIndex].subLinkActiveIndex=-1
+                            } 
+                            
+                            setLinks([...newLinks])
+                        }
+                    });
 
                     //If current index has no sublinks, then set the active link to current link
                     if(link.subLinks==undefined)
                     {
                         console.log("here2")
+                        localStorage.setItem('subIndex',JSON.stringify(-1))
+                        localStorage.setItem('activeIndex',JSON.stringify(index))
                         setActiveIndex(index)
-                    }
-
-                    //To close the opened indexes that may not be active
-                    if(index!=openedIndex)
-                    {
-                        console.log("here3")
-                        if(openedIndex!=-1)
-                        {
-                            console.log("here4")
-                            var newLinks=[...links]
-                            newLinks[openedIndex].subLinkActiveIndex=-1
-                            newLinks[openedIndex].subLinkOpen=false
-                            setLinks(newLinks)   
-                            setOpenedIndex(-1)
-                        }
                     }
 
                     //To open the link that have sublinks (Note that the link is not made active. The link is made active only after a sublink is clicked)
@@ -79,7 +103,6 @@ function SideBar({myLinks, roles, setRole, roleTo, myActiveIndex, myOpenedIndex,
                         console.log("here5")
                         var newLinks=[...links]
                         newLinks[index].subLinkOpen=!link.subLinkOpen
-                        setOpenedIndex(index)
                         setLinks(newLinks)
                     }
                 }}
@@ -126,25 +149,21 @@ function SideBar({myLinks, roles, setRole, roleTo, myActiveIndex, myOpenedIndex,
                             </Link>}
                             {link.to==null&&<SideBarLink link={link} index={index} />}
 
+                            {/* Sublinks div */}
                             {link.subLinks!=undefined&&<div className={'flex flex-col bg-gray-100 ' + (link.subLinkOpen?'dropdown-visible':'dropdown-hidden')}>
                                 {link.subLinks.map((subLink, subIndex)=>(
                                     <Link to={subLink.to} className="">
                                     <div 
                                         key={subIndex} 
-                                        className={'ml-8 py-2 px-2 flex flex-row space-x-4 justify-self-start items-center '+(link.subLinkActiveIndex==subIndex?'text-blue-500':'text-black')}
+                                        className={'ml-8 py-2 px-2 flex flex-row space-x-4 justify-self-start items-center '+(parseInt(localStorage.getItem('subIndex'))==subIndex?'text-blue-500':'text-black')}
                                         onClick={()=>{
                                             var newLinks=[...links]
                                             newLinks[index].subLinkActiveIndex=subIndex
+                                            localStorage.setItem('subIndex',JSON.stringify(subIndex))
 
                                             //When sublink is clicked the current index is made active
+                                            localStorage.setItem('activeIndex',JSON.stringify(index))
                                             setActiveIndex(index)
-                                            setLinks(newLinks)
-                                        }}
-                                        onBlur={()=>{
-                                        
-                                            var newLinks=[...links]
-                                            newLinks[index].subLinkActiveIndex=-1
-                                            newLinks[index].subLinkOpen=false
                                             setLinks(newLinks)
                                         }}
                                     >
@@ -191,6 +210,9 @@ function SideBar({myLinks, roles, setRole, roleTo, myActiveIndex, myOpenedIndex,
                                     className={'ml-8 py-2 px-2 flex flex-row space-x-4 justify-self-start items-center ' +(rIndex==roleIndex?' text-blue-500 ':' text-black ')}
                                     onClick={()=>{
                                         setRole(rIndex)
+                                        setActiveIndex(0)
+                                        localStorage.setItem('activeIndex','0')
+                                        localStorage.setItem('role',JSON.stringify(rIndex))
                                     }}
                                     onBlur={()=>{
                                         setRolesOpen(false)

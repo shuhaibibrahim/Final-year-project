@@ -21,7 +21,7 @@ import AdminPaths from './pages/Admin/AdminPaths';
 import AllotmentRule from './pages/Admin/AllotmentRule';
 import HostelRegistry from './pages/Admin/HostelRegistry';
 import CreateApplications from './pages/Admin/CreateApplication';
-import SeatMatrix from './pages/Admin/SeatMatrix';
+import HostelBlocks from './pages/Admin/HostelBlocks';
 import AdminFaculty from './pages/Admin/AdminFaculty';
 import InmateHome from './pages/Inmate/InmateHome';
 import CertificatePage from './pages/Inmate/CertificatePage';
@@ -52,6 +52,7 @@ import HostelAllotmentHod from './pages/HOD/HostelAllotmentHod';
 import SignupInviteHod from './pages/HOD/SignupInviteHod';
 import AddStaffAdvisor from './pages/HOD/AddStaffAdvisor';
 import axios from 'axios';
+import SeatMatrix from './pages/Admin/SeatMatrix';
 
 function App() {
   const [user, setUser] = useState(undefined)
@@ -90,7 +91,7 @@ function App() {
           {user==null&&(<Route path="/login" element={<LoginPage setUser={setUser}/>}/>)}
           {user==null&&(<Route path="/signup" element={<SignUpPage/>}/>)}
 
-          {user!=null&&(
+          {user!=null&&user.designation=='faculty'&&(
           <Route path="/" element={<CommonHome user={user}/>}>
             {/* Admin Routes */}
             <Route path="admin" element={<AdminHome/>}>
@@ -102,6 +103,7 @@ function App() {
               <Route path="applicationpaths" element={<AdminPaths/>} />
               <Route path="hostelregistry" element={<HostelRegistry/>} />
               <Route path="createapplication" element={<CreateApplications/>} />
+              <Route path="hostelblocks" element={<HostelBlocks/>} />
               <Route path="seatmatrix" element={<SeatMatrix/>} />
             </Route>
 
@@ -140,14 +142,14 @@ function App() {
           )}
 
           {/* Student Routes */}
-          <Route path="/student" element={<StudentHome/>}>
+          {user!=null && user.designation=='student' && user.stage=='noninmate'&&(<Route path="/student" element={<StudentHome/>}>
             <Route index element={<ViewDetails/>}/>
             <Route path="hostelapply" element={<HostelApplication/>}/>
             <Route path="noninmatecertificate" element={<NonInmateCertificate/>}/>
-          </Route>
+          </Route>)}
 
           {/* Inmate Routes */}
-          <Route path="/inmate" element={<InmateHome/>}>
+          {user!=null && user.designation=='student' && user.stage=='inmate'&&(<Route path="/inmate" element={<InmateHome/>}>
             <Route index element={<MessPage/>}/>
             <Route path="mess" element={<MessPage/>}/>
             <Route path="certificates" element={<CertificatePage/>}/>
@@ -155,7 +157,7 @@ function App() {
             <Route path="messsec" element={<MessSecretary/>}/>
             <Route path="messdirector" element={<MessDirector/>}/>
             <Route path="hostel" element={<HostelPage/>}/>
-          </Route>
+          </Route>)}
           {user!=undefined&&(<Route path="*" element={<Page404/>}/>)}
 
           {/* Matron Routes */}

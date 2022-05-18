@@ -88,7 +88,7 @@ function MessSecretary() {
                   setTabSelected(2)
                 }}
               >
-                <div>Mess Out Requests</div>
+                <div>Mess Out </div>
                 <div className={tabSelected===2?'mt-2 h-1 w-12/12 self-center bg-stone-800 rounded-full':''}/>
               </div>
           </div>

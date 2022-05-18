@@ -60,8 +60,8 @@ function AdminHome() {
         icon: editSvg,
       },
       {
-        title:"Seat Matrix",
-        to:"seatmatrix",
+        title:"Hostel Blocks",
+        to:"hostelblocks",
         icon: editSvg,
       }
   ]

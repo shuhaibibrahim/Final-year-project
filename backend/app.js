@@ -4,6 +4,10 @@ const cookieParser = require("cookie-parser");
 const sessions = require('express-session');
 const cors = require('cors')
 const app = express()
+// const auth=require('./routes/auth')
+const admin=require('./routes/admin')
+const student=require('./routes/student')
+const inmate=require('./routes/inmate')
 const bodyParser = require('body-parser')
 var passport = require('passport');
 
@@ -38,7 +42,7 @@ app.get('/', (req, res) => {
   res.send('Hello World!')
 })
 
-//auth routes
+//----------------------auth routes----------------------
 app.get('/auth',(req,res)=>{
   res.send('Auth is up!')
 })
@@ -51,7 +55,7 @@ app.post('/auth/login', passport.authenticate('local') ,(req, res, next)=>{
 });
 
 
-//passport.session() missleware calls deSerializeUser function and passes the user to req.user if the user is authenticated
+//passport.session() middleware calls deSerializeUser function and passes the user to req.user if the user is authenticated
 app.get('/auth/isAuthenticated' ,passport.session(), (req, res, next)=>{
   console.log("req.user : ",req.session.passport)
   //Uncomment the follwing to retrieve username from the cookie from client browser
@@ -61,8 +65,20 @@ app.get('/auth/isAuthenticated' ,passport.session(), (req, res, next)=>{
   else
     res.send(null)
 });
+//----------------------End of auth routes----------------------
 
+//----------------------admin routes----------------------
+app.use('/admin', admin)
+//----------------------End of auth routes----------------------
+
+//----------------------student routes----------------------
+app.use('/student',student)
+//----------------------End of student----------------------
+
+//----------------------inmate routes----------------------
+app.use('/inmate',inmate)
 
 app.listen(port, () => {
   console.log(`App listening on port ${port}`)
 })
+//----------------------End of student----------------------

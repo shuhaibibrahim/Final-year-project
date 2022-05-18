@@ -11,36 +11,43 @@ function CreateApplications() {
       //field name is used as field key
       fields:`{
         "field1": {
+                      "tag": "input",
                       "label":"Field 1",
                       "name":"field1",
                       "type":"text"
                     },
         "field2": {
+                      "tag": "textarea",
                       "label":"Field 2",
                       "name":"field2",
-                      "type":"text"
+                      "type": "text"
                     },
         "field3": {
+                      "tag": "input",
                       "label":"Field 3",
                       "name":"field3",
                       "type":"text"
                     },
         "field4": {
+                      "tag": "input",
                       "label":"Field 4",
                       "name":"field4",
                       "type":"text"
                     },
         "field5": {
+                      "tag": "input",
                       "label":"Field 5",
                       "name":"field5",
                       "type":"text"
                     },
         "field6": {
+                      "tag": "input",
                       "label":"Field 6",
                       "name":"field6",
                       "type":"text"
                     },
         "field7": {
+                      "tag": "input",
                       "label":"Field 7",
                       "name":"field7",
                       "type":"text"
@@ -53,36 +60,43 @@ function CreateApplications() {
       //All fields are stored in the database in the form of json string
       fields:`{
         "field1": {
+                      "tag": "input",
                       "label":"Field 1",
                       "name":"field1",
                       "type":"text"
                     },
         "field2": {
+                      "tag": "input",
                       "label":"Field 2",
                       "name":"field2",
                       "type":"text"
                     },
         "field3": {
+                      "tag": "input",
                       "label":"Field 3",
                       "name":"field3",
                       "type":"text"
                     },
         "field4": {
+                      "tag": "input",
                       "label":"Field 4",
                       "name":"field4",
                       "type":"text"
                     },
         "field5": {
+                      "tag": "input",
                       "label":"Field 5",
                       "name":"field5",
                       "type":"text"
                     },
         "field6": {
+                      "tag": "input",
                       "label":"Field 6",
                       "name":"field6",
                       "type":"text"
                     },
         "field7": {
+                      "tag": "input",
                       "label":"Field 7",
                       "name":"field7",
                       "type":"text"
@@ -103,6 +117,7 @@ function CreateApplications() {
   const [newType, setNewType] = useState("text")
   const [radioFields, setRadioFields] = useState([])
   const [radioItem, setRadioItem] = useState("")
+  const [newTag, setNewTag] = useState("input")
 
   const [newApplicationName, setNewApplicationName] = useState("")
 
@@ -172,7 +187,18 @@ function CreateApplications() {
                         <select
                         className='p-2 w-80 outline-none ring-slate-200 ring-2 rounded-xl'
                         required={true}
-                        onChange={e=>setNewType(e.target.value)}
+                        onChange={e=>{
+                          if(e.target.value=="textarea")
+                          {
+                            setNewTag(e.target.value)
+                            setNewType(null)
+                          }
+                          else
+                          {
+                            setNewTag("input")
+                            setNewType(e.target.value)
+                          }
+                        }}
                         value={newType}
                         >
                         <option value="text">text</option>
@@ -180,6 +206,7 @@ function CreateApplications() {
                         <option value="date">date</option>
                         <option value="number">number</option>
                         <option value="radio">radio</option>
+                        <option value="textarea">textarea</option>
                         </select>
 
                         {newType=="radio"&&(<hr className='h-px mt-2 bg-stone-800 w-full'/>)}
@@ -246,29 +273,31 @@ function CreateApplications() {
                                 console.log(currentApplicationsData[applicationIndex].fields)
                                 const fields=JSON.parse(currentApplicationsData[applicationIndex].fields)
                                 var fieldsArray=[]
+                                
                                 for(var fieldKey in fields)
                                 {
-                                fieldsArray.push({
-                                    "fieldName":fieldKey,
-                                    ...fields[fieldKey]
-                                })
+                                  fieldsArray.push({
+                                      "fieldName":fieldKey,
+                                      ...fields[fieldKey]
+                                  })
                                 }
 
                                 var newFieldItem={
-                                "fieldName":newLabel.split(' ').join('').toLocaleLowerCase(),
-                                "label": newLabel,
-                                "name": newLabel.split(' ').join('').toLocaleLowerCase(),
-                                "type": newType
+                                  "fieldName":newLabel.split(' ').join('').toLocaleLowerCase(),
+                                  "tag": newTag,
+                                  "label": newLabel,
+                                  "name": newLabel.split(' ').join('').toLocaleLowerCase(),
+                                  "type": newType
                                 }
 
                                 console.log("newfield item : ",newFieldItem)
 
                                 if(newType==="radio")
                                 {
-                                newFieldItem["radioFields"]={}
-                                radioFields.filter((item, index)=>{
-                                    newFieldItem["radioFields"][index]=item
-                                })
+                                  newFieldItem["radioFields"]={}
+                                  radioFields.filter((item, index)=>{
+                                      newFieldItem["radioFields"][index]=item
+                                  })
                                 }
 
                                 console.log("newfieldItem : ",newFieldItem)
@@ -276,13 +305,13 @@ function CreateApplications() {
 
                                 var updatedFields={}
                                 fieldsArray.filter(item=>{
-                                updatedFields[item["fieldName"]]={...item}
+                                  updatedFields[item["fieldName"]]={...item}
                                 })
                                 
                                 var newApplicationsData=[...currentApplicationsData]
                                 newApplicationsData[applicationIndex]={
-                                applicationName:currentApplicationsData[applicationIndex].applicationName,
-                                fields:JSON.stringify(updatedFields)
+                                  applicationName:currentApplicationsData[applicationIndex].applicationName,
+                                  fields:JSON.stringify(updatedFields)
                                 }
 
                                 console.log("newApplicationsData : ",newApplicationsData)
@@ -379,11 +408,21 @@ function CreateApplications() {
       (<div className='w-full space-y-2 py-2 flex flex-col'>
         <label className='font-bold text-stone-800'>{fields[fieldKey].label}</label>
         <div className='flex flex-row space-x-2 items-center'>
-          <input 
-            className='w-full py-2 px-3 rounded-xl ring-2 ring-slate-200 focus:outline-none' 
-            name={fields[fieldKey].name} 
-            type={fields[fieldKey].type}
-          />
+          {fields[fieldKey].tag=="input"&&(
+            <input 
+              className='w-full py-2 px-3 rounded-xl ring-2 ring-slate-200 focus:outline-none' 
+              name={fields[fieldKey].name} 
+              type={fields[fieldKey].type}
+            />)
+          }
+
+          {fields[fieldKey].tag=="textarea"&&(
+            <textarea 
+              className='w-full py-2 px-3 rounded-xl ring-2 ring-slate-200 focus:outline-none' 
+              name={fields[fieldKey].name} 
+              // type={fields[fieldKey].type}
+            />)
+          }
 
           <button
               className='cursor-pointer text-red-500 cursor-pointer rounded-full hover:text-red-700'

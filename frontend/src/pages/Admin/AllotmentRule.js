@@ -102,7 +102,7 @@ function AllotmentRule() {
   
 
   const RenderModal=(item)=>{
-    // 
+    // Existing columns modal
     if(modalType===0)
       setModal(
           <div onClick={backdropClickHandler} className="bg-slate-500/[.8] z-20 fixed inset-0 flex justify-center items-center">
@@ -158,6 +158,8 @@ function AllotmentRule() {
               </div>
           </div>
       )
+
+    //Derived columns modal
     else  if(modalType===1)
       setModal(
         <div onClick={backdropClickHandler} className="bg-slate-500/[.8] z-20 fixed inset-0 flex justify-center items-center">
@@ -228,6 +230,8 @@ function AllotmentRule() {
             </div>
         </div>
       )
+
+      //Rank rule modal
       else  if(modalType===2)
       setModal(
         <div onClick={backdropClickHandler} className="bg-slate-500/[.8] z-20 fixed inset-0 flex justify-center items-center">
