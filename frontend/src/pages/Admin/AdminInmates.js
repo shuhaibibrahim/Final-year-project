@@ -140,7 +140,7 @@ function AdminInmates() {
     }
   ]
 
-  const [hostelDataSelected, setHostelDataSelected] = useState(inmateDataMH)
+  const [hostelDataSelected, setHostelDataSelected] = useState([])
   const [tabSelected, setTabSelected] = useState("MH")
   const [selectedRowIndex, setSelectedRowIndex] = useState(-1)
   const [selectedHostel, setSelectedHostel] = useState(null) //hostel in which a row is selected
@@ -157,6 +157,7 @@ function AdminInmates() {
     })
     .then(function (response) {
         console.log("success" , response ,"response.data");
+        setHostelDataSelected(response.data)
     })
     .catch(function (error) {
         console.log("FAILED!!! ",error);
@@ -224,11 +225,11 @@ function AdminInmates() {
                       }
                     }}
                   >
-                    <td className='py-3'>{user.admNo}</td>
+                    <td className='py-3'>{user.admission_no}</td>
                     <td>{user.name}</td>
-                    <td>{user.dept}</td>
-                    <td>{user.batch}</td>
-                    <td>{user.phone}</td>
+                    <td>{user.department}</td>
+                    <td>{user.batchid}</td>
+                    <td>{user.mobile_no}</td>
                     <td>{user.email}</td>
                   </tr>
                 ))}
@@ -397,7 +398,7 @@ function AdminInmates() {
               <div
                 className='cursor-pointer '
                 onClick={()=>{
-                  setHostelDataSelected(inmateDataMH)
+                  setHostelDataSelected([]) //making the list empty before populating it with the inmates list
                   setTabSelected("MH")
                 }}
               >
@@ -408,7 +409,7 @@ function AdminInmates() {
               <div 
                 className='ml-5 cursor-pointer'
                 onClick={()=>{
-                  setHostelDataSelected(inmateDataLH)
+                  setHostelDataSelected([]) //making the list empty before populating it with the inmates list
                   setTabSelected("LH")
                 }}
               >

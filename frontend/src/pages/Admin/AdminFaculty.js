@@ -54,7 +54,7 @@ function AdminFaculty() {
     }
   ]
 
-  const [faculty, setFaculty] = useState(dummyData)
+  const [faculty, setFaculty] = useState([])
   const [tabSelected, setTabSelected] = useState("faculty")
   const [selectedRowIndex, setSelectedRowIndex] = useState(-1)
   const [role, setRole] = useState(null)
@@ -63,6 +63,7 @@ function AdminFaculty() {
     axios.get('http://localhost:8080/admin/faculties')
     .then(function (response) {
         console.log("success" , response ,"response.data");
+        setFaculty(response.data)
     })
     .catch(function (error) {
         console.log("FAILED!!! ",error);
@@ -125,9 +126,9 @@ function AdminFaculty() {
                       }
                     }}
                   >
-                    <td className='py-3'>{user.penNo}</td>
+                    <td className='py-3'>{user.pen_no}</td>
                     <td>{user.name}</td>
-                    <td>{user.phone}</td>
+                    <td>{user.mobile_no}</td>
                     <td>{user.email}</td>
                   </tr>
                 ))}

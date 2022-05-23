@@ -16,52 +16,78 @@ import { hodLinks } from './HOD/HODLinks'
 function CommonHome({user}) {
   
     const [links, setLinks] = useState([])
-    const [role, setRole] = useState(-1) //index of the role selected in the user.roles array
+    const [role, setRole] = useState(user.roles[0]) //index of the role selected in the user.roles array
 
-    
-
-    // const user.roles=["admin", "staff advisor", "warden", "hosteloffice", "hod"]
-
-    useEffect(() => {
-        if(localStorage.getItem('role')==null){
-            setRole(0)
-            localStorage.setItem('role','0')
-        }
-        else{
-            var localRole=parseInt(localStorage.getItem('role'))
-            setRole(localRole)
-        }
+    // useEffect(() => {
+    //     if(localStorage.getItem('role')==null){
+    //         setRole(0)
+    //         localStorage.setItem('role','0')
+    //     }
+    //     else{
+    //         var localRole=parseInt(localStorage.getItem('role'))
+    //         setRole(localRole)
+    //     }
 
         
-    }, [])
-    
+    // }, [])
+    user.roles=["admin", "staff advisor", "warden", "hosteloffice", "hod"]
     useEffect(() => {
 
-        if(user.roles[role]==="admin")
+        // if(user.roles[role]==="admin")
+        // {
+        //     // setRoleTo("admin")
+        //     console.log("new links : ",adminLinks)
+        //     setLinks(adminLinks.map(item=>({...item})))
+        // }
+        // else if(user.roles[role]==="staff advisor")
+        // {
+        //     // setRoleTo("staffadvisor")
+        //     console.log("new links : ",saLinks)
+        //     setLinks(saLinks.map(item=>({...item})))
+        // }
+        
+        // else if(user.roles[role]==="hod")
+        // {
+        //     // setRoleTo("staffadvisor")
+        //     console.log("new links : ",hodLinks)
+        //     setLinks(hodLinks.map(item=>({...item})))
+        // }
+        // else if(user.roles[role]==="warden"){
+        //     // setRoleTo("warden")
+        //     console.log("new links : ",wardenLinks)
+        //     setLinks(wardenLinks.map(item=>({...item})))
+        // }
+        // else if(user.roles[role]==="hosteloffice"){
+        //     // setRoleTo("warden")
+        //     console.log("new links : ",hostelOfficeLinks)
+        //     setLinks(hostelOfficeLinks.map(item=>({...item})))
+        // }
+
+        if(role==="admin")
         {
             // setRoleTo("admin")
             console.log("new links : ",adminLinks)
             setLinks(adminLinks.map(item=>({...item})))
         }
-        else if(user.roles[role]==="staff advisor")
+        else if(role==="staff advisor")
         {
             // setRoleTo("staffadvisor")
             console.log("new links : ",saLinks)
             setLinks(saLinks.map(item=>({...item})))
         }
         
-        else if(user.roles[role]==="hod")
+        else if(role==="hod")
         {
             // setRoleTo("staffadvisor")
             console.log("new links : ",hodLinks)
             setLinks(hodLinks.map(item=>({...item})))
         }
-        else if(user.roles[role]==="warden"){
+        else if(role==="warden"){
             // setRoleTo("warden")
             console.log("new links : ",wardenLinks)
             setLinks(wardenLinks.map(item=>({...item})))
         }
-        else if(user.roles[role]==="hosteloffice"){
+        else if(role==="hosteloffice"){
             // setRoleTo("warden")
             console.log("new links : ",hostelOfficeLinks)
             setLinks(hostelOfficeLinks.map(item=>({...item})))
@@ -76,9 +102,9 @@ function CommonHome({user}) {
                 {/*myOpenedIndex is the index of the link(with sublinks) that is made open */}
                 {/* roleIndex is the index of the role selected */}
                 {/* roleTo is the route of the home page of the corresponding role */}
-                <SideBar myLinks={links} roles={user.roles} setRole={setRole} roleIndex={role}/>
+                <SideBar myLinks={links} roles={user.roles} setRole={setRole} currentRole={role}/>
             </div>
-            <Outlet/>
+            <Outlet context={[role, setRole]}/>
         </div>
     )
 }
