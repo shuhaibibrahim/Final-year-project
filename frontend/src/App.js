@@ -55,7 +55,7 @@ import axios from 'axios';
 import SergeantHome from './pages/Sergeant/SergeantHome';
 import ViewComplaints from './pages/Sergeant/ViewComplaints';
 import SeatMatrix from './pages/Admin/SeatMatrix';
-import {UserContext, userContext} from './Contexts/UserContext'
+import {UserContext} from './Contexts/UserContext'
 
 function App() {
   const [user, setUser] = useState(undefined)
@@ -95,8 +95,8 @@ function App() {
           {user==null&&(<Route path="/login" element={<LoginPage/>}/>)}
           {user==null&&(<Route path="/signup" element={<SignUpPage/>}/>)}
 
-          {user!=null&&(
-          <Route path="/" element={<CommonHome/>}>
+          {user!=null&&user.designation=='faculty'&&(
+          <Route path="/" element={<CommonHome user={user}/>}>
             {/* Admin Routes */}
             <Route path="admin" element={<AdminHome/>}>
               <Route index element={<AdminInmates/>} />
@@ -151,14 +151,14 @@ function App() {
           )}
 
           {/* Student Routes */}
-          <Route path="/student" element={<StudentHome/>}>
+          {user!=null && user.designation=='student' && user.stage=='noninmate'&&(<Route path="/student" element={<StudentHome/>}>
             <Route index element={<ViewDetails/>}/>
             <Route path="hostelapply" element={<HostelApplication/>}/>
             <Route path="noninmatecertificate" element={<NonInmateCertificate/>}/>
-          </Route>
+          </Route>)}
 
           {/* Inmate Routes */}
-          <Route path="/inmate" element={<InmateHome/>}>
+          {user!=null && user.designation=='student' && user.stage=='inmate'&&(<Route path="/inmate" element={<InmateHome/>}>
             <Route index element={<MessPage/>}/>
             <Route path="mess" element={<MessPage/>}/>
             <Route path="certificates" element={<CertificatePage/>}/>
@@ -166,7 +166,7 @@ function App() {
             <Route path="messsec" element={<MessSecretary/>}/>
             <Route path="messdirector" element={<MessDirector/>}/>
             <Route path="hostel" element={<HostelPage/>}/>
-          </Route>
+          </Route>)}
           {user!=undefined&&(<Route path="*" element={<Page404/>}/>)}
 
           {/* Matron Routes */}

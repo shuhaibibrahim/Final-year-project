@@ -1,50 +1,179 @@
 var LocalStrategy = require('passport-local');
-var db = require('./db');
+var {pool, users} = require('./db');
 
 
 module.exports = function(passport){
   passport.use('local',new LocalStrategy((username, password, done)=>{
 
-    var users=db.users
-    var user=null
-    // console.log(users)
+    pool.query(`SELECT * FROM USERS
+                WHERE User_Id=$1 and Password=$2`, [username, password], (err, resp) => {
+        if (err) {
+            console.log(err)
+            // resp.status(400).send("Error while fetching data")
+            done(err)
+        }
+        else
+        {
+          console.log('user:', resp.rows)
   
-    for(var key in users)
-    {
-      // console.log(user[key].username , ",", username," :: ", users[key].password,",",password)
-      if(users[key].username===username && users[key].password===password)
-      {
-        user={...users[key]} 
-        break
-      }
-    }
-    // console.log(user)
+          if(resp.rows.length==0)
+            return done(null, false, {message : "incorrect username or passsword"})
+  
+          var user={...resp.rows[0]}
+          user.roles=[]
+
+          if(user.designation=="faculty")
+          {
+            pool.query(`SELECT Role from ROLES_FACULTY
+                        WHERE USERID=$1`, [user.user_id], (err, response)=>{
+                        if(!err)
+                        {
+                          roles=[...response.rows]
+
+                          var userWithRoles={
+                            ...user,
+                            roles:roles
+                          }
+                          console.log("userWithRoles : ",userWithRoles)
+                          return done(null,userWithRoles)
+                        }
+                      })
+          }
+          else if(user.designation=="student")
+          {
+            console.log("Im here now")
+            //stages include : inmate, noninmate
+            pool.query(`SELECT Stage from STUDENT
+                        WHERE Admission_No=$1`, [user.user_id], (err, response)=>{
+                        if(!err)
+                        {
+                          console.log("Hii im here now")
+                          user.stage=response.rows[0].stage
+                          //only inmate has roles if any
+                          if(response.rows[0].stage=="inmate")
+                          {
+                            pool.query(`SELECT Role from INMATE_TABLE it, INMATE_ROLE ir
+                              WHERE it.Admission_No=$1 and it.Hostel_Admission_No=ir.Hostel_Admission_No`, [user.user_id], (err, response)=>{
+                              if(!err)
+                              {
+                                console.log("I got here ",response.rows)
+                                user.roles=response.rows.map(item=>item.role)
+
+                                console.log("userWithRoles : ",user)
+                                return done(null,user)
+                              }
+                              else
+                              {
+                                console.log(err)
+                              }
+                            })
+                          }
+                        }
+                        else
+                        {
+                          console.log(err)
+                        }
+                      })
+          }
+          
+          // return done(null, user)
+          
+        }
+    })
+  
+    // for(var key in users)
+    // {
+    //   // console.log(user[key].username , ",", username," :: ", users[key].password,",",password)
+    //   if(users[key].username===username && users[key].password===password)
+    //   {
+    //     user={...users[key]} 
+    //     break
+    //   }
+    // }
+    // // console.log(user)
     
-    if(user!=null)
-    {
-      return done(null, user)
-    }
-    else
-    {
-      console.log("came here")
-      return done(null, false, {message : "incorrect username or passsword"})
-    }
+    // if(user!=null)
+    // {
+    //   return done(null, user)
+    // }
+    // else
+    // {
+    //   console.log("came here")
+    //   return done(null, false, {message : "incorrect username or passsword"})
+    // }
   
   }));
   
   passport.serializeUser(function(user, done) {
-    console.log("user serialized")
-    done(null, user.username);
+    console.log("user serialized", user)
+    done(null, user.user_id);
   });
   
   passport.deserializeUser(function(username, done) {
     console.log("user deserialized : ",username)
-    const user={
-        "user": username,
-        "password" : "1234",
-        roles:["admin", "staff advisor", "hod", "warden", "hosteloffice"]
-    }
-    console.log(user)
-    return done(null, user)
-  });
+
+    var user={}
+
+    pool.query(`SELECT * from USERS
+                WHERE User_ID=$1`, [username], (err, response)=>{
+                if(!err)
+                {
+                  user={...response.rows[0]}
+                  
+                  if(user.designation=="faculty")
+                  {
+                      pool.query(`SELECT Role from ROLES_FACULTY
+                                  WHERE USERID=$1`, [user.user_id], (err, response)=>{
+                                  if(!err)
+                                  {
+                                    roles=[...response.rows]
+
+                                    var userWithRoles={
+                                      ...user,
+                                      roles:roles
+                                    }
+                                    console.log("userWithRoles : ",userWithRoles)
+                                    return done(null,userWithRoles)
+                                  }
+                                })
+                  }
+                  else if(user.designation=="student")
+                  {
+                        console.log("Im here now")
+                        //stages include : inmate, noninmate
+                        pool.query(`SELECT Stage from STUDENT
+                                    WHERE Admission_No=$1`, [user.user_id], (err, response)=>{
+                                    if(!err)
+                                    {
+                                      console.log("Hii im here now")
+                                      user.stage=response.rows[0].stage
+                                      //only inmate has roles if any
+                                      if(response.rows[0].stage=="inmate")
+                                      {
+                                        pool.query(`SELECT Role from INMATE_TABLE it, INMATE_ROLE ir
+                                          WHERE it.Admission_No=$1 and it.Hostel_Admission_No=ir.Hostel_Admission_No`, [user.user_id], (err, response)=>{
+                                          if(!err)
+                                          {
+                                            console.log("I got here ",response.rows)
+                                            user.roles=response.rows.map(item=>item.role)
+
+                                            console.log("userWithRoles : ",user)
+                                            return done(null,user)
+                                          }
+                                          else
+                                          {
+                                            console.log(err)
+                                          }
+                                        })
+                                      }
+                                    }
+                                    else
+                                    {
+                                      console.log(err)
+                                    }
+                                  })
+                                }
+                          }
+                      })
+    });
 }

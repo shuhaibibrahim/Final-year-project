@@ -1,7 +1,8 @@
 import axios from 'axios';
-import {useState} from 'react'
+import {useState,useContext} from 'react'
 import AlertDialog from './AlertDialog';
 import ConfirmDialog from './ConfirmDialog';
+import {UserContext} from '../Contexts/UserContext'
 export default function HostelOut(){
     const [fromDate,setFromDate]=useState("")
     const [toDate,setToDate]=useState("")
@@ -11,15 +12,19 @@ export default function HostelOut(){
     const [open2, setOpen2] = useState(false);
     const [days,setDays]=useState(0)
     const [reason,setReason]=useState("")
-
+    const {user}=useContext(UserContext)
     const submitForm = ()=>{
         axios.post('http://localhost:8080/inmate/hostelout',{
+                    user_id:user.user_id,
                     fromDate:fromDate,
                     toDate:toDate,
                     reason:reason
                 }).then((res)=>{
                     alert("Submitted Hostel Out")
                     console.log(res)
+                    setFromDate("")
+                    setToDate("")
+                    setReason("")
                 })
     }
 

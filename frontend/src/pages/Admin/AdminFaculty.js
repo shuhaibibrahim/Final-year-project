@@ -1,5 +1,6 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import {motion} from "framer-motion" 
+import axios from 'axios'
 
 function AdminFaculty() {
   const dummyData=[
@@ -54,8 +55,19 @@ function AdminFaculty() {
   ]
 
   const [faculty, setFaculty] = useState(dummyData)
-  const [tabSelected, setTabSelected] = useState("MH")
+  const [tabSelected, setTabSelected] = useState("faculty")
   const [selectedRowIndex, setSelectedRowIndex] = useState(-1)
+  const [role, setRole] = useState(null)
+
+  useEffect(() => {
+    axios.get('http://localhost:8080/admin/faculties')
+    .then(function (response) {
+        console.log("success" , response ,"response.data");
+    })
+    .catch(function (error) {
+        console.log("FAILED!!! ",error);
+    });
+  }, [tabSelected])
 
   const FacultyList=()=>{
     return (
@@ -127,7 +139,7 @@ function AdminFaculty() {
 
   const AssignRole=()=>{
     return (  
-      <div className='flex flex-col w-11/12 '>
+      <div className='flex flex-col w-11/12 overflow-y-auto'>
           <div className='text-stone-800 font-bold text-lg'>Faculty - {faculty[selectedRowIndex].name}</div>
           
           <div className='flex flex-row space-x-3 bg-primary p-8 rounded-xl'>
@@ -163,13 +175,82 @@ function AdminFaculty() {
           </div>
 
           <div className='mt-5 mb-1 text-stone-800 text-md font-semibold'>Select Role</div>
-          <select className='p-3 ring-slate-200 ring-2 rounded-xl w-1/4 outline-none'>
-            <option value={null}>NIL</option>
+          <select 
+            className='p-3 ring-slate-200 ring-2 rounded-xl w-1/4 outline-none'
+            onChange={(e)=>{setRole(e.target.value)}}
+          >
+            <option value={null}>-- select --</option>
             <option value="sa">Staff Advisor</option>
             <option value="hod">HOD</option>
             <option value="wd">Warden</option>
             <option value="mtrn">Matron</option>
           </select>
+
+          {role=="sa"&&(<div className='flex flex-row'>
+            <div className=''>
+              <div className='mt-5 mb-1 text-stone-800 text-md font-semibold'>Select Programme</div>
+                <select className='p-3 ring-slate-200 ring-2 rounded-xl outline-none'>
+                  <option value={null}>NIL</option>
+                  <option value="sa">B.Tech</option>
+                  <option value="sa">B.Arch</option>
+                  <option value="sa">M.Tech</option>
+                  <option value="sa">PhD</option>
+                </select>
+            </div>
+
+            <div className='ml-5'>
+              <div className='mt-5 mb-1 text-stone-800 text-md font-semibold'>Select Department</div>
+                <select className='p-3 ring-slate-200 ring-2 rounded-xl outline-none'>
+                  <option value={null}>-- select --</option>
+                  <option value="Computer Science and Engineering">Computer Science and Engineering</option>
+                  <option value="Civil Enginering">Civil Enginering</option>
+                  <option value="Applied Electronics and Instrumentation Engineering">Applied Electronics and Instrumentation Engineering</option>
+                  <option value="Electronics Engineering">Electronics Engineering</option>
+                  <option value="Electrical and Electronics Engineering">Electrical and Electronics Engineering</option>
+                  <option value="Mechanical Engineering">Mechanical Engineering</option>
+                  <option value="Industrial Engineering">Industrial Engineering</option>
+                  <option value="Architecture">Architecture</option>
+                </select>
+            </div>
+
+            <div className='ml-5'>
+              <div className='mt-5 mb-1 text-stone-800 text-md font-semibold'>Select Year</div>
+                <select className='p-3 ring-slate-200 ring-2 rounded-xl outline-none'>
+                  <option value={null}>NIL</option>
+                  <option value="sa">1</option>
+                  <option value="sa">2</option>
+                  <option value="sa">3</option>
+                  <option value="sa">4</option>
+                </select>
+            </div>
+
+            <div className='ml-5'>
+              <div className='mt-5 mb-1 text-stone-800 text-md font-semibold'>Select Batch</div>
+                <select className='p-3 ring-slate-200 ring-2 rounded-xl outline-none'>
+                  <option value={null}>NIL</option>
+                  <option value="sa">A</option>
+                  <option value="sa">B</option>      
+                </select>
+            </div>
+
+          </div>)}
+
+          {role=="hod"&&(<div className='flex flex-row'>
+            <div className=''>
+              <div className='mt-5 mb-1 text-stone-800 text-md font-semibold'>Select Department</div>
+                <select className='p-3 ring-slate-200 ring-2 rounded-xl outline-none'>
+                  <option value={null}>-- select --</option>
+                  <option value="Computer Science and Engineering">Computer Science and Engineering</option>
+                  <option value="Civil Enginering">Civil Enginering</option>
+                  <option value="Applied Electronics and Instrumentation Engineering">Applied Electronics and Instrumentation Engineering</option>
+                  <option value="Electronics Engineering">Electronics Engineering</option>
+                  <option value="Electrical and Electronics Engineering">Electrical and Electronics Engineering</option>
+                  <option value="Mechanical Engineering">Mechanical Engineering</option>
+                  <option value="Industrial Engineering">Industrial Engineering</option>
+                  <option value="Architecture">Architecture</option>
+                </select>
+            </div>
+          </div>)}
 
           <button className='mt-5 rounded-xl p-2 bg-green-500 w-2/12 text-white font-bold hover:bg-green-700'>Update</button>
           

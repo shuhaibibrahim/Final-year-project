@@ -1,11 +1,17 @@
 import axios from 'axios';
-import {useState} from 'react'
+import {useState,useContext} from 'react'
+import {UserContext} from '../Contexts/UserContext'
 export default function ComplaintBox(){
     const [complaint,setComplaint]=useState("")
+    const {user} =useContext(UserContext)
     const submitComplaint =(e)=>{
         e.preventDefault();
         axios.post('http://localhost:8080/inmate/complaintbox',{
+            user_id:user.user_id,
             complaint:complaint
+        })
+        .then(res=>{
+            alert("Submitted")
         })
     }
     return(

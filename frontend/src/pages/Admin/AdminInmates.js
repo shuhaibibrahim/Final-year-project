@@ -1,5 +1,8 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {motion} from "framer-motion" 
+import axios from 'axios'
+import AlertDialog from '../../components/AlertDialog'
+import ConfirmDialog from '../../components/ConfirmDialog'
 
 function AdminInmates() {
   const inmateDataMH=[
@@ -9,7 +12,8 @@ function AdminInmates() {
       dept:"cse",
       batch:"batchId",
       phone:"9876857465",
-      email:"xyz@gmail.com"
+      email:"xyz@gmail.com",
+      roles:["md", "ms"]
     },
     {
       admNo:"2434",
@@ -139,7 +143,26 @@ function AdminInmates() {
   const [hostelDataSelected, setHostelDataSelected] = useState(inmateDataMH)
   const [tabSelected, setTabSelected] = useState("MH")
   const [selectedRowIndex, setSelectedRowIndex] = useState(-1)
-  const [selectedHostel, setSelectedHostel] = useState(null)
+  const [selectedHostel, setSelectedHostel] = useState(null) //hostel in which a row is selected
+  const [selectedRole, setSelectedRole] = useState(null)
+
+  const [modalText,setModalText]=useState("")
+  const [modalHeading,setModalHeading]=useState("")
+  const [open1, setOpen1] = useState(false);
+  const [open2, setOpen2] = useState(false);
+
+  useEffect(() => {
+    axios.get('http://localhost:8080/admin/inmates',{
+      params:{hostel: tabSelected}
+    })
+    .then(function (response) {
+        console.log("success" , response ,"response.data");
+    })
+    .catch(function (error) {
+        console.log("FAILED!!! ",error);
+    });
+  }, [tabSelected])
+  
 
   const HostelList=()=>{
     return (
@@ -215,73 +238,137 @@ function AdminInmates() {
     )
   }
 
+  const updateRole=()=>{
+    axios.post('http://localhost:8080/admin/inmates/updateRole',{
+      hostelAdmNo: '18MH001',
+      role:selectedRole
+    })
+    .then(function (response) {
+        console.log("success" , response ,"response.data");
+        setModalText("Successfully Updated !")
+        setOpen1(true)
+    })
+    .catch(function (error) {
+        console.log("FAILED!!! ",error);
+    });
+  }
+
   const AssignRole=()=>{
     return (  
-      <div className='flex flex-col w-11/12 '>
+      <div className='flex flex-col w-11/12 overflow-y-auto'>
           <div className='text-stone-800 font-bold text-lg'>Inmate - {selectedHostel}</div>
           
-          <div className='flex flex-row space-x-3 bg-primary p-8 rounded-xl'>
-            <div className='grid grid-cols-2 gap-4 w-1/2'>
-              <div className='text-stone-800 font-bold'>Name</div>
-              <div> 
-                <span className='text-stone-800 font-bold mr-3'>:</span>
-                {selectedHostel=="MH"?
-                              inmateDataMH[selectedRowIndex].name
-                              :inmateDataLH[selectedRowIndex].name}
+          <div className='flex flex-col bg-primary p-8 rounded-xl'>
+            <div className='w-full flex flex-row'>
+              <div className='grid grid-cols-2 gap-4 w-1/2'>
+                <div className='text-stone-800 font-bold'>Name</div>
+                <div> 
+                  <span className='text-stone-800 font-bold mr-3'>:</span>
+                  {selectedHostel=="MH"?
+                                inmateDataMH[selectedRowIndex].name
+                                :inmateDataLH[selectedRowIndex].name}
+                </div>
+
+                <div className='text-stone-800 font-bold'>Admission No</div>
+                <div> 
+                  <span className='text-stone-800 font-bold mr-3'>:</span>
+                  {selectedHostel=="MH"?
+                                inmateDataMH[selectedRowIndex].admNo
+                                :inmateDataLH[selectedRowIndex].admNo}
+                </div>
+                
+                <div className='text-stone-800 font-bold'>Department</div>
+                <div> 
+                  <span className='text-stone-800 font-bold mr-3'>:</span>
+                  {selectedHostel=="MH"?
+                                inmateDataMH[selectedRowIndex].dept
+                                :inmateDataLH[selectedRowIndex].dept}
+                </div>
               </div>
 
-              <div className='text-stone-800 font-bold'>Admission No</div>
-              <div> 
-                <span className='text-stone-800 font-bold mr-3'>:</span>
-                {selectedHostel=="MH"?
-                              inmateDataMH[selectedRowIndex].admNo
-                              :inmateDataLH[selectedRowIndex].admNo}
-              </div>
-              
-              <div className='text-stone-800 font-bold'>Department</div>
-              <div> 
-                <span className='text-stone-800 font-bold mr-3'>:</span>
-                {selectedHostel=="MH"?
-                              inmateDataMH[selectedRowIndex].dept
-                              :inmateDataLH[selectedRowIndex].dept}
+              <div className='grid grid-cols-2 gap-4 bg-primary w-1/2'>
+                <div className='text-stone-800 font-bold'>Batch</div>
+                <div> 
+                  <span className='text-stone-800 font-bold mr-3'>:</span>
+                  {selectedHostel=="MH"?
+                                inmateDataMH[selectedRowIndex].batch
+                                :inmateDataLH[selectedRowIndex].batch}
+                </div>
+                
+                <div className='text-stone-800 font-bold'>Phone</div>
+                <div> 
+                  <span className='text-stone-800 font-bold mr-3'>:</span>
+                  {selectedHostel=="MH"?
+                                inmateDataMH[selectedRowIndex].phone
+                                :inmateDataLH[selectedRowIndex].phone}
+                </div>
+                
+                <div className='text-stone-800 font-bold'>Email</div>
+                <div> 
+                  <span className='text-stone-800 font-bold mr-3'>:</span>
+                  {selectedHostel=="MH"?
+                                inmateDataMH[selectedRowIndex].email
+                                :inmateDataLH[selectedRowIndex].email}
+                </div>
               </div>
             </div>
 
-            <div className='grid grid-cols-2 gap-4 bg-primary w-1/2'>
-              <div className='text-stone-800 font-bold'>Batch</div>
-              <div> 
-                <span className='text-stone-800 font-bold mr-3'>:</span>
+            <div className='w-full flex flex-row items-center mt-4'>
+              <div className='text-stone-800 font-bold'>Roles</div> 
+                <span className='text-stone-800 font-bold mr-3 flex flex-row'>:</span>
                 {selectedHostel=="MH"?
-                              inmateDataMH[selectedRowIndex].batch
-                              :inmateDataLH[selectedRowIndex].batch}
-              </div>
-              
-              <div className='text-stone-800 font-bold'>Phone</div>
-              <div> 
-                <span className='text-stone-800 font-bold mr-3'>:</span>
-                {selectedHostel=="MH"?
-                              inmateDataMH[selectedRowIndex].phone
-                              :inmateDataLH[selectedRowIndex].phone}
-              </div>
-              
-              <div className='text-stone-800 font-bold'>Email</div>
-              <div> 
-                <span className='text-stone-800 font-bold mr-3'>:</span>
-                {selectedHostel=="MH"?
-                              inmateDataMH[selectedRowIndex].email
-                              :inmateDataLH[selectedRowIndex].email}
-              </div>
+                (inmateDataMH[selectedRowIndex].roles.map((item, index)=>(
+                  <div key={index} className='flex flex-row w-fit justify-between items-center mr-2 py-2 px-3 bg-stone-800 text-white text-sm font-medium rounded-full space-x-2'>
+                    <div>{item}</div>
+                    <div
+                        className='ml-2 text-white cursor-pointer rounded-full hover:text-red-600'
+                        onClick={()=>{
+                        }}
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        </svg>
+                    </div>
+                  </div>
+                )))
+                :
+                (inmateDataLH[selectedRowIndex].roles.map((item, index)=>(
+                  <div key={index} className='flex flex-row w-fit justify-between items-center mr-2 py-2 px-3 bg-stone-800 text-white text-sm font-medium rounded-full space-x-2'>
+                    <div>{item}</div>
+                    <div
+                        className='ml-2 text-white cursor-pointer rounded-full hover:text-red-600'
+                        onClick={()=>{
+                        }}
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        </svg>
+                    </div>
+                  </div>
+                )))
+                }
             </div>
+
           </div>
 
+
           <div className='mt-5 mb-1 text-stone-800 text-md font-semibold'>Select Role</div>
-          <select className='p-3 ring-slate-200 ring-2 rounded-xl w-1/4 outline-none'>
+          <select 
+            value={selectedRole}
+            onChange={(e)=>{setSelectedRole(e.target.value)}}
+            className='p-3 ring-slate-200 ring-2 rounded-xl w-1/4 outline-none'
+          >
             <option value={null}>NIL</option>
             <option value="md">Mess Director</option>
             <option value="ms">Mess Secretory</option>
           </select>
 
-          <button className='mt-5 rounded-xl p-2 bg-green-500 w-2/12 text-white font-bold hover:bg-green-700'>Update</button>
+          <button 
+            className='mt-5 rounded-xl p-2 bg-green-500 w-2/12 text-white font-bold hover:bg-green-700'
+            onClick={updateRole}
+          >
+              Update
+            </button>
           
         </div>
     )
@@ -289,6 +376,10 @@ function AdminInmates() {
 
   return (
     <div className='flex flex-col w-full items-center min-h-screen h-full'>
+      
+        <AlertDialog open={open1} setOpen={setOpen1} modalHeading={modalHeading} modalText={modalText}/>
+        {/* <ConfirmDialog open={open2} setOpen={setOpen2} modalHeading={modalHeading} modalText={modalText} confirmFunction={submitForm}/> */}
+
         <div className='w-full flex justify-center pt-4'>
           <div className='flex flex-row justify-between w-11/12 items-center'>
             <div className='text-xl font-bold'>Inmates</div>
@@ -299,7 +390,7 @@ function AdminInmates() {
         </div>
       </div>
 
-      <div className='flex flex-col items-center py-8 space-y-4 w-11/12 mt-8 bg-white rounded-xl admin-dashbord-height'>
+      <div className='flex flex-col overflow-hidden items-center py-8 space-y-4 w-11/12 mt-8 bg-white rounded-xl admin-dashbord-height'>
         {/* white box nav bar */}
         <div className='flex flex-row justify-between w-11/12 items-center'>
           <div className='flex flex-row tex-black text-sm font-bold relative'>

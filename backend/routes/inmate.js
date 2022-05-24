@@ -1,74 +1,34 @@
 const express=require('express')
 const router=express.Router()
+const inmate=require('../controllers/inmate')
 const {pool}=require('../db')
 
 //INMATE - HOSTEL ROUTES
 
 //Hostel Out Form
-router.post('/hostelout',async (req,res)=>{
-    try{
-        const {admno,fromDate,toDate,reason}=req.body
-        const hostelout=await pool.query('INSERT INTO hostel_out(hostel_admission_no,fromdate,todate,reason) VALUES($1,$2,$3,$4)',[admno,fromDate,toDate,reason])
-        res.json(hostelout)
-    }
-    catch(e){
-        console.error(err)
-    }
-})
+router.post('/hostelout',inmate.applyHostelOut)
 
 //Complaint Box
-router.post('/complaintbox',async (req,res)=>{
-    try{
-        const {admno,complaint}=req.body
-        const complaints=await pool.query("INSERT INTO Complaints(HostelAdmissionNo,Complaint) VALUES($1,$2)",[admno,complaint])
-        res.json(complaints)
-    }
-    catch(e){
-        console.error(err)
-    }
-})
+router.post('/complaintbox',inmate.submitComplaint)
 
 //Room Change
-router.post('/roomchange',async(req,res)=>{
-    try{
-        const {admno,preferredroom,reason}=req.body
-        const roomchangereq=await pool.query("INSERT INTO ")
-    }
-    catch(e){
-        console.error(err)
-    }
-})
+router.post('/roomchange',inmate.submitRoomChange)
 
 //INMATE - MESSOUT ROUTES
 
 //View MessOut history
-router.get('/messouthistory',async (req,res)=>{
-    try{
-        const messouts=await pool.query("SELECT * FROM messout WHERE hostel_admission_no='$1'",[])
-        res.json(messouts)
-    }
-    catch (e){
-        console.error(e)
-    }
-})
+router.get('/messouthistory',inmate.viewMessOutHistory)
 
 //View MessOut days
-router.get('/messoutdays',async (req,res)=>{
-    try{
-        const days=await pool.query("SELECT value FROM messrequirements WHERE key='messoutdays'")
-        res.json(days.rows)
-    }
-    catch (e){
-        console.error(e)
-    }
-})
+router.get('/messoutdays',inmate.messOutDays)
 
 //Apply for MessOut
 router.post('/applymessout',async (req,res)=>{
     try{
-        const {fromDate,toDate} = req.body
-        // console.log(pool.query())
-        const messout=await pool.query("INSERT INTO messoutdummy VALUES($1,$2);",[fromDate,toDate])
+        const {user_id,fromDate,toDate} = req.body
+        const getadmno=await pool.query("SELECT hostel_admission_no FROM inmate_table WHERE admission_no=$1",[user_id])
+        const hostel_admno=getadmno.rows[0].hostel_admission_no
+        const messout=await pool.query("INSERT INTO messout VALUES($1,$2,$3);",[hostel_admno,fromDate,toDate])
         console.log(messout)
         res.json(messout)
     }
@@ -81,14 +41,35 @@ router.post('/applymessout',async (req,res)=>{
 
 //INMATE - CERTIFICATE ROUTES
 
-router.post('/applycertificate',(req,res)=>{
+//View Certificates
+router.get('/viewcertificates',async (req,res)=>{
     try{
-        console.log(req.body)
+        const certificates=await pool.query('SELECT * FROM certificate_application')
+        console.log(certificates.rows)
+        res.json(certificates.rows)
     }
     catch(e){
         console.error(e)
     }
+    
 })
+
+//Apply for a certificate
+// router.post('/applycertificate',async(req,res)=>{
+//     try{
+//         const user_id=req.body.user_id
+//         const purpose=req.body.purpose
+//         const remarks=req.body.purpose
+//         const date=new Date();
+//         const getadmno=await pool.query("SELECT hostel_admission_no FROM inmate_table WHERE admission_no=$1",[user_id])
+//         const hostel_admno=getadmno.rows[0].hostel_admission_no
+//         const query=await pool.query("INSERT INTO certificate_application VALUES(1,1,1,1,1,1,)",[hostel_admno,date,purpose,remarks])
+
+//     }
+//     catch(e){
+//         console.error(e)
+//     }
+// })
 
 
 

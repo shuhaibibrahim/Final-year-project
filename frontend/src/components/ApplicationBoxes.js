@@ -6,11 +6,13 @@ function ApplicationBoxes() {
             description:"",
             fields:`{
                 "Purpose": {
+                              "tag":"textarea",
                               "label":"Purpose",
                               "name":"purpose",
                               "type":"text"
                             },
                 "Remarks": {
+                              "tag":"textarea",
                               "label":"Remarks",
                               "name":"remarks",
                               "type":"text"
@@ -22,14 +24,16 @@ function ApplicationBoxes() {
             description:"",
             fields:`{
                 "Purpose": {
-                              "label":"Purpose",
-                              "name":"purpose",
-                              "type":"text"
+                            "tag":"textarea",
+                            "label":"Purpose",
+                            "name":"purpose",
+                            "type":"text"
                             },
                 "Remarks": {
-                              "label":"Remarks",
-                              "name":"remarks",
-                              "type":"text"
+                            "tag":"textarea",
+                            "label":"Purpose",
+                            "name":"purpose",
+                            "type":"text"
                             }
             }`   
         },
@@ -38,14 +42,16 @@ function ApplicationBoxes() {
             description:"",
             fields:`{
                 "Purpose": {
-                              "label":"Purpose",
-                              "name":"purpose",
-                              "type":"text"
+                                "tag":"textarea",
+                                "label":"Purpose",
+                                "name":"purpose",
+                                "type":"text"
                             },
                 "Remarks": {
-                              "label":"Remarks",
-                              "name":"remarks",
-                              "type":"text"
+                                "tag":"textarea",
+                                "label":"Purpose",
+                                "name":"purpose",
+                                "type":"text"
                             }
             }`   
         }

@@ -1,6 +1,7 @@
 import InfoIcon from '@mui/icons-material/Info';
 import axios from 'axios';
-import {useState} from 'react'
+import {useState,useContext} from 'react'
+import { UserContext } from '../Contexts/UserContext';
 import AlertDialog from './AlertDialog';
 import ConfirmDialog from './ConfirmDialog';
 function MessOutForm({noofDays}) {
@@ -11,9 +12,10 @@ function MessOutForm({noofDays}) {
     const [days,setDays]=useState(0)
     const [open1, setOpen1] = useState(false);
     const [open2, setOpen2] = useState(false);
-
+    const {user} = useContext(UserContext)
     const submitForm = ()=>{
-        axios.post('http://localhost:8080/inmate/messout',{
+        axios.post('http://localhost:8080/inmate/applymessout',{
+                    user_id:user.user_id,
                     fromDate:fromDate,
                     toDate:toDate
                 }).then((res)=>{
