@@ -32,16 +32,16 @@ function SideBar({myLinks, roles, setRole, myActiveIndex, roleIndex, currentRole
 
     const [rolesOpen, setRolesOpen] = useState(true)
 
-    useEffect(() => {
-        if(localStorage.getItem('activeIndex')==null){
-            localStorage.setItem('activeIndex',JSON.stringify(0))
-        }
-        else{
-            var localActiveIndex=localStorage.getItem('activeIndex')
-            setActiveIndex(parseInt(localActiveIndex))
-        }
+    // useEffect(() => {
+    //     if(localStorage.getItem('activeIndex')==null){
+    //         localStorage.setItem('activeIndex',JSON.stringify(0))
+    //     }
+    //     else{
+    //         var localActiveIndex=localStorage.getItem('activeIndex')
+    //         setActiveIndex(parseInt(localActiveIndex))
+    //     }
             
-    }, [])
+    // }, [])
     
     useEffect(() => {
         // setLinks(myLinks)

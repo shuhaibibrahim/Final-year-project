@@ -145,6 +145,7 @@ function AdminInmates() {
   const [selectedRowIndex, setSelectedRowIndex] = useState(-1)
   const [selectedHostel, setSelectedHostel] = useState(null) //hostel in which a row is selected
   const [selectedRole, setSelectedRole] = useState(null)
+  const [selectedInmateRoles, setSelectedInmateRoles] = useState([]) //List of roles of inmate selected to assign role
 
   const [modalText,setModalText]=useState("")
   const [modalHeading,setModalHeading]=useState("")
@@ -152,16 +153,16 @@ function AdminInmates() {
   const [open2, setOpen2] = useState(false);
 
   useEffect(() => {
-    axios.get('http://localhost:8080/admin/inmates',{
-      params:{hostel: tabSelected}
-    })
-    .then(function (response) {
-        console.log("success" , response ,"response.data");
-        setHostelDataSelected(response.data)
-    })
-    .catch(function (error) {
-        console.log("FAILED!!! ",error);
-    });
+      axios.get('http://localhost:8080/admin/inmates',{
+        params:{hostel: tabSelected}
+      })
+      .then(function (response) {
+          console.log("success" , response ,"response.data");
+          setHostelDataSelected(response.data)
+      })
+      .catch(function (error) {
+          console.log("FAILED!!! ",error);
+      });
   }, [tabSelected])
   
 
@@ -241,7 +242,7 @@ function AdminInmates() {
 
   const updateRole=()=>{
     axios.post('http://localhost:8080/admin/inmates/updateRole',{
-      hostelAdmNo: '18MH001',
+      hostelAdmNo: hostelDataSelected[selectedRowIndex].hostel_admission_no,
       role:selectedRole
     })
     .then(function (response) {
@@ -255,9 +256,23 @@ function AdminInmates() {
   }
 
   const AssignRole=()=>{
+    if(hostelDataSelected[selectedRowIndex]!=undefined)
+    {
+      axios.get('http://localhost:8080/admin/inmates/getRoles',{
+        params:{
+          hostelAdmNo: hostelDataSelected[selectedRowIndex].hostel_admission_no,
+        }
+      })
+      .then(function (response) {
+          setSelectedInmateRoles([...response.data])
+      })
+      .catch(function (error) {
+          console.log("FAILED!!! ",error);
+      });
+    }
     return (  
       <div className='flex flex-col w-11/12 overflow-y-auto'>
-          <div className='text-stone-800 font-bold text-lg'>Inmate - {selectedHostel}</div>
+          {/* <div className='text-stone-800 font-bold text-lg'>Inmate - {selectedHostel}</div> */}
           
           <div className='flex flex-col bg-primary p-8 rounded-xl'>
             <div className='w-full flex flex-row'>
@@ -265,25 +280,19 @@ function AdminInmates() {
                 <div className='text-stone-800 font-bold'>Name</div>
                 <div> 
                   <span className='text-stone-800 font-bold mr-3'>:</span>
-                  {selectedHostel=="MH"?
-                                inmateDataMH[selectedRowIndex].name
-                                :inmateDataLH[selectedRowIndex].name}
+                  {/* {hostelDataSelected[selectedRowIndex]&&hostelDataSelected[selectedRowIndex].name} */}
                 </div>
 
                 <div className='text-stone-800 font-bold'>Admission No</div>
                 <div> 
                   <span className='text-stone-800 font-bold mr-3'>:</span>
-                  {selectedHostel=="MH"?
-                                inmateDataMH[selectedRowIndex].admNo
-                                :inmateDataLH[selectedRowIndex].admNo}
+                  {/* {hostelDataSelected[selectedRowIndex]&&hostelDataSelected[selectedRowIndex].admission_no} */}
                 </div>
                 
                 <div className='text-stone-800 font-bold'>Department</div>
                 <div> 
                   <span className='text-stone-800 font-bold mr-3'>:</span>
-                  {selectedHostel=="MH"?
-                                inmateDataMH[selectedRowIndex].dept
-                                :inmateDataLH[selectedRowIndex].dept}
+                  {/* {hostelDataSelected[selectedRowIndex]&&hostelDataSelected[selectedRowIndex].department} */}
                 </div>
               </div>
 
@@ -291,25 +300,19 @@ function AdminInmates() {
                 <div className='text-stone-800 font-bold'>Batch</div>
                 <div> 
                   <span className='text-stone-800 font-bold mr-3'>:</span>
-                  {selectedHostel=="MH"?
-                                inmateDataMH[selectedRowIndex].batch
-                                :inmateDataLH[selectedRowIndex].batch}
+                  {/* {hostelDataSelected[selectedRowIndex]&&hostelDataSelected[selectedRowIndex].batchid} */}
                 </div>
                 
                 <div className='text-stone-800 font-bold'>Phone</div>
                 <div> 
                   <span className='text-stone-800 font-bold mr-3'>:</span>
-                  {selectedHostel=="MH"?
-                                inmateDataMH[selectedRowIndex].phone
-                                :inmateDataLH[selectedRowIndex].phone}
+                  {/* {hostelDataSelected[selectedRowIndex]&&hostelDataSelected[selectedRowIndex].mobile_no} */}
                 </div>
                 
                 <div className='text-stone-800 font-bold'>Email</div>
                 <div> 
                   <span className='text-stone-800 font-bold mr-3'>:</span>
-                  {selectedHostel=="MH"?
-                                inmateDataMH[selectedRowIndex].email
-                                :inmateDataLH[selectedRowIndex].email}
+                  {/* {hostelDataSelected[selectedRowIndex]&&hostelDataSelected[selectedRowIndex].email} */}
                 </div>
               </div>
             </div>
@@ -317,8 +320,7 @@ function AdminInmates() {
             <div className='w-full flex flex-row items-center mt-4'>
               <div className='text-stone-800 font-bold'>Roles</div> 
                 <span className='text-stone-800 font-bold mr-3 flex flex-row'>:</span>
-                {selectedHostel=="MH"?
-                (inmateDataMH[selectedRowIndex].roles.map((item, index)=>(
+                {selectedInmateRoles.map((item, index)=>(
                   <div key={index} className='flex flex-row w-fit justify-between items-center mr-2 py-2 px-3 bg-stone-800 text-white text-sm font-medium rounded-full space-x-2'>
                     <div>{item}</div>
                     <div
@@ -331,23 +333,7 @@ function AdminInmates() {
                         </svg>
                     </div>
                   </div>
-                )))
-                :
-                (inmateDataLH[selectedRowIndex].roles.map((item, index)=>(
-                  <div key={index} className='flex flex-row w-fit justify-between items-center mr-2 py-2 px-3 bg-stone-800 text-white text-sm font-medium rounded-full space-x-2'>
-                    <div>{item}</div>
-                    <div
-                        className='ml-2 text-white cursor-pointer rounded-full hover:text-red-600'
-                        onClick={()=>{
-                        }}
-                    >
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                          <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                        </svg>
-                    </div>
-                  </div>
-                )))
-                }
+                ))}
             </div>
 
           </div>

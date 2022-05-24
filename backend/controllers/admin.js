@@ -10,9 +10,21 @@ const inmateList=(req,res)=>{
         if (err) {
             throw err
         }
+
         console.log('user:', resp.rows)
 
         res.send(resp.rows)
+    })
+}
+
+const getInmateRoles=(req, res)=>{
+    pool.query(`SELECT Role FROM INMATE_ROLE
+                WHERE Hostel_Admission_No=$1`, [req.query.hostelAdmNo], (err, resp) => {
+        if (err) {
+            throw err
+        }
+
+        res.send(resp.rows.map(item=>item.role))
     })
 }
 
@@ -27,6 +39,19 @@ const updateInmateRole=(req,res)=>{
     console.log("req :", req.query)
     res.send('Admin is up!')
 }
+
+const removeInmateRole=(req,res)=>{
+    pool.query(`DELETE FROM INMATE_ROLE 
+                WHERE Hostel_Admission_No=$1 AND Role=$2`, [req.query.hostelAdmNo, req.query.role], (err, res) => {
+        if (err) {
+          throw err
+        }
+        console.log('user:', res.rows)
+    })
+    console.log("req :", req.query)
+    res.send('Admin is up!')
+}
+
 
 //Faculty functions
 const facultyList=(req,res)=>{
@@ -104,7 +129,9 @@ const mapCertificate=(req,res)=>{
 
 module.exports={
     inmateList, 
+    getInmateRoles,
     updateInmateRole, 
+    removeInmateRole,
     facultyList, 
     hostelRegistry,
     postPath,

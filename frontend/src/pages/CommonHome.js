@@ -17,7 +17,7 @@ function CommonHome({user}) {
   
     const [links, setLinks] = useState([])
     const [role, setRole] = useState(user.roles[0]) //index of the role selected in the user.roles array
-
+    const [activeLinkTo, setActiveLinkTo] = useState("")
     // useEffect(() => {
     //     if(localStorage.getItem('role')==null){
     //         setRole(0)
