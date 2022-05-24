@@ -1,7 +1,9 @@
-import {useState} from "react"
+import {useState,useEffect} from "react"
 import EditIcon from '@mui/icons-material/Edit';
 import CheckIcon from '@mui/icons-material/Check';
-function MessOutReqs() {
+import axios from "axios";
+function MessOutReqs({noofDays,setNoofDays}) {
+
    const messouts=[
        {
          SlNo:"1234",
@@ -67,9 +69,18 @@ function MessOutReqs() {
      const [tabSelected, setTabSelected] = useState(1)
      const [selectedRowIndex, setSelectedRowIndex] = useState(-1)
      const [selectedHostel, setSelectedHostel] = useState(null)
-     const [noofDays,setNoofDays]=useState(4)
      const [isEdit,setIsEdit]=useState(false)
-   
+
+     const submitHandler =(e)=>{
+       e.preventDefault();
+       setIsEdit(!isEdit)
+       axios.put('http://localhost:8080/inmate/messoutdays',{
+         noofDays:noofDays
+       })
+       .then((res)=>{
+         console.log(res)
+       })
+     }
        return (
          <>
            {/* inmates list */}
@@ -79,7 +90,8 @@ function MessOutReqs() {
                   {isEdit?<input type="number" min="1" max="100" className="border-solid border-2 rounded-lg ml-3 p-1 w-20" 
                     value={noofDays} onChange={(e)=>{setNoofDays(e.target.value)}}/>:<span className="ml-3">{noofDays}</span>}
                 </p>
-                <button type="submit" className="submit-button-black text-sm ml-5" onClick={()=>{setIsEdit(!isEdit)}}>{isEdit?<p><CheckIcon className="text-sm"/> <span>Confirm</span></p>:<p><EditIcon className="text-sm"/> <span>Edit</span></p>}</button> 
+                {!isEdit?<button className="submit-button-black ml-5" onClick={()=>{setIsEdit(!isEdit)}}><EditIcon/> Edit</button>:
+                <button className="submit-button-black text-sm ml-5" onClick={submitHandler}><CheckIcon className="text-sm"/> Confirm</button>}
              </div>
              <h2 className="text-black font-semibold text-lg mt-5 mb-3">Mess Out Requests</h2>
              <table className='w-full relative table-auto'>

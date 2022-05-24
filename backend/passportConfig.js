@@ -28,9 +28,17 @@ module.exports = function(passport){
                         WHERE USERID=$1`, [user.user_id], (err, response)=>{
                         if(!err)
                         {
-                          user.roles=response.rows.map(item=>item.role)
-                          // console.log("userWithRoles : ",userWithRoles)
-                          return done(null,user)
+                          roles=[...response.rows]
+
+                          //adding admin role if user is an admin
+                          if(user.is_admin==true)
+                            roles.push('admin')
+                          var userWithRoles={
+                            ...user,
+                            roles:roles
+                          }
+                          console.log("userWithRoles : ",userWithRoles)
+                          return done(null,userWithRoles)
                         }
                       })
           }
@@ -70,8 +78,10 @@ module.exports = function(passport){
                         }
                       })
           }
+          else
+            return done(null, user)
+
           
-          // return done(null, user)
           
         }
     })
@@ -121,49 +131,60 @@ module.exports = function(passport){
                                   WHERE USERID=$1`, [user.user_id], (err, response)=>{
                                   if(!err)
                                   {
-                                    user.roles=response.rows.map(item=>item.role)
-                                    // console.log("userWithRoles : ",userWithRoles)
-                                    return done(null,user)
+                                    roles=[...response.rows]
+
+                                    //adding admin role if user is an admin
+                                    if(user.is_admin==true)
+                                      roles.push('admin')
+
+                                    var userWithRoles={
+                                      ...user,
+                                      roles:roles
+                                    }
+                                    console.log("userWithRoles : ",userWithRoles)
+                                    return done(null,userWithRoles)
                                   }
                                 })
                   }
                   else if(user.designation=="student")
                   {
-                        console.log("Im here now")
-                        //stages include : inmate, noninmate
-                        pool.query(`SELECT Stage from STUDENT
-                                    WHERE Admission_No=$1`, [user.user_id], (err, response)=>{
-                                    if(!err)
+                      console.log("Im here now")
+                      //stages include : inmate, noninmate
+                      pool.query(`SELECT Stage from STUDENT
+                                  WHERE Admission_No=$1`, [user.user_id], (err, response)=>{
+                                  if(!err)
+                                  {
+                                    console.log("Hii im here now")
+                                    user.stage=response.rows[0].stage
+                                    //only inmate has roles if any
+                                    if(response.rows[0].stage=="inmate")
                                     {
-                                      console.log("Hii im here now")
-                                      user.stage=response.rows[0].stage
-                                      //only inmate has roles if any
-                                      if(response.rows[0].stage=="inmate")
-                                      {
-                                        pool.query(`SELECT Role from INMATE_TABLE it, INMATE_ROLE ir
-                                          WHERE it.Admission_No=$1 and it.Hostel_Admission_No=ir.Hostel_Admission_No`, [user.user_id], (err, response)=>{
-                                          if(!err)
-                                          {
-                                            console.log("I got here ",response.rows)
-                                            user.roles=response.rows.map(item=>item.role)
+                                      pool.query(`SELECT Role from INMATE_TABLE it, INMATE_ROLE ir
+                                        WHERE it.Admission_No=$1 and it.Hostel_Admission_No=ir.Hostel_Admission_No`, [user.user_id], (err, response)=>{
+                                        if(!err)
+                                        {
+                                          console.log("I got here ",response.rows)
+                                          user.roles=response.rows.map(item=>item.role)
 
-                                            console.log("userWithRoles : ",user)
-                                            return done(null,user)
-                                          }
-                                          else
-                                          {
-                                            console.log(err)
-                                          }
-                                        })
-                                      }
+                                          console.log("userWithRoles : ",user)
+                                          return done(null,user)
+                                        }
+                                        else
+                                        {
+                                          console.log(err)
+                                        }
+                                      })
                                     }
-                                    else
-                                    {
-                                      console.log(err)
-                                    }
-                                  })
-                                }
-                          }
+                                  }
+                                  else
+                                  {
+                                    console.log(err)
+                                  }
                       })
-    });
+                  }
+                  else
+                    return done(null, user)
+                }
+    })
+  });
 }

@@ -1,16 +1,16 @@
 import React, { useEffect } from 'react'
 import { Outlet, useOutletContext } from 'react-router-dom'
 
-function AdminHome() {
+function HodHome() {
 
   const [role, setRole]=useOutletContext()
   useEffect(() => {
-    setRole("admin")
+    setRole("hod")
   }, [])
-
+  
   return (
-    <div className='flex w-full flex-row bg-primary h-screen'>
-        {/* <div className='w-3/12 '>
+    <div className='flex w-full flex-row bg-primary min-h-screen h-full'>
+        {/* <div className='w-3/12'>
             <SideBar myLinks={links} myActiveIndex={0} myOpenedIndex={0}/>
         </div> */}
         <Outlet/>
@@ -18,4 +18,4 @@ function AdminHome() {
   )
 }
 
-export default AdminHome
+export default HodHome;

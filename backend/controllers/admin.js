@@ -3,28 +3,29 @@ const {pool}=require('../db')
 //Inmate Functions
 const inmateList=(req,res)=>{
 
-    pool.query(`SELECT * FROM STUDENT s, BATCH b, INMATE_TABLE it, INMATE_ROOM ir, HOSTEL_ROOM hr
-                where s.BatchId=b.batchId and s.Admission_No=it.Admission_No and
+    pool.query(`SELECT * FROM Users u, STUDENT s, BATCH b, INMATE_TABLE it, INMATE_ROOM ir, HOSTEL_ROOM hr
+                where s.BatchId=b.batchId and u.User_Id=s.Admission_No and s.Admission_No=it.Admission_No and
                 it.Hostel_Admission_No=ir.Hostel_Admission_No and ir.Room_Id=hr.Room_Id and 
-                hr.Hostel=$1`, [req.query.hostel], (err, res) => {
+                hr.Hostel=$1`, [req.query.hostel], (err, resp) => {
         if (err) {
             throw err
         }
-        console.log('user:', res.rows)
+
+        console.log('user:', resp.rows)
+
+        res.send(resp.rows)
     })
 }
 
-const inmateRoles=(req,res)=>{
-    pool.query(`SELECT Role INAMTE_ROLE irole
-                where irole.Hostel_Admission_No=$1`, [req.query.hostelAdmNo], (err, res) => {
+const getInmateRoles=(req, res)=>{
+    pool.query(`SELECT Role FROM INMATE_ROLE
+                WHERE Hostel_Admission_No=$1`, [req.query.hostelAdmNo], (err, resp) => {
         if (err) {
-            console.log(err)
             throw err
         }
-        console.log('user:', res.rows)
+
+        res.send(resp.rows.map(item=>item.role))
     })
-    console.log("req :", req.query)
-    res.send('Admin is up!')
 }
 
 const updateInmateRole=(req,res)=>{
@@ -39,12 +40,25 @@ const updateInmateRole=(req,res)=>{
     res.send('Admin is up!')
 }
 
+const removeInmateRole=(req,res)=>{
+    pool.query(`DELETE FROM INMATE_ROLE 
+                WHERE Hostel_Admission_No=$1 AND Role=$2`, [req.query.hostelAdmNo, req.query.role], (err, res) => {
+        if (err) {
+          throw err
+        }
+        console.log('user:', res.rows)
+    })
+    console.log("req :", req.query)
+    res.send('Admin is up!')
+}
+
+
 //Faculty functions
 const facultyList=(req,res)=>{
 
     var rows=[]
-    pool.query(`SELECT * FROM FACULTY f, ROLES_FACULTY rf 
-                where f.PEN_NO=rf.UserID`, (err, resp) => {
+    pool.query(`SELECT *  FROM Users u, FACULTY f
+                where u.User_Id=f.PEN_NO`, (err, resp) => {
         if (err) {
             console.log(err)
             throw err
@@ -115,8 +129,9 @@ const mapCertificate=(req,res)=>{
 
 module.exports={
     inmateList, 
-    inmateRoles, 
+    getInmateRoles,
     updateInmateRole, 
+    removeInmateRole,
     facultyList, 
     hostelRegistry,
     postPath,
