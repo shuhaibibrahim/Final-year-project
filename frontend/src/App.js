@@ -8,7 +8,7 @@ import {
   Route,
 } from "react-router-dom";
 import StudentHome from './pages/Student/StudentHome';
-import FacultyHome from './pages/StaffAdvisor/FacultyHome';
+import FacultyHome from './pages/StaffAdvisor/AdvisorHome';
 import StudentsDetails from './pages/StaffAdvisor/StudentsDetails';
 import HostelAllotment from './pages/StaffAdvisor/HostelAllotment';
 import AdminHome from './pages/Admin/AdminHome';
@@ -56,6 +56,8 @@ import SergeantHome from './pages/Sergeant/SergeantHome';
 import ViewComplaints from './pages/Sergeant/ViewComplaints';
 import SeatMatrix from './pages/Admin/SeatMatrix';
 import {UserContext} from './Contexts/UserContext'
+import AdvisorHome from './pages/StaffAdvisor/AdvisorHome';
+import HodHome from './pages/HOD/HodHome';
 
 function App() {
   const [user, setUser] = useState(undefined)
@@ -95,10 +97,10 @@ function App() {
           {user==null&&(<Route path="/login" element={<LoginPage/>}/>)}
           {user==null&&(<Route path="/signup" element={<SignUpPage/>}/>)}
 
-          {user!=null&&user.designation=='faculty'&&(
+          {user!=null&&(user.designation=='faculty')&&(
           <Route path="/" element={<CommonHome user={user}/>}>
             {/* Admin Routes */}
-            <Route path="admin" element={<AdminHome/>}>
+            {user.is_admin==true&&(<Route path="admin" element={<AdminHome/>}>
               <Route index element={<AdminInmates/>} />
               <Route path="inmates" element={<AdminInmates/>} />
               <Route path="noninmates" element={<AdminNonInmates/>} />
@@ -109,10 +111,10 @@ function App() {
               <Route path="createapplication" element={<CreateApplications/>} />
               <Route path="hostelblocks" element={<HostelBlocks/>} />
               <Route path="seatmatrix" element={<SeatMatrix/>} />
-            </Route>
+            </Route>)}
 
             {/* staffadvisor Routes */}
-            <Route path="staffadvisor" element={<FacultyHome/>}>
+            <Route path="staffadvisor" element={<AdvisorHome/>}>
               <Route index element={<StudentsDetails/>}/>
               <Route path="studentsdetails" element={<StudentsDetails/>}/>
               <Route path="signupinvite" element={<SignupInvite/>}/>
@@ -120,7 +122,7 @@ function App() {
             </Route>
 
             {/* hod Routes */}
-            <Route path="/hod" element={<FacultyHome/>}>
+            <Route path="/hod" element={<HodHome/>}>
               <Route index element={<StudentsDetailsHod/>}/>
               <Route path="studentsdetails" element={<StudentsDetailsHod/>}/>
               <Route path="addstaffadvisor" element={<AddStaffAdvisor/>}/>

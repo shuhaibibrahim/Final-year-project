@@ -24,7 +24,7 @@ import keySvg from'../icons/key.svg'
 import logoutSvg from'../icons/logout.svg'
 import userSvg from'../icons/user.svg'
 
-function SideBar({myLinks, roles, setRole, myActiveIndex, roleIndex}) {
+function SideBar({myLinks, roles, setRole, myActiveIndex, roleIndex, currentRole}) {
 
     const [activeIndex, setActiveIndex] = useState(-1)
 
@@ -32,16 +32,16 @@ function SideBar({myLinks, roles, setRole, myActiveIndex, roleIndex}) {
 
     const [rolesOpen, setRolesOpen] = useState(true)
 
-    useEffect(() => {
-        if(localStorage.getItem('activeIndex')==null){
-            localStorage.setItem('activeIndex',JSON.stringify(0))
-        }
-        else{
-            var localActiveIndex=localStorage.getItem('activeIndex')
-            setActiveIndex(parseInt(localActiveIndex))
-        }
+    // useEffect(() => {
+    //     if(localStorage.getItem('activeIndex')==null){
+    //         localStorage.setItem('activeIndex',JSON.stringify(0))
+    //     }
+    //     else{
+    //         var localActiveIndex=localStorage.getItem('activeIndex')
+    //         setActiveIndex(parseInt(localActiveIndex))
+    //     }
             
-    }, [])
+    // }, [])
     
     useEffect(() => {
         // setLinks(myLinks)
@@ -50,6 +50,7 @@ function SideBar({myLinks, roles, setRole, myActiveIndex, roleIndex}) {
 
         var newLinks=myLinks.map(item=>({...item}))
 
+        //closing all the opened links(with sublinks) that are not active
         newLinks.forEach((link, linkIndex) => {
             if(linkIndex!=myActiveIndex && link.subLinks!=undefined && link.subLinkOpen==true)
             {
@@ -181,7 +182,7 @@ function SideBar({myLinks, roles, setRole, myActiveIndex, roleIndex}) {
                     {/* Roles */}
                     {roles!=undefined&&(<div className='flex flex-col w-full'>
                         <div 
-                            className='flex flex-row cursor-pointer justify-between py-2 px-2 text-black '
+                            className='flex flex-row bg-slate-200 cursor-pointer justify-between py-2 px-2 text-black '
                             onClick={()=>{setRolesOpen(open=>!open)}}
                         >
                             <div className='flex flex-row space-x-4 items-center ml-4'>
@@ -200,19 +201,20 @@ function SideBar({myLinks, roles, setRole, myActiveIndex, roleIndex}) {
                         </div>
 
                         {/* Roles List */}
-                        <div className={'flex flex-col bg-gray-100 ' + (rolesOpen?'dropdown-visible':'dropdown-hidden')}>
+                        <div className={'flex flex-col bg-gray-100 overflow-hidden ' + (rolesOpen?'dropdown-visible':'dropdown-hidden')}>
                             {roles.map((role, rIndex)=>(
 
                                 // Give route address of corresponding home in the 'to' attribute of the following Link
                                 <Link to={role.split(' ').join('')} className="">
                                 <div 
                                     key={rIndex} 
-                                    className={'ml-8 py-2 px-2 flex flex-row space-x-4 justify-self-start items-center ' +(rIndex==roleIndex?' text-blue-500 ':' text-black ')}
+                                    className={'ml-8 py-2 px-2 flex flex-row space-x-4 justify-self-start items-center ' +(role==currentRole?' text-blue-500 ':' text-black ')}
                                     onClick={()=>{
-                                        setRole(rIndex)
+                                        // setRole(rIndex)
+                                        setRole(role)
                                         setActiveIndex(0)
-                                        localStorage.setItem('activeIndex','0')
-                                        localStorage.setItem('role',JSON.stringify(rIndex))
+                                        // localStorage.setItem('activeIndex','0')
+                                        // localStorage.setItem('role',JSON.stringify(rIndex))
                                     }}
                                     onBlur={()=>{
                                         setRolesOpen(false)
