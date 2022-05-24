@@ -1,7 +1,18 @@
 import React from 'react'
 import Uploader from '../../components/Uploader'
+import { saveAs } from "file-saver";
+import excelfile from "../../components/1.xlsx"
+
 
 function SignupInvite() {
+  const saveFile = () => {
+    saveAs(
+      // "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
+      // "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
+      excelfile,
+      "SignUp_Link_Excel_Template.xlsx"
+    );
+  };
   return (
     <div className='flex flex-col w-full items-center'>
       <div className='flex flex-row justify-between w-10/12 pt-4 items-center'>
@@ -33,7 +44,10 @@ function SignupInvite() {
             </div>
           </div>
             <div className='py-2 cursor-pointer hover:bg-stone-600 px-3 bg-stone-800 text-white text-sm font-semibold rounded-2xl'>Submit</div>
-
+            <div className='mt-3' >
+              <div className='py-2 cursor-pointer hover:bg-stone-600 px-3 bg-stone-800 text-white text-sm font-semibold rounded-2xl ' onClick={saveFile}>Download</div>
+              <div className='text-xs font-semibold'>(Excel template)</div>
+            </div>
           </div>  
         <div className='text-sm font-bold mt-5 w-11/12 p-3'>Send signup link (Using Sheets)</div>
 

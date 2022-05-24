@@ -28,14 +28,9 @@ module.exports = function(passport){
                         WHERE USERID=$1`, [user.user_id], (err, response)=>{
                         if(!err)
                         {
-                          roles=[...response.rows]
-
-                          var userWithRoles={
-                            ...user,
-                            roles:roles
-                          }
-                          console.log("userWithRoles : ",userWithRoles)
-                          return done(null,userWithRoles)
+                          user.roles=response.rows.map(item=>item.role)
+                          // console.log("userWithRoles : ",userWithRoles)
+                          return done(null,user)
                         }
                       })
           }
@@ -126,14 +121,9 @@ module.exports = function(passport){
                                   WHERE USERID=$1`, [user.user_id], (err, response)=>{
                                   if(!err)
                                   {
-                                    roles=[...response.rows]
-
-                                    var userWithRoles={
-                                      ...user,
-                                      roles:roles
-                                    }
-                                    console.log("userWithRoles : ",userWithRoles)
-                                    return done(null,userWithRoles)
+                                    user.roles=response.rows.map(item=>item.role)
+                                    // console.log("userWithRoles : ",userWithRoles)
+                                    return done(null,user)
                                   }
                                 })
                   }
