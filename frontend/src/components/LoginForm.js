@@ -1,12 +1,14 @@
-import {useState} from "react"
+import {useContext, useState} from "react"
 import {Link} from "react-router-dom"
 import axios from 'axios'
+import {UserContext} from '../Contexts/UserContext'
 
-function LoginForm({setUser, }) {
+function LoginForm() {
     
     const [admissionno,setAdmissionNo]=useState("")
     const [username, setUsername] = useState("")
     const [password,setPassword]=useState("")
+    const {setUser} =useContext(UserContext)
 
     const login=()=>{
         console.log("here login")
@@ -35,7 +37,7 @@ function LoginForm({setUser, }) {
                     <label htmlFor="">Admission Number</label>
                     <input 
                         type="text" 
-                        className="border-solid border-2 rounded-lg mt-2 px-2 py-1" 
+                        className="w-full py-2 px-3 rounded-xl ring-2 ring-slate-300 focus:outline-none" 
                         placeholder="Enter your admission number"
                         value={username}
                         onChange={(e)=>{setUsername(e.target.value)}}
@@ -45,7 +47,7 @@ function LoginForm({setUser, }) {
                     <label htmlFor="">Password</label>
                     <input 
                         type="password" 
-                        className="border-solid border-2 rounded-lg mt-2 px-2 py-1" 
+                        className="w-full py-2 px-3 rounded-xl ring-2 ring-slate-300 focus:outline-none" 
                         placeholder="Enter your password"
                         value={password}
                         onChange={(e)=>{setPassword(e.target.value)}}

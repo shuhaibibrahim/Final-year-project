@@ -52,7 +52,10 @@ import HostelAllotmentHod from './pages/HOD/HostelAllotmentHod';
 import SignupInviteHod from './pages/HOD/SignupInviteHod';
 import AddStaffAdvisor from './pages/HOD/AddStaffAdvisor';
 import axios from 'axios';
+import SergeantHome from './pages/Sergeant/SergeantHome';
+import ViewComplaints from './pages/Sergeant/ViewComplaints';
 import SeatMatrix from './pages/Admin/SeatMatrix';
+import {UserContext} from './Contexts/UserContext'
 import AdvisorHome from './pages/StaffAdvisor/AdvisorHome';
 import HodHome from './pages/HOD/HodHome';
 
@@ -87,10 +90,11 @@ function App() {
   
   return (
     <div className='App'>
+      <UserContext.Provider value={{user,setUser}}>
       <BrowserRouter>
         <Routes>
           {user===null&&(<Route path="/" element={<LandingPage/>}/>)}
-          {user==null&&(<Route path="/login" element={<LoginPage setUser={setUser}/>}/>)}
+          {user==null&&(<Route path="/login" element={<LoginPage/>}/>)}
           {user==null&&(<Route path="/signup" element={<SignUpPage/>}/>)}
 
           {user!=null&&(user.designation=='faculty')&&(
@@ -130,6 +134,11 @@ function App() {
               <Route index element={<HostelAdmission/>}/>
               <Route path="admission" element={<HostelAdmission/>}/>
               <Route path="hostelregistry" element={<HostelRegistry/>}/>
+            </Route>
+
+            <Route path="/sergeant" element={<SergeantHome/>}>
+              <Route index element={<ViewComplaints/>}/>
+              <Route path="complaints" element={<ViewComplaints/>}/>
             </Route>
 
             {/* Hostel Office Routes */}
@@ -172,6 +181,7 @@ function App() {
           
         </Routes>
       </BrowserRouter>
+      </UserContext.Provider>
     </div>
   );
 }

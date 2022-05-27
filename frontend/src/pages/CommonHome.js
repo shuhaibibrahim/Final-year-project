@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { Outlet } from 'react-router-dom'
 import SideBar from '../components/SideBar'
 import editSvg from'../icons/edit.svg'
@@ -11,10 +11,13 @@ import { createBrowserHistory } from 'history'
 import { wardenLinks } from './Warden/WardenLinks'
 import { hostelOfficeLinks } from './HostelOffice/HostelOfficeLinks'
 import { hodLinks } from './HOD/HODLinks'
+import { sergeantLinks } from './Sergeant/SergeantLinks'
+import { UserContext } from '../Contexts/UserContext'
 // import { studentLinks } from './Student/StudentLinks'
 
-function CommonHome({user}) {
+function CommonHome() {
   
+    const {user} =useContext(UserContext)
     const [links, setLinks] = useState([])
     const [role, setRole] = useState(user.roles[0]) //index of the role selected in the user.roles array
     const [activeLinkTo, setActiveLinkTo] = useState("")
@@ -91,6 +94,11 @@ function CommonHome({user}) {
             // setRoleTo("warden")
             console.log("new links : ",hostelOfficeLinks)
             setLinks(hostelOfficeLinks.map(item=>({...item})))
+        }
+        else if(user.roles[role]==="sergeant"){
+            // setRoleTo("warden")
+            console.log("new links : ",sergeantLinks)
+            setLinks(sergeantLinks.map(item=>({...item})))
         }
 
     }, [role])
