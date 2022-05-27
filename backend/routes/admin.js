@@ -4,12 +4,24 @@ const {pool}=require('../db')
 
 const admin=require('../controllers/admin')
 
+//inmate
 router.get('/inmates', admin.inmateList)
 router.get('/inmates/getRoles', admin.getInmateRoles)
 router.post('/inmates/updateRole', admin.updateInmateRole)
 router.get('/inmates/removeRole', admin.removeInmateRole)
 
+//faculty
 router.get('/faculties', admin.facultyList)
 
+//application paths
+router.get('/getPathsData', admin.getPathsData)
+router.post('/postPath', admin.postPath)
+router.get('/deletePath', admin.deletePath)
+router.get('/mapCertificate', admin.mapCertificate)
+router.get('/deleteMapping', admin.deleteMapping)
+
+//create/edit application
+router.post('/createApplication', admin.createApplication)
+router.post('/updateApplication', admin.updateApplication)
 
 module.exports=router

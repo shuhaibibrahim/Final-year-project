@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import Xarrow, {useXarrow, Xwrapper} from 'react-xarrows';
 import Draggable from 'react-draggable';
+import axios from 'axios';
 
 function AdminPaths() {
 
@@ -46,6 +47,18 @@ function AdminPaths() {
     //     document.body.appendChild(script);
     // }, [])
 
+    useEffect(() => {
+        axios.get('http://localhost:8080/admin/getPathsData')
+          .then(function (response) {
+              // console.log("success" , response ,"response.data");
+              console.log("hostel data is set")
+              setHostelDataSelected(response.data)
+          })
+          .catch(function (error) {
+              console.log("FAILED!!! ",error);
+          });
+    }, [])
+    
     const backdropClickHandler = (event) => {
         if (event.target === event.currentTarget) {
             // setModal(<div/>)
