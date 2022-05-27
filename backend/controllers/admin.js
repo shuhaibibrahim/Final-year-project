@@ -30,11 +30,11 @@ const getInmateRoles=(req, res)=>{
 
 const updateInmateRole=(req,res)=>{
     pool.query(`INSERT INTO INMATE_ROLE (Hostel_Admission_No, Role)
-                Values ($1, $2)`, [req.body.hostelAdmNo, req.body.role], (err, res) => {
+                Values ($1, $2)`, [req.body.hostelAdmNo, req.body.role], (err, resp) => {
         if (err) {
           throw err
         }
-        console.log('user:', res.rows)
+        console.log('user roles:', resp.rows)
     })
     console.log("req :", req.query)
     res.send('Admin is up!')
@@ -42,13 +42,13 @@ const updateInmateRole=(req,res)=>{
 
 const removeInmateRole=(req,res)=>{
     pool.query(`DELETE FROM INMATE_ROLE 
-                WHERE Hostel_Admission_No=$1 AND Role=$2`, [req.query.hostelAdmNo, req.query.role], (err, res) => {
+                WHERE Hostel_Admission_No=$1 AND Role=$2 returning *`, [req.query.hostelAdmNo, req.query.role], (err, resp) => {
         if (err) {
           throw err
         }
-        console.log('user:', res.rows)
+        console.log('user:', resp.rows)
     })
-    console.log("req :", req.query)
+    console.log("req deleted L ", req.query)
     res.send('Admin is up!')
 }
 
@@ -85,6 +85,19 @@ const hostelRegistry=(req,res)=>{
 }
 
 //Applications Paths
+const getPathsData=(req,res)=>{
+
+    pool.query(`SELECT * FROM PATH`, [req.query.pathNo], (err, resp) => {
+        if (err) {
+            console.log(err)
+            throw err
+        }
+        console.log('user:', resp.rows)
+
+        res.send(resp.rows)
+    })
+}
+
 const postPath=(req,res)=>{
 
     pool.query(`INSERT INTO PATH (path)
@@ -116,25 +129,91 @@ const mapCertificate=(req,res)=>{
 
     pool.query(`UPDATE CERTIFICATES
                 SET PathNo=$1
-                WHERE Name=$2`, [req.body.pathNo, req.body.certificateName], (err, res) => {
+                WHERE Name=$2 && PathNo=null returning *`, [req.body.pathNo, req.body.certificateName], (err, resp) => {
         if (err) {
             console.log(err)
             throw err
         }
-        console.log('user:', res.rows)
 
-        res.send(res.rows)
+        if(resp.rows.length==0)
+            res.send({message:"No rows are updated"})
+
+        res.send(resp.rows)
+    })
+}
+
+const deleteMapping=(req,res)=>{
+
+    pool.query(`UPDATE CERTIFICATES
+                SET PathNo=null
+                WHERE Name=$2 returning *`, [req.body.pathNo, req.body.certificateName], (err, resp) => {
+        if (err) {
+            console.log(err)
+            throw err
+        }
+
+        if(resp.rows.length==0)
+            res.send({message:"No rows are updated"})
+
+        res.send(resp.rows)
+    })
+}
+
+//Create/Edit application
+const createApplication=(req,res)=>{
+
+    pool.query(`INSERT INTO CERTIFICATES(Name, Application_template)
+                VALUES ($1, $2) 
+                RETURNING *`, [req.body.certificateName, req.body.certificateTemplate], (err, resp) => {
+        if (err) {
+            console.log(err)
+            throw err
+        }
+        console.log('certificate updated : ', resp.rows)
+
+        res.send(resp.rows)
+    })
+}
+
+const updateApplication=(req,res)=>{
+    
+    console.log( "body : ",req.body)
+    pool.query(`UPDATE CERTIFICATES
+                SET application_template=$1
+                WHERE Certificate_ID=$2
+                RETURNING *`, [req.body.certificateTemplate, req.body.certificateId], (err, resp) => {
+        if (err) {
+            console.log(err)
+            throw err
+        }
+        console.log('certificate updated : ', resp.rows)
+
+        res.send(resp.rows)
     })
 }
 
 module.exports={
+    //inmate
     inmateList, 
     getInmateRoles,
     updateInmateRole, 
     removeInmateRole,
+
+    //faculty
     facultyList, 
+
+    //hostel registry
     hostelRegistry,
+
+    //application paths
+    getPathsData,
     postPath,
     deletePath,
-    mapCertificate
+    mapCertificate,
+    deleteMapping,
+
+    //create/edit application
+    createApplication,
+    updateApplication
+
 }

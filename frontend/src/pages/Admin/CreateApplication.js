@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import {motion} from "framer-motion" 
+import axios from 'axios'
 
 function CreateApplications() {
 
@@ -143,9 +144,11 @@ function CreateApplications() {
 
     if(modalType===0)
     {
+      //created application index if we are in 'create application' tab
+      //application selected index if we are in 'edit application' tab 
       const applicationIndex=tabSelected==0?applicationSelectedIndex:createdApplicationIndex
-      console.log(applicationIndex)
-        setModal(
+
+      setModal(
             <div onClick={backdropClickHandler} className="bg-slate-500/[.8] z-20 fixed inset-0 flex justify-center items-center">
                 <div className='flex flex-col bg-white rounded-2xl w-5/12 h-auto pt-3 relative overflow-hidden'>
 
@@ -270,7 +273,6 @@ function CreateApplications() {
                             e.preventDefault()
                             if(newLabel!=""&&newType!="")
                             {
-                                console.log(currentApplicationsData[applicationIndex].fields)
                                 const fields=JSON.parse(currentApplicationsData[applicationIndex].fields)
                                 var fieldsArray=[]
                                 
@@ -290,17 +292,14 @@ function CreateApplications() {
                                   "type": newType
                                 }
 
-                                console.log("newfield item : ",newFieldItem)
-
                                 if(newType==="radio")
                                 {
                                   newFieldItem["radioFields"]={}
                                   radioFields.filter((item, index)=>{
-                                      newFieldItem["radioFields"][index]=item
+                                      newFieldItem["radioFields"][index]=item // {0: radioItem1, 1: radionItem2 ...}
                                   })
                                 }
 
-                                console.log("newfieldItem : ",newFieldItem)
                                 fieldsArray.push(newFieldItem)
 
                                 var updatedFields={}
@@ -308,21 +307,33 @@ function CreateApplications() {
                                   updatedFields[item["fieldName"]]={...item}
                                 })
                                 
-                                var newApplicationsData=[...currentApplicationsData]
-                                newApplicationsData[applicationIndex]={
-                                  applicationName:currentApplicationsData[applicationIndex].applicationName,
-                                  fields:JSON.stringify(updatedFields)
-                                }
 
-                                console.log("newApplicationsData : ",newApplicationsData)
-                                setCurrentApplicationsData([...newApplicationsData])
-                                setModal(null)
+                                console.log("current appliction is : ", currentApplicationsData[applicationIndex])
+                                axios.post('http://localhost:8080/admin/updateApplication',{
+                                  certificateTemplate: JSON.stringify(updatedFields),
+                                  certificateId: currentApplicationsData[applicationIndex].certificateId,
+                                })
+                                .then(function (response) {
 
-                                setNewLabel("")
-                                setNewName("")
-                                setNewType("text")
-                                setRadioItem("")
-                                setRadioFields([])
+                                    var newApplicationsData=[...currentApplicationsData]
+
+                                    //creating new applications list with updated fields in the application just created
+                                    newApplicationsData[applicationIndex]['fields']=JSON.stringify(updatedFields)
+                                
+                                    setCurrentApplicationsData([...newApplicationsData])
+                                    setModal(null)
+
+                                    setNewLabel("")
+                                    setNewName("")
+                                    setNewType("text")
+                                    setRadioItem("")
+                                    setRadioFields([])
+                                    
+                                })
+                                .catch(function (error) {
+                                    console.log("FAILED!!! ",error);
+                                });
+                                
                             }
                             }
                         }
@@ -351,6 +362,7 @@ function CreateApplications() {
     const applicationIndex=tabSelected==0?applicationSelectedIndex:createdApplicationIndex
 
     const fields=JSON.parse(currentApplicationsData[applicationIndex].fields)
+
     const render=[]
     var index=0
     for(var fieldKey in fields)
@@ -359,13 +371,11 @@ function CreateApplications() {
       if(fields[fieldKey].type==="radio")
       {
         //pushing radio items to  radioFields array to render
-        console.log("inside radio")
         for(var index in fields[fieldKey]["radioFields"])
         {
           radioFields.push(fields[fieldKey]["radioFields"][index])
         }
 
-        console.log(radioFields)
       }
 
       render.push(fields[fieldKey].type==="radio"?
@@ -448,8 +458,6 @@ function CreateApplications() {
       index+=1
     }
 
-    console.log(render)
-
     return (<div className='w-full overflow-y-auto flex flex-col px-3'>
       {render.map(inputDiv=>inputDiv)}
     </div>)
@@ -476,7 +484,6 @@ function CreateApplications() {
                             className='flex flex-row space-x-1 cursor-pointer items-center w-fit p-3 text-white font-bold bg-blue-500 hover:bg-blue-700 rounded-xl'
                             onClick={()=>{
                               setApplicationSelectedIndex(index)
-                              // console.log(JSON.parse(currentApplicationsData[index].fields))
                             }}
                           >
                             <div>Preview</div>
@@ -550,13 +557,26 @@ function CreateApplications() {
                       onClick={()=>{
                         if(newApplicationName!="")
                         {
-                          var newApplications=[...currentApplicationsData]
-                          newApplications.push({
-                            applicationName:newApplicationName,
-                            fields:`{}`
+                          axios.post('http://localhost:8080/admin/createApplication',{
+                            certificateName: newApplicationName,
+                            certificateTemplate: `{}`
                           })
-                          setCurrentApplicationsData([...newApplications])
-                          setCreatedApplicationIndex(newApplications.length-1)
+                          .then(function (response) {
+                            var newApplications=[...currentApplicationsData]
+                            console.log(response.data)
+
+                            newApplications.push({
+                              certificateId: response.data[0].certificate_id,
+                              applicationName:newApplicationName,
+                              fields:`{}`
+                            })
+                            
+                            setCurrentApplicationsData([...newApplications])
+                            setCreatedApplicationIndex(newApplications.length-1)
+                          })
+                          .catch(function (error) {
+                              console.log("FAILED!!! ",error);
+                          });
                         }
                       }}
                     >

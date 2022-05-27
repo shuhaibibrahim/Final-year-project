@@ -152,21 +152,46 @@ function AdminInmates() {
   const [open1, setOpen1] = useState(false);
   const [open2, setOpen2] = useState(false);
 
+  const getAndSetRoles=()=>{
+    axios.get('http://localhost:8080/admin/inmates/getRoles',{
+      params:{
+        hostelAdmNo: hostelDataSelected[selectedRowIndex].hostel_admission_no,
+      }
+    })
+    .then(function (response) {
+        console.log("Inmate roles is set" ,response.data)
+        setSelectedInmateRoles([...response.data])
+    })
+    .catch(function (error) {
+        console.log("FAILED!!! ",error);
+    });
+  }
+
   useEffect(() => {
-      axios.get('http://localhost:8080/admin/inmates',{
-        params:{hostel: tabSelected}
-      })
-      .then(function (response) {
-          console.log("success" , response ,"response.data");
-          setHostelDataSelected(response.data)
-      })
-      .catch(function (error) {
-          console.log("FAILED!!! ",error);
-      });
+      console.log("first useEffect is called")
+      if(tabSelected=="MH" || tabSelected=="LH")
+      {
+        axios.get('http://localhost:8080/admin/inmates',{
+          params:{hostel: tabSelected}
+        })
+        .then(function (response) {
+            // console.log("success" , response ,"response.data");
+            console.log("hostel data is set")
+            setHostelDataSelected(response.data)
+        })
+        .catch(function (error) {
+            console.log("FAILED!!! ",error);
+        });
+      }
+      else if(tabSelected=="roles" && hostelDataSelected[selectedRowIndex]!=undefined)
+      {
+        getAndSetRoles()
+      }
   }, [tabSelected])
   
 
   const HostelList=()=>{
+    console.log("Hostel List is called")
     return (
       // <div className='w-full'>
       <>
@@ -214,7 +239,9 @@ function AdminInmates() {
                   <tr 
                     className={'border-b border-slate-200 border-solid '+(index==selectedRowIndex && selectedHostel==tabSelected ?' bg-blue-300 ':' hover:bg-gray-300')}
                     onClick={()=>{
-                      if(selectedRowIndex==index && selectedHostel==tabSelected)
+                      setSelectedInmateRoles([])
+                      
+                      if(selectedRowIndex==index && selectedHostel==tabSelected)//deselecting the selected row
                       {
                         setSelectedRowIndex(-1)
                         setSelectedHostel(null)
@@ -241,12 +268,17 @@ function AdminInmates() {
   }
 
   const updateRole=()=>{
+    console.log("update role is called")
     axios.post('http://localhost:8080/admin/inmates/updateRole',{
       hostelAdmNo: hostelDataSelected[selectedRowIndex].hostel_admission_no,
       role:selectedRole
     })
     .then(function (response) {
         console.log("success" , response ,"response.data");
+        
+        //setting the new roles
+        getAndSetRoles();
+
         setModalText("Successfully Updated !")
         setOpen1(true)
     })
@@ -255,21 +287,32 @@ function AdminInmates() {
     });
   }
 
+  const deleteRole=(role)=>{
+    console.log("delete role is called")
+    axios.get('http://localhost:8080/admin/inmates/removeRole',{
+      params:{
+        hostelAdmNo: hostelDataSelected[selectedRowIndex].hostel_admission_no,
+        role:role
+      }
+    })
+    .then(function (response) {
+        console.log("success" , response ,"response.data");
+        
+        //setting the new roles
+        getAndSetRoles();
+
+        setModalText("Successfully removed !")
+        setOpen1(true)
+    })
+    .catch(function (error) {
+        console.log("FAILED!!! ",error);
+    });
+  }
+  
+
   const AssignRole=()=>{
-    if(hostelDataSelected[selectedRowIndex]!=undefined)
-    {
-      axios.get('http://localhost:8080/admin/inmates/getRoles',{
-        params:{
-          hostelAdmNo: hostelDataSelected[selectedRowIndex].hostel_admission_no,
-        }
-      })
-      .then(function (response) {
-          setSelectedInmateRoles([...response.data])
-      })
-      .catch(function (error) {
-          console.log("FAILED!!! ",error);
-      });
-    }
+    console.log("Assign role is called")
+    
     return (  
       <div className='flex flex-col w-11/12 overflow-y-auto'>
           {/* <div className='text-stone-800 font-bold text-lg'>Inmate - {selectedHostel}</div> */}
@@ -280,19 +323,19 @@ function AdminInmates() {
                 <div className='text-stone-800 font-bold'>Name</div>
                 <div> 
                   <span className='text-stone-800 font-bold mr-3'>:</span>
-                  {/* {hostelDataSelected[selectedRowIndex]&&hostelDataSelected[selectedRowIndex].name} */}
+                  {hostelDataSelected[selectedRowIndex]&&hostelDataSelected[selectedRowIndex].name}
                 </div>
 
                 <div className='text-stone-800 font-bold'>Admission No</div>
                 <div> 
                   <span className='text-stone-800 font-bold mr-3'>:</span>
-                  {/* {hostelDataSelected[selectedRowIndex]&&hostelDataSelected[selectedRowIndex].admission_no} */}
+                  {hostelDataSelected[selectedRowIndex]&&hostelDataSelected[selectedRowIndex].admission_no}
                 </div>
                 
                 <div className='text-stone-800 font-bold'>Department</div>
                 <div> 
                   <span className='text-stone-800 font-bold mr-3'>:</span>
-                  {/* {hostelDataSelected[selectedRowIndex]&&hostelDataSelected[selectedRowIndex].department} */}
+                  {hostelDataSelected[selectedRowIndex]&&hostelDataSelected[selectedRowIndex].department}
                 </div>
               </div>
 
@@ -300,19 +343,19 @@ function AdminInmates() {
                 <div className='text-stone-800 font-bold'>Batch</div>
                 <div> 
                   <span className='text-stone-800 font-bold mr-3'>:</span>
-                  {/* {hostelDataSelected[selectedRowIndex]&&hostelDataSelected[selectedRowIndex].batchid} */}
+                  {hostelDataSelected[selectedRowIndex]&&hostelDataSelected[selectedRowIndex].batchid}
                 </div>
                 
                 <div className='text-stone-800 font-bold'>Phone</div>
                 <div> 
                   <span className='text-stone-800 font-bold mr-3'>:</span>
-                  {/* {hostelDataSelected[selectedRowIndex]&&hostelDataSelected[selectedRowIndex].mobile_no} */}
+                  {hostelDataSelected[selectedRowIndex]&&hostelDataSelected[selectedRowIndex].mobile_no}
                 </div>
                 
                 <div className='text-stone-800 font-bold'>Email</div>
                 <div> 
                   <span className='text-stone-800 font-bold mr-3'>:</span>
-                  {/* {hostelDataSelected[selectedRowIndex]&&hostelDataSelected[selectedRowIndex].email} */}
+                  {hostelDataSelected[selectedRowIndex]&&hostelDataSelected[selectedRowIndex].email}
                 </div>
               </div>
             </div>
@@ -326,6 +369,7 @@ function AdminInmates() {
                     <div
                         className='ml-2 text-white cursor-pointer rounded-full hover:text-red-600'
                         onClick={()=>{
+                          deleteRole(item)
                         }}
                     >
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -384,6 +428,7 @@ function AdminInmates() {
               <div
                 className='cursor-pointer '
                 onClick={()=>{
+                  console.log("hostel data is set")
                   setHostelDataSelected([]) //making the list empty before populating it with the inmates list
                   setTabSelected("MH")
                 }}
@@ -395,6 +440,7 @@ function AdminInmates() {
               <div 
                 className='ml-5 cursor-pointer'
                 onClick={()=>{
+                  console.log("hostel data is set")
                   setHostelDataSelected([]) //making the list empty before populating it with the inmates list
                   setTabSelected("LH")
                 }}
