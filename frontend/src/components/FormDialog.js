@@ -7,15 +7,16 @@ import CloseIcon from '@mui/icons-material/Close';
 import axios from 'axios';
 import {UserContext} from '../Contexts/UserContext'
 
-export default function FormDialog({open,setOpen,modalText,modalHeading,field}) {
+export default function FormDialog({open,setOpen,modalText,modalHeading,field,certificateId}) {
 
   const [details,setDetails]=useState({})
   const {user}=useContext(UserContext)
+
   
   const submitForm = (e)=>{
     e.preventDefault();
     setOpen(false);
-    axios.post(`${baseUrl}/inmate/applycertificate`,{...details,user_id:user.user_id})
+    axios.post(`${baseUrl}/inmate/applycertificate`,{...details,user_id:user.user_id,certificate_id:certificateId})
     .then(res=>{
       console.log(res)
     })
@@ -91,7 +92,7 @@ export default function FormDialog({open,setOpen,modalText,modalHeading,field}) 
     }
     return (<div className='w-full overflow-y-auto flex flex-col px-3'>
       {render.map(inputDiv=>inputDiv)}
-    <button type="submit" className='submit-button-black'>Submit</button>
+    <button type="submit" onSubmit={submitForm} className='submit-button-black'>Submit</button>
     </div>)
 
   }
@@ -103,7 +104,7 @@ export default function FormDialog({open,setOpen,modalText,modalHeading,field}) 
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title" className='text-black font-semibold flex items-center justify-between'>
+        <DialogTitle id="alert-dialog-title" className='text-black font-semibold flex items-center justify-between capitalize'>
           {modalHeading}
           <CloseIcon className="cursor-pointer" onClick={handleClose}/>
         </DialogTitle>
