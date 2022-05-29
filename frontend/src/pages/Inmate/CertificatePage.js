@@ -1,119 +1,15 @@
-import React, { useState } from 'react'
+import React, { useState,useEffect, useContext } from 'react'
 import CertificateForm from '../../components/CertificateForm'
-import DownloadIcon from '@mui/icons-material/Download';
+import ApplicationList from '../../components/ApplicationList'
 import {motion} from 'framer-motion'
+import { UserContext } from '../../Contexts/UserContext';
 function CertificatePage() {
-  const applications=[
-    {
-      SlNo:"1234",
-      Certificate:"xyz",
-      Date:"cse"
-    },
-    {
-      SlNo:"1234",
-      Certificate:"xyz",
-      Date:"cse"
-    },
-    {
-      SlNo:"1234",
-      Certificate:"xyz",
-      Date:"cse"
-    },
-    {
-      SlNo:"1234",
-      Certificate:"xyz",
-      Date:"cse"
-    },
-    {
-      SlNo:"1234",
-      Certificate:"xyz",
-      Date:"cse"
-    },
-    {
-      SlNo:"1234",
-      Certificate:"xyz",
-      Date:"cse"
-    },
-    {
-      SlNo:"1234",
-      Certificate:"xyz",
-      Date:"cse"
-    },
-    {
-      SlNo:"1234",
-      Certificate:"xyz",
-      Date:"cse"
-    },
-    {
-      SlNo:"1234",
-      Certificate:"xyz",
-      Date:"cse"
-    },
-    {
-      SlNo:"1234",
-      Certificate:"xyz",
-      Date:"cse"
-    },
-    {
-      SlNo:"1234",
-      Certificate:"xyz",
-      Date:"cse"
-    },
-    {
-      SlNo:"1234",
-      Certificate:"xyz",
-      Date:"cse"
-    }
-    
-  ]
+  
+  const {user} = useContext(UserContext)
 
-
-  const [hostelDataSelected, setHostelDataSelected] = useState(applications)
+  const [certificates, setCertificates] = useState([])
   const [tabSelected, setTabSelected] = useState(1)
-  const [selectedRowIndex, setSelectedRowIndex] = useState(-1)
-  const [selectedHostel, setSelectedHostel] = useState(null)
-
-  const ApplicationList=()=>{
-    return (
-      // <div className='w-full'>
-      <>
-        {/* inmates list */}
-        <div className='w-11/12 overflow-y-scroll no-scrollbar'>
-          <table className='w-full relative table-auto'>
-              <tr className='rounded-xl p-3 bg-primary text-center'>
-                <th className='p-3'>Sl.No</th>
-                <th className='p-3'>Certificate Type</th>
-                <th className='p-3'>Date</th>
-                <th className='p-3'>Download</th>
-              </tr>
-              {hostelDataSelected.map((user, index)=>(
-                <tr 
-                  className={'border-b text-center border-slate-200 border-solid '+(index==selectedRowIndex && selectedHostel==tabSelected ?' bg-blue-300 ':' hover:bg-gray-300')}
-                  onClick={()=>{
-                    if(selectedRowIndex==index && selectedHostel==tabSelected)
-                    {
-                      setSelectedRowIndex(-1)
-                      setSelectedHostel(null)
-                    }
-                    else
-                    {
-                      setSelectedRowIndex(index)
-                      setSelectedHostel(tabSelected) //"MH" or "LH"
-                    }
-                  }}
-                >
-                  <td className='p-3'>{user.SlNo}</td>
-                  <td className='p-3'>{user.Certificate}</td>
-                  <td className='p-3'>{user.Date}</td>
-                  <td className='p-3'><DownloadIcon className='cursor-pointer'/></td>
-                </tr>
-              ))}
-          </table>
-        </div>
-      </>
-    )
-  }
-
+  const [appsno,setAppsno]=useState(0)
 
   return (
     <div className='flex flex-col w-full items-center min-h-screen h-full'>
@@ -132,18 +28,16 @@ function CertificatePage() {
               <div
                 className='cursor-pointer '
                 onClick={()=>{
-                  setHostelDataSelected(applications)
                   setTabSelected(1)
                 }}
               >
-                  <div>View Applications <span className='ml-2 p-2 text-white bg-stone-800 rounded-lg cursor-default'>200</span></div>
+                  <div>View Applications <span className='ml-2 p-2 text-white bg-stone-800 rounded-lg cursor-default'>{appsno}</span></div>
                   <div className={tabSelected===1?'mt-2 h-1 self-center w-9/12 bg-stone-800 rounded-full':''}/>
               </div>
 
               <div 
                 className='ml-5 cursor-pointer'
                 onClick={()=>{
-                  setHostelDataSelected(applications)
                   setTabSelected(2)
                 }}
               >
@@ -155,7 +49,7 @@ function CertificatePage() {
           {tabSelected===1&&<div className='text-sm mb-2'>Showing 1-8 out of 200 results</div>}
           <br />
         </div>
-        {tabSelected===1?<ApplicationList/>:<CertificateForm/>}
+        {tabSelected===1?<ApplicationList certificates={certificates} setCertificates={setCertificates} setAppsno={setAppsno}/>:<CertificateForm/>}
       </motion.div>
     </div>
   )

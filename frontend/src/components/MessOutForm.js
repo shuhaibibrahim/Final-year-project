@@ -4,7 +4,7 @@ import {useState,useContext} from 'react'
 import { UserContext } from '../Contexts/UserContext';
 import AlertDialog from './AlertDialog';
 import ConfirmDialog from './ConfirmDialog';
-function MessOutForm({noofDays}) {
+function MessOutForm({noofDays,messOutHistory,setMessOutHistory,setIsEmpty}) {
     const [fromDate,setFromDate]=useState("")
     const [toDate,setToDate]=useState("")
     const [modalText,setModalText]=useState("")
@@ -12,15 +12,19 @@ function MessOutForm({noofDays}) {
     const [days,setDays]=useState(0)
     const [open1, setOpen1] = useState(false);
     const [open2, setOpen2] = useState(false);
-    const {user} = useContext(UserContext)
+    const {user,setLoading} = useContext(UserContext)
     const submitForm = ()=>{
+        setLoading(true)
         axios.post('http://localhost:8080/inmate/applymessout',{
                     user_id:user.user_id,
                     fromDate:fromDate,
                     toDate:toDate
                 }).then((res)=>{
                     alert("Submitted Mess Out")
-                    console.log(res)
+                    console.log(res.data)
+                    setMessOutHistory([...messOutHistory,res.data.rows[0]])
+                    setIsEmpty(false)
+                    setLoading(false)
                 })
     }
 

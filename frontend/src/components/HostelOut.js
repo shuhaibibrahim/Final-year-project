@@ -3,6 +3,7 @@ import {useState,useContext} from 'react'
 import AlertDialog from './AlertDialog';
 import ConfirmDialog from './ConfirmDialog';
 import {UserContext} from '../Contexts/UserContext'
+import { TrafficRounded } from '@mui/icons-material';
 export default function HostelOut(){
     const [fromDate,setFromDate]=useState("")
     const [toDate,setToDate]=useState("")
@@ -12,8 +13,9 @@ export default function HostelOut(){
     const [open2, setOpen2] = useState(false);
     const [days,setDays]=useState(0)
     const [reason,setReason]=useState("")
-    const {user}=useContext(UserContext)
+    const {user,setLoading}=useContext(UserContext)
     const submitForm = ()=>{
+        setLoading(TrafficRounded)
         axios.post('http://localhost:8080/inmate/hostelout',{
                     user_id:user.user_id,
                     fromDate:fromDate,
@@ -25,6 +27,7 @@ export default function HostelOut(){
                     setFromDate("")
                     setToDate("")
                     setReason("")
+                    setLoading(false)
                 })
     }
 

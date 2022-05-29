@@ -21,6 +21,7 @@
     "react-slick": "^0.28.1",
     "react-spreadsheet": "^0.7.0",
     "react-xarrows": "^2.0.2",
+    "sass": "^1.52.1",
     "scheduler": "^0.21.0",
     "slick-carousel": "^1.8.1",
     "web-vitals": "^2.1.4"
