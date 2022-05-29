@@ -51,8 +51,7 @@ function AdminPaths() {
         axios.get('http://localhost:8080/admin/getPathsData')
           .then(function (response) {
               // console.log("success" , response ,"response.data");
-              console.log("hostel data is set")
-              setHostelDataSelected(response.data)
+              console.log("hostel data is set",response.data)
           })
           .catch(function (error) {
               console.log("FAILED!!! ",error);
