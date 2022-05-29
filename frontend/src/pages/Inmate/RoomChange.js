@@ -5,10 +5,11 @@ import {UserContext} from '../../Contexts/UserContext'
 export default function RoomChange(){
     const [preferredRoom,setPreferredRoom]=useState("")
     const [changeReason,setChangeReason]=useState("")
-    const {user} = useContext(UserContext)
+    const {user,setLoading} = useContext(UserContext)
 
     const submitHandler = (e)=>{
         e.preventDefault();
+        setLoading(true)
         axios.post(`${baseUrl}/inmate/roomchange`,{
             user_id:user.user_id,
             preferredRoom:preferredRoom,
@@ -16,6 +17,9 @@ export default function RoomChange(){
         })
         .then(res=>{
             alert("Submitted")
+            setPreferredRoom("")
+            setChangeReason("")
+            setLoading(false)
         })
     }
 

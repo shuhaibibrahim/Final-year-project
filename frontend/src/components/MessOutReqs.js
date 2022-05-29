@@ -1,80 +1,31 @@
-import {useState,useEffect} from "react"
+import {useState,useEffect,useContext} from "react"
 import EditIcon from '@mui/icons-material/Edit';
 import CheckIcon from '@mui/icons-material/Check';
 import axios from "axios";
+import { baseUrl } from '../baseUrl'
+import {UserContext} from '../Contexts/UserContext'
 function MessOutReqs({noofDays,setNoofDays}) {
 
-   const messouts=[
-       {
-         SlNo:"1234",
-         AdmNo:"18MH010",
-         Name:"Shijin",
-         FromDate:"xyz",
-         ToDate:"cse"
-       },
-       {
-        SlNo:"1234",
-        AdmNo:"18MH010",
-        Name:"Shijin",
-        FromDate:"xyz",
-        ToDate:"cse"
-      },
-      {
-        SlNo:"1234",
-        AdmNo:"18MH010",
-        Name:"Shijin",
-        FromDate:"xyz",
-        ToDate:"cse"
-      },
-      {
-        SlNo:"1234",
-        AdmNo:"18MH010",
-        Name:"Shijin",
-        FromDate:"xyz",
-        ToDate:"cse"
-      },
-      {
-        SlNo:"1234",
-        AdmNo:"18MH010",
-        Name:"Shijin",
-        FromDate:"xyz",
-        ToDate:"cse"
-      },
-      {
-        SlNo:"1234",
-        AdmNo:"18MH010",
-        Name:"Shijin",
-        FromDate:"xyz",
-        ToDate:"cse"
-      },
-      {
-        SlNo:"1234",
-        AdmNo:"18MH010",
-        Name:"Shijin",
-        FromDate:"xyz",
-        ToDate:"cse"
-      },
-      {
-        SlNo:"1234",
-        AdmNo:"18MH010",
-        Name:"Shijin",
-        FromDate:"xyz",
-        ToDate:"cse"
-      }
-       
-       
-     ]
-
-     const [hostelDataSelected, setHostelDataSelected] = useState(messouts)
+     const [messreqs, setMessreqs] = useState([])
      const [tabSelected, setTabSelected] = useState(1)
-     const [selectedRowIndex, setSelectedRowIndex] = useState(-1)
-     const [selectedHostel, setSelectedHostel] = useState(null)
      const [isEdit,setIsEdit]=useState(false)
+     const {setLoading}=useContext(UserContext)
+
+     useEffect(() => {
+       setLoading(true)
+       axios.get(`${baseUrl}/inmate/messoutrequests`)
+       .then(res=>{
+         console.log(res.data)
+         setMessreqs(res.data.rows)
+         setLoading(false)
+       })
+     }, [])
+     
 
      const submitHandler =(e)=>{
        e.preventDefault();
        setIsEdit(!isEdit)
-       axios.put('http://localhost:8080/inmate/messoutdays',{
+       axios.put(`${baseUrl}/inmate/messoutdays`,{
          noofDays:noofDays
        })
        .then((res)=>{
@@ -83,7 +34,6 @@ function MessOutReqs({noofDays,setNoofDays}) {
      }
        return (
          <>
-           {/* inmates list */}
            <div className='w-11/12'>
              <div className="flex items-center mt-5 mb-5">
                 <p className="font-semibold">Minimum Number of Days for Mess Out: 
@@ -103,27 +53,16 @@ function MessOutReqs({noofDays,setNoofDays}) {
                    <th className='p-3'>To Date</th>
                    <th className='p-3'>Number of Days</th>
                  </tr>
-                 {hostelDataSelected.map((user, index)=>(
-                   <tr 
-                     className={'border-b text-center border-slate-200 border-solid '+(index==selectedRowIndex && selectedHostel==tabSelected ?' bg-blue-300 ':' hover:bg-gray-300')}
-                     onClick={()=>{
-                       if(selectedRowIndex==index && selectedHostel==tabSelected)
-                       {
-                         setSelectedRowIndex(-1)
-                         setSelectedHostel(null)
-                       }
-                       else
-                       {
-                         setSelectedRowIndex(index)
-                         setSelectedHostel(tabSelected) //"MH" or "LH"
-                       }
-                     }}
+                 {messreqs.map((user, index)=>(
+                   <tr
+                     key={index} 
+                     className={'border-b text-center border-slate-200 border-solid hover:bg-gray-300'}
                    >
-                     <td className='p-3'>{user.SlNo}</td>
-                     <td className='p-3'>{user.AdmNo}</td>
-                     <td className='p-3'>{user.Name}</td>
-                     <td className='p-3'>{user.FromDate}</td>
-                     <td className='p-3'>{user.ToDate}</td>
+                     <td className='p-3'>{index+1}</td>
+                     <td className='p-3'>{user.hostel_admission_no}</td>
+                     <td className='p-3'>{user.name}</td>
+                     <td className='p-3'>{user.fromdate?.slice(0,10)}</td>
+                     <td className='p-3'>{user.todate?.slice(0,10)}</td>
                      <td className='p-3'>days</td>
                    </tr>
                  ))}
