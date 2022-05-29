@@ -11,7 +11,7 @@ function AdminPaths() {
     // SA: Staff Advisor
     // HOD: HOD
     // WD: Warden
-    const [pathData, setPathData] = useState([
+    const dummyPathData=[
         {
             start:"S",
             path:"SA-HOD-WD",
@@ -27,9 +27,11 @@ function AdminPaths() {
             path:"SA-HOD-WD",
             certificates:"1,2,3,4"
         }
-    ])
+    ]
 
-    const [certificates, setCertificates] = useState(["Inmate","Non Inmate","No Due","Fee Structure",])
+    const [pathData, setPathData] = useState([])
+
+    const [certificates, setCertificates] = useState([])
     const [selectedcertificateIndex, setSelectedCertificateIndex] = useState(-1)
     const [path, setPath] = useState([])
     const [newPathItem, setNewPathItem] = useState("SA")
@@ -48,16 +50,54 @@ function AdminPaths() {
     // }, [])
 
     useEffect(() => {
+        // To set pathsData
         axios.get('http://localhost:8080/admin/getPathsData')
-          .then(function (response) {
-              // console.log("success" , response ,"response.data");
-              console.log("hostel data is set")
-              setHostelDataSelected(response.data)
-          })
-          .catch(function (error) {
-              console.log("FAILED!!! ",error);
-          });
+        .then(function (response) {
+            console.log("hostel data is set", response.data)
+            setPathData(response.data)
+        })
+        .catch(function (error) {
+            console.log("FAILED!!! ",error);
+        });
+
+        // To set Certificates
+        axios.get('http://localhost:8080/admin/getCertificates')
+        .then(function (response) {
+            setCertificates([...response.data.map(item=>(
+                {
+                    name: item.name,
+                    certificateId: item.certificate_id
+                }
+            ))])
+        })
+        .catch(function (error) {
+            console.log("FAILED!!! ",error);
+        });
     }, [])
+
+    const postPath=()=>{
+        axios.post('http://localhost:8080/admin/postPath',{
+            path: path.join("-"),
+            start: newStartItem
+        })
+        .then(function (response) {
+
+            setPathData([...pathData,{
+                start:newStartItem,
+                path:path.join("-"),
+                certificates:"",
+            }])
+
+            setModal(null)
+            setNewPathItem("SA")
+            setNewStartItem("S")
+            setPath([])
+            
+        })
+        .catch(function (error) {
+            console.log("FAILED!!! ",error);
+        });
+    }
     
     const backdropClickHandler = (event) => {
         if (event.target === event.currentTarget) {
@@ -123,16 +163,7 @@ function AdminPaths() {
                             <div
                                 className='bg-blue-500 p-2 text-md font-bold text-white rounded-xl cursor-pointer hover:bg-blue-700'
                                 onClick={()=>{
-                                    setPathData([...pathData,{
-                                        start:newStartItem,
-                                        path:path.join("-"),
-                                        certificates:"",
-                                    }])
-
-                                    setModal(null)
-                                    setNewPathItem("SA")
-                                    setNewStartItem("S")
-                                    setPath([])
+                                    postPath()
                                 }}
                             >
                                 Add Path
@@ -237,6 +268,8 @@ function AdminPaths() {
                     {pathData.map((pathItem,index)=>(
                         <tr key={index} className='border-b border-slate-200 border-solid'>
                             <td>{pathItem.start}-{pathItem.path}</td>
+
+                            {/* Certificates mapped to the path */}
                             <td>
                                 <div className='flex flex-row space-x-2'>
                                     {pathItem.certificates!=""&&pathItem.certificates.split(',').map((certificateNo, certIndex)=>(
@@ -248,11 +281,25 @@ function AdminPaths() {
                                             <div
                                                 className='absolute -top-2 -right-2 cursor-pointer text-red-500 cursor-pointer rounded-full hover:bg-black'
                                                 onClick={()=>{
-                                                    var newCertificates=pathItem.certificates.split(',')
-                                                    newCertificates.splice(certIndex,1)
-                                                    var newPathData=[...pathData]
-                                                    newPathData[index].certificates=[...newCertificates].join(',')
-                                                    setPathData([...newPathData])
+
+                                                    axios.get('http://localhost:8080/admin/deleteMapping',{
+                                                        params:{
+                                                            certificateId: certificates[certificateNo].certificateId
+                                                        }
+                                                    })
+                                                    .then(function (response) {
+
+                                                        //here the whole data is not again fetched from backend sinnce it involves more than one query and can be time consuming
+                                                        //instead the data is uodated in the frontend on successful removal of mapping
+                                                        var newCertificates=pathItem.certificates.split(',')
+                                                        newCertificates.splice(certIndex,1)
+                                                        var newPathData=[...pathData]
+                                                        newPathData[index].certificates=[...newCertificates].join(',')
+                                                        setPathData([...newPathData])
+                                                    })
+                                                    .catch(function (error) {
+                                                        console.log("FAILED!!! ",error);
+                                                    });
                                                 }}
                                             >
                                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -275,7 +322,7 @@ function AdminPaths() {
                                                 key={index} 
                                                 value={index+1}
                                             >
-                                                {item}
+                                                {item.name}
                                             </option>
                                         ))}
                                     </select>
@@ -287,16 +334,26 @@ function AdminPaths() {
                                         onClick={()=>{
                                             if(selectedcertificateIndex!=-1)
                                             {
-                                                var newPathItem={...pathItem}
-                                                var myCertificates=newPathItem.certificates
-                                                if(myCertificates!="")
-                                                    newPathItem.certificates=[...myCertificates.split(','),selectedcertificateIndex].join(',')
-                                                else
-                                                    newPathItem.certificates=[selectedcertificateIndex].join(',')
-                                                console.log("newpathitem : ",newPathItem)
-                                                var newPathData=[...pathData]
-                                                newPathData.splice(index,1,newPathItem)
-                                                setPathData(newPathData)
+                                                axios.post('http://localhost:8080/admin/mapCertificate',{
+                                                    certificateId: certificates[selectedcertificateIndex].certificateId,
+                                                    pathNo: pathItem.pathNo
+                                                })
+                                                .then(function (response) {
+
+                                                    var newPathItem={...pathItem}
+                                                    var myCertificates=newPathItem.certificates
+                                                    if(myCertificates!="")
+                                                        newPathItem.certificates=[...myCertificates.split(','),selectedcertificateIndex].join(',')
+                                                    else
+                                                        newPathItem.certificates=[selectedcertificateIndex].join(',')
+                                                    console.log("newpathitem : ",newPathItem)
+                                                    var newPathData=[...pathData]
+                                                    newPathData.splice(index,1,newPathItem)
+                                                    setPathData(newPathData)
+                                                })
+                                                .catch(function (error) {
+                                                    console.log("FAILED!!! ",error);
+                                                });
                                             }
                                         }}
                                     >
@@ -324,7 +381,7 @@ function AdminPaths() {
             
             <button 
                 // className='text-left w-11/12 text-stone-800 text-lg font-bold mt-5 mb-1'
-                className='button-blue mt-5 px-2'
+                className='button-blue w-fit mt-5 px-2'
                 onClick={()=>{RenderModal()}}
             >
                     Add New Path

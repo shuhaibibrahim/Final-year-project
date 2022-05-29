@@ -17,11 +17,13 @@ router.get('/faculties', admin.facultyList)
 router.get('/getPathsData', admin.getPathsData)
 router.post('/postPath', admin.postPath)
 router.get('/deletePath', admin.deletePath)
-router.get('/mapCertificate', admin.mapCertificate)
+router.post('/mapCertificate', admin.mapCertificate)
 router.get('/deleteMapping', admin.deleteMapping)
 
 //create/edit application
+router.get('/getCertificates', admin.getCertificates)
 router.post('/createApplication', admin.createApplication)
+router.get('/deleteApplication', admin.deleteApplication)
 router.post('/updateApplication', admin.updateApplication)
 
 module.exports=router

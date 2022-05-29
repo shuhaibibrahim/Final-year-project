@@ -87,28 +87,55 @@ const hostelRegistry=(req,res)=>{
 //Applications Paths
 const getPathsData=(req,res)=>{
 
-    pool.query(`SELECT * FROM PATH`, [req.query.pathNo], (err, resp) => {
+    pool.query(`SELECT * FROM PATH`, (err, resp) => {
         if (err) {
             console.log(err)
             throw err
         }
         console.log('user:', resp.rows)
 
-        res.send(resp.rows)
+        var responseData=[]
+
+        resp.rows.forEach((item, index)=>{
+            pool.query(`SELECT name
+                        FROM CERTIFICATES
+                        WHERE PathNo=$1`, [item.pathno], (err, respCert) => {
+                if (err) {
+                    console.log(err)
+                }
+                else
+                {
+                    console.log("im here")
+                    responseData.push({
+                        start: item.start_user,
+                        pathNo: item.pathno,
+                        path: item.path,
+                        certificates:respCert.rows.length>0?respCert.rows.map(item=>item.name):[]
+                    })
+                }
+
+                if(index==resp.rows.length-1)
+                {
+                    console.log(responseData)
+                    res.send(responseData)
+                }
+            })
+        })
     })
 }
 
 const postPath=(req,res)=>{
 
-    pool.query(`INSERT INTO PATH (path)
-                values($1)`, [req.body.path], (err, res) => {
+    pool.query(`INSERT INTO PATH (path, start_user)
+                values($1, $2)
+                RETURNING *`, [req.body.path, req.body.start], (err, resp) => {
         if (err) {
             console.log(err)
             throw err
         }
-        console.log('user:', res.rows)
+        console.log('path inserted:', resp.rows)
 
-        res.send(res.rows)
+        res.send(resp.rows)
     })
 }
 
@@ -129,14 +156,15 @@ const mapCertificate=(req,res)=>{
 
     pool.query(`UPDATE CERTIFICATES
                 SET PathNo=$1
-                WHERE Name=$2 && PathNo=null returning *`, [req.body.pathNo, req.body.certificateName], (err, resp) => {
+                WHERE Certificate_ID=$2 AND PathNo IS Null RETURNING *`, [req.body.pathNo, req.body.certificateId], (err, resp) => {
         if (err) {
             console.log(err)
             throw err
         }
-
-        if(resp.rows.length==0)
-            res.send({message:"No rows are updated"})
+            console.log(req.body
+                ," --- response is : ", resp.rows)
+        // if(resp.rows.length==0)
+        //     res.send({message:"No rows are updated"})
 
         res.send(resp.rows)
     })
@@ -146,7 +174,7 @@ const deleteMapping=(req,res)=>{
 
     pool.query(`UPDATE CERTIFICATES
                 SET PathNo=null
-                WHERE Name=$2 returning *`, [req.body.pathNo, req.body.certificateName], (err, resp) => {
+                WHERE Certificate_Id=$1 RETURNING *`, [req.query.certificateId], (err, resp) => {
         if (err) {
             console.log(err)
             throw err
@@ -160,6 +188,18 @@ const deleteMapping=(req,res)=>{
 }
 
 //Create/Edit application
+const getCertificates=(req,res)=>{
+
+    pool.query(`SELECT * FROM CERTIFICATES`, (err, resp) => {
+        if (err) {
+            console.log(err)
+            throw err
+        }
+
+        res.send(resp.rows)
+    })
+}
+
 const createApplication=(req,res)=>{
 
     pool.query(`INSERT INTO CERTIFICATES(Name, Application_template)
@@ -169,7 +209,21 @@ const createApplication=(req,res)=>{
             console.log(err)
             throw err
         }
-        console.log('certificate updated : ', resp.rows)
+
+        res.send(resp.rows)
+    })
+}
+
+const deleteApplication=(req,res)=>{
+
+    pool.query(`DELETE FROM CERTIFICATES
+                WHERE Certificate_ID=$1
+                RETURNING *`, [req.query.certificateId], (err, resp) => {
+        if (err) {
+            console.log(err)
+            throw err
+        }
+        console.log('certificate deleted : ',req.query,resp.rows)
 
         res.send(resp.rows)
     })
@@ -213,7 +267,9 @@ module.exports={
     deleteMapping,
 
     //create/edit application
+    getCertificates,
     createApplication,
+    deleteApplication,
     updateApplication
 
 }

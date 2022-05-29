@@ -61,6 +61,7 @@ import HodHome from './pages/HOD/HodHome';
 
 function App() {
   const [user, setUser] = useState(undefined)
+  const [authenticating, setAuthenticating] = useState(false)
   /*
     user={
       username:tve18cs061,
@@ -72,11 +73,16 @@ function App() {
   */
 
   useEffect(() => {
+    setAuthenticating(true)
+
     console.log("Im inside useffect isauthenticated")
     axios.get('http://localhost:8080/auth/isAuthenticated',{
         withCredentials: true
     })
     .then(function (response) {
+
+        setAuthenticating(false)
+
         console.log("success" , response ,"response.data");
         if(response.data!="")
           setUser(response.data)
@@ -84,6 +90,7 @@ function App() {
           setUser(null)
     })
     .catch(function (error) {
+        setAuthenticating(false)
         console.log("FAILED!!! ",error);
     });
   }, [])
@@ -169,7 +176,7 @@ function App() {
             <Route path="messdirector" element={<MessDirector/>}/>
             <Route path="hostel" element={<HostelPage/>}/>
           </Route>)}
-          {user!=undefined&&(<Route path="*" element={<Page404/>}/>)}
+          {authenticating==false&&(<Route path="*" element={<Page404/>}/>)}
 
           {/* Matron Routes */}
           <Route path="matron" element={<MatronHome/>}>

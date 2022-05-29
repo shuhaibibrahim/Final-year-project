@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import {motion} from "framer-motion" 
 import axios from 'axios'
+import { ListItemSecondaryAction } from '@mui/material'
 
 function CreateApplications() {
 
   const currentApplications=[
-    {
+  {
       // All spaces in the appplication name and field names are replaced with underscore (_)
       applicationName :"application_name_1",
       //All fields are stored in the database in the form of json string
@@ -108,7 +109,8 @@ function CreateApplications() {
   
   const tabs=["Edit Application", "Create Application"]
 
-  const [currentApplicationsData, setCurrentApplicationsData] = useState([...currentApplications])
+  // const [currentApplicationsData, setCurrentApplicationsData] = useState([...currentApplications])
+  const [currentApplicationsData, setCurrentApplicationsData] = useState([])
   const [applicationSelectedIndex, setApplicationSelectedIndex] = useState(-1)
   const [createdApplicationIndex, setCreatedApplicationIndex] = useState(-1)
 
@@ -120,6 +122,7 @@ function CreateApplications() {
   const [radioItem, setRadioItem] = useState("")
   const [newTag, setNewTag] = useState("input")
 
+  const [applicationNameInput, setApplicationNameInput] = useState("")
   const [newApplicationName, setNewApplicationName] = useState("")
 
   const [tabSelected, setTabSelected] = useState(0) //selected tab index
@@ -133,6 +136,31 @@ function CreateApplications() {
         setModal(null)
     }
   }
+
+  const getAndSetCertificates=()=>{
+    axios.get('http://localhost:8080/admin/getCertificates')
+    .then(function (response) {
+        var tempData=[]
+        console.log(response.data)
+        response.data.forEach((item)=>{
+          tempData.push({
+            certificateId: item.certificate_id,
+            applicationName: item.name,
+            fields: item.application_template
+          })
+        })
+
+        setCurrentApplicationsData([...tempData])
+    })
+    .catch(function (error) {
+        console.log("FAILED!!! ",error);
+    });
+  }
+
+  useEffect(() => {
+    getAndSetCertificates()
+  }, [])
+  
 
   useEffect(() => {
     if(modal!=null)
@@ -401,10 +429,25 @@ function CreateApplications() {
                 var key=document.activeElement.value
                 if(window.confirm("Delete the field "+fields[key].label+"?")===true)
                 {
+
+                  //deleting the field temporarily
                   delete fields[key]  
-                  var newApplicationsData=[...currentApplicationsData]
-                  newApplicationsData[applicationIndex].fields=JSON.stringify(fields)
-                  setCurrentApplicationsData(newApplicationsData)
+
+                  //updating the database
+                  axios.post('http://localhost:8080/admin/updateApplication',{
+                    certificateTemplate: JSON.stringify(fields),
+                    certificateId: currentApplicationsData[applicationIndex].certificateId,
+                  })
+                  .then(function (response) {
+                      var newApplicationsData=[...currentApplicationsData]
+                      newApplicationsData[applicationIndex].fields=JSON.stringify(fields)
+                  
+                      setCurrentApplicationsData(newApplicationsData)
+                  })
+                  .catch(function (error) {
+                      console.log("FAILED!!! ",error);
+                  });
+                
                 }
               }}
           >
@@ -434,6 +477,8 @@ function CreateApplications() {
             />)
           }
 
+
+          {/* Field delete buttom */}
           <button
               className='cursor-pointer text-red-500 cursor-pointer rounded-full hover:text-red-700'
               value={fieldKey}
@@ -441,10 +486,24 @@ function CreateApplications() {
                 var key=document.activeElement.value
                 if(window.confirm("Delete the field "+fields[key].label+"?")===true)
                 {
+                  //deleting the field temporarily
                   delete fields[key]  
-                  var newApplicationsData=[...currentApplicationsData]
-                  newApplicationsData[applicationIndex].fields=JSON.stringify(fields)
-                  setCurrentApplicationsData(newApplicationsData)
+
+                  //updating the database
+                  axios.post('http://localhost:8080/admin/updateApplication',{
+                    certificateTemplate: JSON.stringify(fields),
+                    certificateId: currentApplicationsData[applicationIndex].certificateId,
+                  })
+                  .then(function (response) {
+                      var newApplicationsData=[...currentApplicationsData]
+                      newApplicationsData[applicationIndex].fields=JSON.stringify(fields)
+                  
+                      setCurrentApplicationsData(newApplicationsData)
+                  })
+                  .catch(function (error) {
+                      console.log("FAILED!!! ",error);
+                  });
+                
                 }
               }}
           >
@@ -500,19 +559,46 @@ function CreateApplications() {
             {/* </div>
           </div> */}
 
+          {/* Application Preview */}
           <div className='flex flex-col min-h-full bg-slate-100 w-1/2'>
             {applicationSelectedIndex>=0?(
             <div className='w-full h-full flex flex-col overflow-hidden'>
               <div className='w-full flex flex-row justify-between items-center px-3 text-center py-3 bg-slate-200 text-stone-800 font-bold'>
                 {capitalizeString(currentApplicationsData[applicationSelectedIndex].applicationName,'_')}
 
-                <div 
-                  className='p-3 w-fit font-bold text-white rounded-xl bg-stone-800 cursor-pointer hover:bg-stone-600'
-                  onClick={()=>{
-                    setModalType(0)
-                    RenderModal()
-                  }}
-                  >+ Add a new field
+                <div className='flex flex-row space-x-2 items-center'>
+                  <div 
+                    className='p-3 w-fit font-bold text-white rounded-xl bg-stone-800 cursor-pointer hover:bg-stone-600'
+                    onClick={()=>{
+                      setModalType(0)
+                      RenderModal()
+                    }}
+                    >+ Add a new field
+                  </div>
+
+                  {/* Delete Application */}
+                  <div 
+                    className='button-red p-3'
+
+                    onClick={()=>{
+                      axios.get('http://localhost:8080/admin/deleteApplication',{
+                        params:{
+                          certificateId: currentApplicationsData[applicationSelectedIndex].certificateId
+                        }
+                      })
+                      .then(function (response) {
+                        setApplicationSelectedIndex(-1)
+                        getAndSetCertificates()
+                      })
+                      .catch(function (error) {
+                          console.log("FAILED!!! ",error);
+                      });
+                    }}
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>                    
+                  </div>
                 </div>
               </div>
 
@@ -546,19 +632,21 @@ function CreateApplications() {
                     <input 
                       type="text" 
                       className='w-full py-2 px-3 rounded-xl ring-2 ring-slate-200 focus:outline-none' 
-                      value={newApplicationName}
+                      value={applicationNameInput}
                       onChange={e=>{
-                        setNewApplicationName(e.target.value)
+                        setApplicationNameInput(e.target.value)
                       }}
                     />
 
                     <div 
                       className='text-white font-bold bg-green-500 hover:bg-green-600 text-sm p-3 rounded-xl'
                       onClick={()=>{
-                        if(newApplicationName!="")
+                        if(applicationNameInput!="")
                         {
+                          //new application name is set only after create button is clicked
+                          setNewApplicationName(applicationNameInput)
                           axios.post('http://localhost:8080/admin/createApplication',{
-                            certificateName: newApplicationName,
+                            certificateName: applicationNameInput,
                             certificateTemplate: `{}`
                           })
                           .then(function (response) {
@@ -567,7 +655,7 @@ function CreateApplications() {
 
                             newApplications.push({
                               certificateId: response.data[0].certificate_id,
-                              applicationName:newApplicationName,
+                              applicationName:applicationNameInput,
                               fields:`{}`
                             })
                             
@@ -582,26 +670,20 @@ function CreateApplications() {
                     >
                         Create
                     </div>
+
+                    <div 
+                      className='text-white font-bold bg-blue-500 hover:bg-blue-600 text-sm p-3 rounded-xl'
+                      onClick={()=>{
+                        setCreatedApplicationIndex(-1)
+                        setApplicationNameInput("")
+                      }}
+                    >
+                      Clear
+                    </div>
                   </div>
                 </div>
 
-                <div className='flex flex-row space-x-4'>
-                  {createdApplicationIndex!=-1&&(<div 
-                    className='text-white font-bold bg-red-500 hover:bg-red-700 text-sm p-3 rounded-xl'
-                    onClick={()=>{
-                      var newApplications=[...currentApplicationsData]
-                      
-                      if(applicationSelectedIndex==newApplications.length)
-                        setApplicationSelectedIndex(-1)
-
-                      newApplications.pop()
-                      setCurrentApplicationsData([...newApplications])
-                      setCreatedApplicationIndex(-1)
-
-                    }}
-                  >
-                      Delete this application
-                  </div>)}
+                {/* <div className='flex flex-row space-x-4'> */}
 
                   <div 
                     className='p-3 w-fit font-bold text-white rounded-xl bg-stone-800 cursor-pointer hover:bg-stone-600'
@@ -611,12 +693,46 @@ function CreateApplications() {
                     }}
                     >+ Add a new field
                   </div>
-                </div>
+                {/* </div> */}
               </div>
               
               {createdApplicationIndex!=-1&&
                 (
-                <div className='text-stone-800 py-2 text-xl font-bold text-base text-center'>{newApplicationName}</div>
+                <div className='flex flex-row w-full  justify-center relative my-4 items-center'>
+                  <div className='text-stone-800 text-xl font-bold text-base text-center'>{newApplicationName}</div>
+                  
+
+                  {/* Delete this application */}
+                  <div 
+                    className='absolute text-white font-bold bg-red-500 hover:bg-red-700 text-sm p-3 rounded-xl right-2'
+                    onClick={()=>{
+
+                      axios.get('http://localhost:8080/admin/deleteApplication',{
+                        params:{
+                          certificateId: currentApplicationsData[createdApplicationIndex].certificateId
+                        }
+                      })
+                      .then(function (response) {
+
+                        //removing the application from state
+                        var newApplications=[...currentApplicationsData]
+                      
+                        if(applicationSelectedIndex==newApplications.length)
+                          setApplicationSelectedIndex(-1)
+
+                        newApplications.pop()
+                        setCreatedApplicationIndex(-1)
+                        setCurrentApplicationsData([...newApplications])
+                      })
+                      .catch(function (error) {
+                          console.log("FAILED!!! ",error);
+                      });
+
+                    }}
+                  >
+                      Delete this application
+                  </div>
+                </div>
                 )
               }
               {createdApplicationIndex!=-1&&renderFields()}
