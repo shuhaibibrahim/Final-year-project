@@ -272,29 +272,26 @@ function AdminPaths() {
                             {/* Certificates mapped to the path */}
                             <td>
                                 <div className='flex flex-row space-x-2'>
-                                    {pathItem.certificates!=""&&pathItem.certificates.split(',').map((certificateNo, certIndex)=>(
+                                    {pathItem.certificates!=""&&pathItem.certificates.map((certificate, certIndex)=>(
                                         <div 
-                                            key={certificateNo}
+                                            key={certIndex}
                                             className='bg-slate-200 text-stone-800 font-bold w-8 h-8 rounded-full flex items-center justify-center relative'
                                         >
-                                            <div>{certificateNo}</div>
+                                            <div>{certificates.findIndex(c=>c.name==certificate.name)}</div>
                                             <div
                                                 className='absolute -top-2 -right-2 cursor-pointer text-red-500 cursor-pointer rounded-full hover:bg-black'
                                                 onClick={()=>{
 
                                                     axios.get('http://localhost:8080/admin/deleteMapping',{
                                                         params:{
-                                                            certificateId: certificates[certificateNo].certificateId
+                                                            certificateId: certificate.certificateId,
+                                                            pathNo:pathItem.pathNo
                                                         }
                                                     })
                                                     .then(function (response) {
 
-                                                        //here the whole data is not again fetched from backend sinnce it involves more than one query and can be time consuming
-                                                        //instead the data is uodated in the frontend on successful removal of mapping
-                                                        var newCertificates=pathItem.certificates.split(',')
-                                                        newCertificates.splice(certIndex,1)
                                                         var newPathData=[...pathData]
-                                                        newPathData[index].certificates=[...newCertificates].join(',')
+                                                        newPathData[index].certificates=[...response.data]
                                                         setPathData([...newPathData])
                                                     })
                                                     .catch(function (error) {
@@ -320,7 +317,7 @@ function AdminPaths() {
                                         {certificates.map((item, index)=>(
                                             <option 
                                                 key={index} 
-                                                value={index+1}
+                                                value={index}
                                             >
                                                 {item.name}
                                             </option>
@@ -341,11 +338,8 @@ function AdminPaths() {
                                                 .then(function (response) {
 
                                                     var newPathItem={...pathItem}
-                                                    var myCertificates=newPathItem.certificates
-                                                    if(myCertificates!="")
-                                                        newPathItem.certificates=[...myCertificates.split(','),selectedcertificateIndex].join(',')
-                                                    else
-                                                        newPathItem.certificates=[selectedcertificateIndex].join(',')
+
+                                                    newPathItem.certificates=[...response.data] // response has new list of cerifictaes for the path
                                                     console.log("newpathitem : ",newPathItem)
                                                     var newPathData=[...pathData]
                                                     newPathData.splice(index,1,newPathItem)
@@ -364,9 +358,25 @@ function AdminPaths() {
                                         // className='rounded-xl p-2 bg-blue-500 w-2/12 text-white font-bold hover:bg-blue-700'
                                         className='button-red bg-red-600 w-fit '
                                         onClick={()=>{
-                                            var newPathData=[...pathData]
-                                            newPathData.splice(index,1)
-                                            setPathData([...newPathData])
+
+                                            axios.get('http://localhost:8080/admin/deletePath',{
+                                                params:{
+                                                    pathNo: pathItem.pathNo
+                                                }
+                                            })
+                                            .then(function (response) {
+
+                                                console.log(response.data)
+                                                if(response.data.length>0)
+                                                {
+                                                    var newPathData=[...pathData]
+                                                    newPathData.splice(index,1)
+                                                    setPathData([...newPathData])
+                                                }
+                                            })
+                                            .catch(function (error) {
+                                                console.log("FAILED!!! ",error);
+                                            });
                                         }}
                                     >
                                         Delete Path

@@ -95,11 +95,14 @@ const getPathsData=(req,res)=>{
         console.log('user:', resp.rows)
 
         var responseData=[]
-
+        
+        var counter=0;
         resp.rows.forEach((item, index)=>{
-            pool.query(`SELECT name
+            pool.query(`SELECT Name, Certificate_ID
                         FROM CERTIFICATES
                         WHERE PathNo=$1`, [item.pathno], (err, respCert) => {
+                
+                counter++;
                 if (err) {
                     console.log(err)
                 }
@@ -110,11 +113,16 @@ const getPathsData=(req,res)=>{
                         start: item.start_user,
                         pathNo: item.pathno,
                         path: item.path,
-                        certificates:respCert.rows.length>0?respCert.rows.map(item=>item.name):[]
+                        certificates:respCert.rows.length>0?respCert.rows.map(item=>(
+                            {
+                                name:item.name,
+                                certificateId:item.certificate_id
+                            }
+                        )):[]
                     })
                 }
 
-                if(index==resp.rows.length-1)
+                if(counter==resp.rows.length)
                 {
                     console.log(responseData)
                     res.send(responseData)
@@ -141,14 +149,14 @@ const postPath=(req,res)=>{
 
 const deletePath=(req,res)=>{
 
-    pool.query(`DELETE from path where PathNo=$1`, [req.query.pathNo], (err, res) => {
+    pool.query(`DELETE from path where PathNo=$1 RETURNING *`, [req.query.pathNo], (err, resp) => {
         if (err) {
             console.log(err)
             throw err
         }
-        console.log('user:', res.rows)
 
-        res.send(res.rows)
+        console.log("req : ", req.query)
+        res.send(resp.rows)
     })
 }
 
@@ -161,12 +169,23 @@ const mapCertificate=(req,res)=>{
             console.log(err)
             throw err
         }
-            console.log(req.body
-                ," --- response is : ", resp.rows)
-        // if(resp.rows.length==0)
-        //     res.send({message:"No rows are updated"})
+        
+        pool.query(`SELECT Name, Certificate_ID
+                    FROM CERTIFICATES
+                    WHERE PathNo=$1`, [req.body.pathNo], (err, respCert) => {
+            if (err) {
+                console.log(err)
+                throw err
+            }
 
-        res.send(resp.rows)
+            //sending response
+            res.send(respCert.rows.map(item=>(
+                {
+                    name:item.name,
+                    certificateId:item.certificate_id
+                }
+            )))
+        })
     })
 }
 
@@ -183,7 +202,22 @@ const deleteMapping=(req,res)=>{
         if(resp.rows.length==0)
             res.send({message:"No rows are updated"})
 
-        res.send(resp.rows)
+        pool.query(`SELECT Name, Certificate_ID
+                    FROM CERTIFICATES
+                    WHERE PathNo=$1`, [req.query.pathNo], (err, respCert) => {
+            if (err) {
+                console.log(err)
+                throw err
+            }
+
+            //sending response
+            res.send(respCert.rows.map(item=>(
+                {
+                    name:item.name,
+                    certificateId:item.certificate_id
+                }
+            )))
+        })
     })
 }
 
@@ -246,6 +280,71 @@ const updateApplication=(req,res)=>{
     })
 }
 
+//Hostel Blocks
+const getBlocks=(req,res)=>{
+
+    pool.query(`SELECT MIN(Room_No) as rangeFrom, MAX(Room_No) as rangeTo, block_name, hb.block_id, floor_no
+                FROM HOSTEL_ROOM hr, HOSTEL_BLOCKS hb
+                WHERE hr.block_id=hb.block_id and hb.Hostel=$1
+                GROUP BY hb.block_id, block_name, floor_no`, [req.query.hostel], (err, resp) => {
+        if (err) {
+            console.log(err)
+            throw err
+        }
+
+        console.log(resp.rows)
+
+        res.send(resp.rows)
+    })
+}
+
+const addBlock=(req,res)=>{
+
+    pool.query(`INSERT INTO HOSTEL_BLOCKS(hostel, block_name)
+                VALUES($1, $2)
+                RETURNING *`, [req.body.hostel, req.body.blockName], (err, resp) => {
+        if (err) {
+            console.log(err)
+            throw err
+        }
+
+        res.send(resp.rows)
+    })
+}
+
+const addFloor=async (req,res)=>{
+
+    for(var room=req.body.rangeFrom; room<=req.body.rangeTo;room++)
+    {
+        try
+        {
+            var roomEntered = await pool.query(`INSERT INTO HOSTEL_ROOM(room_no, current_inmates, floor_no, block_id)
+                        VALUES($1,0,$2,$3)
+                        RETURNING *`, [room, req.body.floorNo, req.body.blockId])
+            console.log(roomEntered.rows)
+        }
+        catch(e)
+        {
+            console.log(e)
+        }
+    }
+
+    console.log("finished")
+}
+
+const applyHostelOut = async(req,res)=>{
+    try{
+        const {user_id,fromDate,toDate,reason}=req.body
+        const getadmno=await pool.query("SELECT hostel_admission_no FROM inmate_table WHERE admission_no=$1",[user_id])
+        const hostel_admno=getadmno.rows[0].hostel_admission_no
+        const hostelout=await pool.query('INSERT INTO hostel_out(hostel_admission_no,fromdate,todate,reason) VALUES($1,$2,$3,$4)',[hostel_admno,fromDate,toDate,reason])
+        res.json(hostelout)
+    }
+    catch(e){
+        console.error(e)
+    }
+}
+
 module.exports={
     //inmate
     inmateList, 
@@ -270,6 +369,11 @@ module.exports={
     getCertificates,
     createApplication,
     deleteApplication,
-    updateApplication
+    updateApplication,
+
+    //hostel blocks
+    getBlocks,
+    addBlock,
+    addFloor
 
 }

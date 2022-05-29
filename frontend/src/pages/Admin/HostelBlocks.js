@@ -1,68 +1,65 @@
 import React, { useEffect, useState } from 'react'
 import {motion} from "framer-motion" 
+import axios from 'axios'
 
 function HostelBlocks() {
 
     const seatMH={
-        "A Block":[
-            {
-                floorNo:0,
-                roomRange:"100-121"
-            },
-            {
-                floorNo:1,
-                roomRange:"200-221"
-            },
-            {
-                floorNo:2,
-                roomRange:"300-321"
-            }
-        ],
-        "B Block":[
-            {
-                floorNo:0,
-                roomRange:"100-121"
-            },
-            {
-                floorNo:1,
-                roomRange:"200-221"
-            },
-            {
-                floorNo:2,
-                roomRange:"300-321"
-            }
-        ]
+        1:{
+            blockName:"a block",
+            floorData:[
+                {
+                    floorNo:0,
+                    roomRange:"100-121"
+                },
+                {
+                    floorNo:1,
+                    roomRange:"200-221"
+                },
+                {
+                    floorNo:2,
+                    roomRange:"300-321"
+                }
+            ]
+        },
+
+        2:{
+            blockName:"b block",
+            floorData:[
+                {
+                    floorNo:0,
+                    roomRange:"100-121"
+                },
+                {
+                    floorNo:1,
+                    roomRange:"200-221"
+                },
+                {
+                    floorNo:2,
+                    roomRange:"300-321"
+                }
+            ]
+        },
       }
     
       const seatLH={
-        "Old Block":[
-            {
-                floorNo:0,
-                roomRange:"100-121"
-            },
-            {
-                floorNo:1,
-                roomRange:"200-221"
-            },
-            {
-                floorNo:2,
-                roomRange:"300-321"
-            }
-        ],
-        "New Block":[
-            {
-                floorNo:0,
-                roomRange:"100-121"
-            },
-            {
-                floorNo:1,
-                roomRange:"200-221"
-            },
-            {
-                floorNo:2,
-                roomRange:"300-321"
-            }
-        ]
+        "Old Block":{
+            blockName:"a block",
+            floorData:[
+                {
+                    floorNo:0,
+                    roomRange:"100-121"
+                },
+                {
+                    floorNo:1,
+                    roomRange:"200-221"
+                },
+                {
+                    floorNo:2,
+                    roomRange:"300-321"
+                }
+            ]
+        }
     }
   
   const tabs=["Mens Hostel", "Ladies Hostel"]
@@ -89,6 +86,23 @@ function HostelBlocks() {
         setModal(null)
     }
   }
+
+  const getBlocksData=()=>{
+    axios.get('http://localhost:8080/admin/getBlocks',{
+        params:{
+            hostel: tabSelected==0?"MH":"LH"
+        }
+    })
+    .then(function (response) {
+    })
+    .catch(function (error) {
+        console.log("FAILED!!! ",error);
+    });
+  }
+
+  useEffect(() => {
+    getBlocksData()
+  }, [])
 
   useEffect(() => {
     if(modal!=null)
@@ -165,20 +179,33 @@ function HostelBlocks() {
                                 e.preventDefault()
                                 if(rangeFrom>=0&&rangeTo>=0)
                                 {
-                                    var newHostelData={...hostelData}
-                                    var newBlockData=[...newHostelData[blockSelected]]
-
-                                    newBlockData.push({
-                                        floorNo:hostelData[blockSelected].length,
-                                        roomRange:rangeFrom+"-"+rangeTo
+                                    axios.post('http://localhost:8080/admin/addFloor',{
+                                        floorNo: 1,
+                                        rangeFrom: rangeFrom,
+                                        rangeTo: rangeTo,
+                                        blockId: blockSelected
                                     })
+                                    .then(function (response) {
+                                        console.log(response)
+                                    })
+                                    .catch(function (error) {
+                                        console.log("FAILED!!! ",error);
+                                    });
 
-                                    newHostelData[blockSelected]=newBlockData
+                                    // var newHostelData={...hostelData}
+                                    // var newBlockData=[...newHostelData[blockSelected]]
+
+                                    // newBlockData.push({
+                                    //     floorNo:hostelData[blockSelected].length,
+                                    //     roomRange:rangeFrom+"-"+rangeTo
+                                    // })
+
+                                    // newHostelData[blockSelected]=newBlockData
                                     
-                                    if(tabSelected==0)
-                                        setSeatMHData({...newHostelData})
-                                    else
-                                        setSeatLHData({...newHostelData})
+                                    // if(tabSelected==0)
+                                    //     setSeatMHData({...newHostelData})
+                                    // else
+                                    //     setSeatLHData({...newHostelData})
                                     setModal(null)
                                     setRangeFrom(-1)
                                     setRangeTo(-1)
@@ -208,11 +235,12 @@ function HostelBlocks() {
 
   const renderBlocks=(hostelData)=>{
     var render=[]
-    for(var blockName in hostelData)
+    for(var blockId in hostelData)
     {
         render.push({
-            blockName:blockName,
-            floorsData:[...hostelData[blockName]]
+            blockId:blockId,
+            blockName:hostelData[blockId].blockName,
+            floorsData:[...hostelData[blockId].floorData]
         })
     }
 
@@ -226,7 +254,7 @@ function HostelBlocks() {
                 className='flex flex-row space-x-1 cursor-pointer items-center w-fit p-3 text-white font-bold bg-blue-500 hover:bg-blue-700 rounded-xl'
                 onClick={()=>{
                     // setblockSelected([...item.blockSelected])
-                    setBlockSelected(item.blockName)
+                    setBlockSelected(item.blockId)
                     // console.log(JSON.parse(currentApplicationsData[index].fields))
                 }}
                 >
@@ -274,7 +302,18 @@ function HostelBlocks() {
                                 <div 
                                     className='button-blue'
                                     onClick={()=>{
-                                        hostelData[newBlockName]=[]
+                                        axios.post('http://localhost:8080/admin/addBlock',{
+                                            hostel: tabSelected==0?"MH":"LH",
+                                            blockName: newBlockName
+                                        })
+                                        .then(function (response) {
+                                            console.log(response.data)
+                                        })
+                                        .catch(function (error) {
+                                            console.log("FAILED!!! ",error);
+                                        });
+
+                                        // hostelData[newBlockName]=[]
                                         if(tabSelected==0)//mh
                                             setSeatMHData({...hostelData})
                                         else //lh
@@ -320,7 +359,7 @@ function HostelBlocks() {
                             <th className='py-3'>Floor No</th>
                             <th>Room Range</th>
                         </tr>
-                            {hostelData[blockSelected].map((item, index)=>(
+                            {hostelData[blockSelected].floorData.map((item, index)=>(
                             <tr 
                                 className='border-b border-slate-200 border-solid'
                             >

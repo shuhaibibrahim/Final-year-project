@@ -26,4 +26,9 @@ router.post('/createApplication', admin.createApplication)
 router.get('/deleteApplication', admin.deleteApplication)
 router.post('/updateApplication', admin.updateApplication)
 
+//hostel blocks
+router.get('/getBlocks', admin.getBlocks)
+router.post('/addBlock', admin.addBlock)
+router.post('/addFloor', admin.addFloor)
+
 module.exports=router
