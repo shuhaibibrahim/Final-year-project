@@ -1,14 +1,13 @@
-import { useState,useEffect } from 'react'
+import { useState,useEffect,useContext } from 'react'
 import axios from "axios"
 import { baseUrl } from "../baseUrl"
 import ApplicationBox from "./ApplicationBox"
-import Loading from './Loading'
+import {UserContext} from '../Contexts/UserContext'
 function ApplicationBoxes() {
-
-    const [loading,setLoading]=useState(true)
     const [applications,setApplications]=useState([])
-
+    const {setLoading}=useContext(UserContext)
     useEffect(() => {
+      setLoading(true)
       axios.get(`${baseUrl}/inmate/formtemplate`)
       .then(res=>{
           console.log(res.data)
@@ -18,15 +17,13 @@ function ApplicationBoxes() {
     }, [])
 
     return (
-        <div className='w-11/12 flex items-center justify-center h-full'>
-            {loading?<Loading className="mt-5"/>:<div className="grid grid-cols-3 gap-3 w-full">
+            <div className="w-11/12 flex grid grid-cols-3 gap-3 w-11/12">
             {applications.map((item,index)=>{
                 return(
                     <ApplicationBox key={index} applicationTitle={item.name} fields={item.application_template} certificateId={item.certificate_id}/>
                 )
             })}
-            </div>}
-        </div>
+            </div>
         
     )
 }

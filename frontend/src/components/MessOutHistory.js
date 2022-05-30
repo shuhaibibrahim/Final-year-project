@@ -36,18 +36,21 @@ function MessOutHistory({messOutHistory,setMessOutHistory,isEmpty,setIsEmpty,set
                    <th className='p-3'>Number of Days</th>
                    <th className='p-3'></th>
                  </tr>
-                 {messOutHistory.map((user, index)=>(
-                   <tr 
+                 {messOutHistory.map((user, index)=>{
+                   var fdate=new Date(user.fromdate)
+                   var tdate=new Date(user.todate)
+                   return(
+                    <tr 
                       key={index}
-                     className={'border-b text-center border-slate-200 border-solid hover:bg-gray-300'}
-                   >
-                     <td className='p-3'>{index+1}</td>
-                     <td className='p-3'>{user.fromdate?.slice(0,10)}</td>
-                     <td className='p-3'>{user.todate?.slice(0,10)}</td>
-                     <td className='p-3'>{user.days}</td>
-                     <td className='p-3'><button className="submit-button-black">Cancel</button></td>
-                   </tr>
-                 ))}
+                      className={'border-b text-center border-slate-200 border-solid hover:bg-gray-300'}
+                    >
+                      <td className='p-3'>{index+1}</td>
+                      <td className='p-3'>{fdate.getDate()+'/'+fdate.getMonth()+'/'+fdate.getFullYear()}</td>
+                      <td className='p-3'>{tdate.getDate()+'/'+tdate.getMonth()+'/'+tdate.getFullYear()}</td>
+                      <td className='p-3'>{(tdate.getTime()-fdate.getTime())/(1000 * 3600 * 24)}</td>
+                      <td className='p-3'><button className="submit-button-black">Cancel</button></td>
+                    </tr>
+                 )})}
              </table>}
            </div>
          </>

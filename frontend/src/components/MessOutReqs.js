@@ -53,7 +53,10 @@ function MessOutReqs({noofDays,setNoofDays}) {
                    <th className='p-3'>To Date</th>
                    <th className='p-3'>Number of Days</th>
                  </tr>
-                 {messreqs.map((user, index)=>(
+                 {messreqs.map((user, index)=>{
+                   var fdate=new Date(user.fromdate)
+                   var tdate=new Date(user.todate)
+                   return(
                    <tr
                      key={index} 
                      className={'border-b text-center border-slate-200 border-solid hover:bg-gray-300'}
@@ -61,11 +64,11 @@ function MessOutReqs({noofDays,setNoofDays}) {
                      <td className='p-3'>{index+1}</td>
                      <td className='p-3'>{user.hostel_admission_no}</td>
                      <td className='p-3'>{user.name}</td>
-                     <td className='p-3'>{user.fromdate?.slice(0,10)}</td>
-                     <td className='p-3'>{user.todate?.slice(0,10)}</td>
-                     <td className='p-3'>days</td>
+                     <td className='p-3'>{fdate.getDate()+'/'+fdate.getMonth()+'/'+fdate.getFullYear()}</td>
+                     <td className='p-3'>{tdate.getDate()+'/'+tdate.getMonth()+'/'+tdate.getFullYear()}</td>
+                     <td className='p-3'>{(tdate.getTime()-fdate.getTime())/(1000 * 3600 * 24)}</td>
                    </tr>
-                 ))}
+                 )})}
              </table>
            </div>
          </>
