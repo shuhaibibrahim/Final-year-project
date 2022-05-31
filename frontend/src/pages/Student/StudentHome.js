@@ -19,7 +19,7 @@ function StudentHome() {
         icon: editSvg,
     },
     {
-        title:"Non Inmate Certificate",
+        title:"Certificate",
         to:"/student/noninmatecertificate",
         icon: bookSvg,
     }

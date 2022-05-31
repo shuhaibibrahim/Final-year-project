@@ -71,6 +71,10 @@ module.exports = function(passport){
                               }
                             })
                           }
+                          else if(response.rows[0].stage=="noninmate")//non inmate
+                          {
+                            return done(null,user)
+                          }
                         }
                         else
                         {
@@ -174,6 +178,10 @@ module.exports = function(passport){
                                           console.log(err)
                                         }
                                       })
+                                    }
+                                    else if(response.rows[0].stage=="noninmate")//non inmate
+                                    {
+                                      return done(null,user)
                                     }
                                   }
                                   else

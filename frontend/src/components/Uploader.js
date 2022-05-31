@@ -4,8 +4,7 @@ import {motion} from 'framer-motion'
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import Sheets from '../icons/sheets.png'
 import * as XLSX from 'xlsx'
-function Uploader({uploaded,setUploaded}) {
-  const [studentData,setStudentData]=useState([])
+function Uploader({uploaded,setUploaded,jsonData,setJsonData}) {
   const [fileName,setFileName]=useState("")
   const onDrop = useCallback((acceptedFiles) => {
     acceptedFiles.forEach((uploadedfile) => {
@@ -48,7 +47,7 @@ function Uploader({uploaded,setUploaded}) {
             data.shift();
             data.shift();
             console.log(data);
-            setStudentData(data);  
+            setJsonData(data);  
         }
         reader.readAsBinaryString(uploadedfile);
     })

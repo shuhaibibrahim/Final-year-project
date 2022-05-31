@@ -59,7 +59,17 @@ const messOutDays = async (req,res)=>{
 
 const renderFormTemplate = async (req,res)=>{
     try{
-        const query=await pool.query("SELECT * FROM certificates")
+        const type=req.query.user_type
+        var usertype=""
+        switch(type) {
+            case "inmate":
+              usertype="IN"
+              break;
+            case "noninmate":
+              usertype="NIN"
+              break;
+          }
+        const query=await pool.query("SELECT * FROM certificates,path where certificates.pathno=path.pathno AND (path.start_user=$1 or path.start_user='S')",[usertype])
         res.json(query.rows)
     }
     catch (e){
@@ -138,6 +148,20 @@ const currentInmates = async (req,res) =>{
     } 
 }
 
+const uploadMessBill = async (req,res) =>{
+    try{
+        console.log(req.body)
+        req.body.jsonData.map(async item=>{
+            const query= await pool.query("INSERT INTO messbill(hostel_admission_no,bill) VALUES('18MH001',$1)",[item.bill])
+            console.log(query)
+        })
+        
+    }
+    catch(e){
+
+    } 
+}
+
 module.exports={
     applyHostelOut,
     submitComplaint,
@@ -149,5 +173,6 @@ module.exports={
     viewCertificates,
     applyMessOut,
     messOutRequests,
-    currentInmates
+    currentInmates,
+    uploadMessBill
 }

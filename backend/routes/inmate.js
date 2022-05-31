@@ -60,7 +60,7 @@ router.get('/messoutrequests', inmate.messOutRequests)
 router.get('/viewinmates',inmate.currentInmates)
 
 //MESS DIRECTOR
-
+router.post('/uploadbill',inmate.uploadMessBill)
 
 
 
