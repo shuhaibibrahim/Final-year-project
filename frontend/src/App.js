@@ -55,13 +55,15 @@ import axios from 'axios';
 import SergeantHome from './pages/Sergeant/SergeantHome';
 import ViewComplaints from './pages/Sergeant/ViewComplaints';
 import SeatMatrix from './pages/Admin/SeatMatrix';
-import {UserContext} from './Contexts/UserContext'
+import {UserContext,LoadingContext} from './Contexts/UserContext'
 import AdvisorHome from './pages/StaffAdvisor/AdvisorHome';
 import HodHome from './pages/HOD/HodHome';
+import BackdropLoading from './components/BackdropLoading';
 
 function App() {
   const [user, setUser] = useState(undefined)
   const [authenticating, setAuthenticating] = useState(false)
+  const [loading,setLoading] = useState(false)
   /*
     user={
       username:tve18cs061,
@@ -97,7 +99,7 @@ function App() {
   
   return (
     <div className='App'>
-      <UserContext.Provider value={{user,setUser}}>
+      <UserContext.Provider value={{user,setUser,loading,setLoading}}>
       <BrowserRouter>
         <Routes>
           {user===null&&(<Route path="/" element={<LandingPage/>}/>)}
@@ -188,6 +190,7 @@ function App() {
           
         </Routes>
       </BrowserRouter>
+      <BackdropLoading/>
       </UserContext.Provider>
     </div>
   );

@@ -3,15 +3,18 @@ import {useState,useContext} from 'react'
 import {UserContext} from '../Contexts/UserContext'
 export default function ComplaintBox(){
     const [complaint,setComplaint]=useState("")
-    const {user} =useContext(UserContext)
+    const {user,setLoading} =useContext(UserContext)
     const submitComplaint =(e)=>{
         e.preventDefault();
+        setLoading(true)
         axios.post('http://localhost:8080/inmate/complaintbox',{
             user_id:user.user_id,
             complaint:complaint
         })
         .then(res=>{
             alert("Submitted")
+            setComplaint("")
+            setLoading(false)
         })
     }
     return(
