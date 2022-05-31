@@ -1,4 +1,4 @@
-import React from 'react'
+import React,{useState} from 'react'
 import Uploader from '../../components/Uploader'
 import { saveAs } from "file-saver";
 import excelfile from "../../components/1.xlsx"
@@ -13,6 +13,8 @@ function SignupInvite() {
       "SignUp_Link_Excel_Template.xlsx"
     );
   };
+  const [uploaded,setUploaded]=useState(false);
+  const [jsonData,setJsonData]=useState([]);
   return (
     <div className='flex flex-col w-full items-center'>
       <div className='flex flex-row justify-between w-10/12 pt-4 items-center'>
@@ -52,7 +54,7 @@ function SignupInvite() {
         <div className='text-sm font-bold mt-5 w-11/12 p-3'>Send signup link (Using Sheets)</div>
 
 
-      <Uploader/>
+      <Uploader uploaded={uploaded} setUploaded={setUploaded} jsonData={jsonData} setJsonData={setJsonData}/>
       
       <div className="w-full flex items-end justify-end mt-5">
           <div className='mr-3 mb-3 p-3 py-2 cursor-pointer hover:bg-stone-600 px-3 bg-stone-800 text-white text-sm font-semibold rounded-2xl'>Submit</div>

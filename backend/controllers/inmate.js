@@ -83,10 +83,10 @@ const applyCertificate = async(req,res)=>{
         delete req.body.user_id
         delete req.body.certificate_id
         const applicationform=JSON.stringify(req.body)
-        const getadmno=await pool.query("SELECT hostel_admission_no FROM inmate_table WHERE admission_no=$1",[user_id])
-        const hostel_admno=getadmno.rows[0].hostel_admission_no
+        // const getadmno=await pool.query("SELECT hostel_admission_no FROM inmate_table WHERE admission_no=$1",[user_id])
+        // const hostel_admno=getadmno.rows[0].hostel_admission_no
         const date=new Date()
-        const query=await pool.query("INSERT INTO certificate_application(hostel_admission_no,certificate_id,date,approved,rejected,status,application_form) VALUES($1,$2,$3,FALSE,FALSE,0,$4) RETURNING *",[hostel_admno,certificate_id,date,applicationform])
+        const query=await pool.query("INSERT INTO certificate_application(admission_no,certificate_id,date,approved,rejected,status,application_form) VALUES($1,$2,$3,FALSE,FALSE,0,$4) RETURNING *",[user_id,certificate_id,date,applicationform])
         console.log(query)
 
     }
@@ -98,7 +98,7 @@ const applyCertificate = async(req,res)=>{
 const viewCertificates = async (req,res)=>{
     try{
         const user_id=req.query.user_id
-        const certificates=await pool.query('SELECT CA.application_id,CA.certificate_id,CA.date,C.name,CA.approved,CA.rejected,CA.status,CA.feedback,CA.application_form FROM certificate_application as CA,certificates as C WHERE hostel_admission_no=(SELECT hostel_admission_no FROM inmate_table WHERE admission_no=$1) AND CA.certificate_id=C.certificate_id',[user_id])
+        const certificates=await pool.query('SELECT CA.application_id,CA.certificate_id,CA.date,C.name,CA.approved,CA.rejected,CA.status,CA.feedback,CA.application_form FROM certificate_application as CA,certificates as C WHERE admission_no=$1 AND CA.certificate_id=C.certificate_id',[user_id])
         // const certificates=await pool.query('SELECT * FROM certificate_application where hostel_admission_no=(SELECT hostel_admission_no FROM inmate_table WHERE admission_no=$1)',[user_id])
         console.log(certificates.rows)
         res.json(certificates.rows)

@@ -165,7 +165,7 @@ function App() {
           {user!=null && user.designation=='student' && user.stage=='noninmate'&&(<Route path="/student" element={<StudentHome/>}>
             <Route index element={<ViewDetails/>}/>
             <Route path="hostelapply" element={<HostelApplication/>}/>
-            <Route path="noninmatecertificate" element={<NonInmateCertificate/>}/>
+            <Route path="noninmatecertificate" element={<CertificatePage/>}/>
           </Route>)}
 
           {/* Inmate Routes */}

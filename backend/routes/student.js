@@ -7,8 +7,6 @@ router.get('/',(req,res) =>{
 
 router.post('/hostelapplication',async (req,res)=>{
     console.log(req.body)
-    const {age,dob,religion,caste,category,admissioncriteria,yearofadmission,}=req.body
-        const application=pool.query('INSERT INTO hostel_application($1)',[...req.body])
 })
 
 router.post('/noninmate',async (req,res)=>{
