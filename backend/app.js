@@ -8,6 +8,7 @@ const app = express()
 const admin=require('./routes/admin')
 const student=require('./routes/student')
 const inmate=require('./routes/inmate')
+const staffadvisor=require('./routes/staffadvisor')
 const bodyParser = require('body-parser')
 var passport = require('passport');
 
@@ -77,6 +78,8 @@ app.use('/student',student)
 
 //----------------------inmate routes----------------------
 app.use('/inmate',inmate)
+
+app.use('/staffadvisor',staffadvisor)
 
 app.listen(port, () => {
   console.log(`App listening on port ${port}`)
