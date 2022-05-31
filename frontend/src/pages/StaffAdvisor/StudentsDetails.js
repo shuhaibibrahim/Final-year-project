@@ -18,26 +18,26 @@ function StudentsDetails() {
   const [open1, setOpen1] = useState(false);
   const [open2, setOpen2] = useState(false);
 
-  const getAndSetRoles=()=>{
-    axios.get('http://localhost:8080/admin/inmates/getRoles',{
-      params:{
-        hostelAdmNo: hostelDataSelected[selectedRowIndex].hostel_admission_no,
-      }
-    })
-    .then(function (response) {
-        console.log("Inmate roles is set" ,response.data)
-        setSelectedInmateRoles([...response.data])
-    })
-    .catch(function (error) {
-        console.log("FAILED!!! ",error);
-    });
-  }
+  // const getAndSetRoles=()=>{
+  //   axios.get('http://localhost:8080/admin/inmates/getRoles',{
+  //     params:{
+  //       hostelAdmNo: hostelDataSelected[selectedRowIndex].hostel_admission_no,
+  //     }
+  //   })
+  //   .then(function (response) {
+  //       console.log("Inmate roles is set" ,response.data)
+  //       setSelectedInmateRoles([...response.data])
+  //   })
+  //   .catch(function (error) {
+  //       console.log("FAILED!!! ",error);
+  //   });
+  // }
 
   useEffect(() => {
       console.log("first useEffect is called")
       if(tabSelected=="MH" || tabSelected=="LH")
       {
-        axios.get('http://localhost:8080/admin/inmates',{
+        axios.get('http://localhost:8080/staffadvisor/inmates',{
           params:{hostel: tabSelected}
         })
         .then(function (response) {
@@ -51,7 +51,7 @@ function StudentsDetails() {
       }
       else if(tabSelected=="roles" && hostelDataSelected[selectedRowIndex]!=undefined)
       {
-        getAndSetRoles()
+        // getAndSetRoles()
       }
   }, [tabSelected])
   
