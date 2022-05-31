@@ -17,4 +17,21 @@ const inmateList=(req,res)=>{
     })
 }
 
-module.exports={inmateList}
+const viewCertificates = async (req,res)=>{
+    try{
+        const user_id=req.query.user_id
+        const certificates=await pool.query('SELECT CA.application_id,CA.certificate_id,CA.date,C.name,CA.approved,CA.rejected,CA.status,CA.feedback,CA.application_form FROM certificate_application as CA,certificates as C WHERE hostel_admission_no=(SELECT hostel_admission_no FROM inmate_table WHERE admission_no=$1) AND CA.certificate_id=C.certificate_id',[user_id])
+        // const certificates=await pool.query('SELECT * FROM certificate_application where hostel_admission_no=(SELECT hostel_admission_no FROM inmate_table WHERE admission_no=$1)',[user_id])
+        console.log(certificates.rows)
+        res.json(certificates.rows)
+    }
+    catch(e){
+        console.error(e)
+    }
+    
+}
+
+module.exports={inmateList,
+    viewCertificates,
+
+}
