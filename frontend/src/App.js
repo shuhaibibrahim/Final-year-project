@@ -10,7 +10,7 @@ import {
 import StudentHome from './pages/Student/StudentHome';
 import FacultyHome from './pages/StaffAdvisor/AdvisorHome';
 import StudentsDetails from './pages/StaffAdvisor/StudentsDetails';
-import HostelAllotment from './pages/StaffAdvisor/HostelAllotment';
+import SaViewApplication from './pages/StaffAdvisor/SaViewApplication';
 import AdminHome from './pages/Admin/AdminHome';
 import AdminInmates from './pages/Admin/AdminInmates';
 import AdminNonInmates from './pages/Admin/AdminNonInmates';
@@ -48,7 +48,7 @@ import MessOutPage from './components/MessOutPage';
 import UploadMessBillPage from './pages/Matron/UploadMessBillPage';
 import MessOutListPage from './pages/Matron/MessOutListPage';
 import StudentsDetailsHod from './pages/HOD/StudentsDetailsHod';
-import HostelAllotmentHod from './pages/HOD/HostelAllotmentHod';
+import HodViewApplication from './pages/HOD/HodViewApplication';
 import SignupInviteHod from './pages/HOD/SignupInviteHod';
 import AddStaffAdvisor from './pages/HOD/AddStaffAdvisor';
 import axios from 'axios';
@@ -59,6 +59,7 @@ import {UserContext,LoadingContext} from './Contexts/UserContext'
 import AdvisorHome from './pages/StaffAdvisor/AdvisorHome';
 import HodHome from './pages/HOD/HodHome';
 import BackdropLoading from './components/BackdropLoading';
+import ViewApplications from './pages/Warden/ViewApplications';
 
 function App() {
   const [user, setUser] = useState(undefined)
@@ -129,7 +130,7 @@ function App() {
               <Route index element={<StudentsDetails/>}/>
               <Route path="studentsdetails" element={<StudentsDetails/>}/>
               <Route path="signupinvite" element={<SignupInvite/>}/>
-              <Route path="hostelallotment" element={<HostelAllotment/>}/>
+              <Route path="saviewapplication" element={<SaViewApplication/>}/>
             </Route>
 
             {/* hod Routes */}
@@ -137,7 +138,7 @@ function App() {
               <Route index element={<StudentsDetailsHod/>}/>
               <Route path="studentsdetails" element={<StudentsDetailsHod/>}/>
               <Route path="addstaffadvisor" element={<AddStaffAdvisor/>}/>
-              <Route path="hostelallotment" element={<HostelAllotmentHod/>}/>
+              <Route path="hodviewapplication" element={<HodViewApplication/>}/>
             </Route>
 
             {/* Warden Routes */}
@@ -145,6 +146,7 @@ function App() {
               <Route index element={<HostelAdmission/>}/>
               <Route path="admission" element={<HostelAdmission/>}/>
               <Route path="hostelregistry" element={<HostelRegistry/>}/>
+              <Route path="applications" element={<ViewApplications/>}/>
             </Route>
 
             <Route path="/sergeant" element={<SergeantHome/>}>

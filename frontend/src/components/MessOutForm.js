@@ -38,8 +38,8 @@ function MessOutForm({noofDays,messOutHistory,setMessOutHistory,setIsEmpty}) {
             setOpen1(true)
         }
         else{
-            var days=(tdate.getTime()-fdate.getTime())/(1000 * 3600 * 24)
-            setDays(days)
+            var days=((tdate.getTime()-fdate.getTime())/(1000 * 3600 * 24))+1
+            setDays(days+1)
             if(days<noofDays){
                 setModalHeading("Not Applicable")
                 setModalText("Mess Out not allowed for "+days+" days")

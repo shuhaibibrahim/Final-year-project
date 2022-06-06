@@ -139,12 +139,40 @@ const messOutRequests = async (req,res) =>{
     } 
 }
 
-const currentInmates = async (req,res) =>{
+const currentMessInmates = async (req,res) =>{
     try{
-        
+        const date=new Date();
+        let month = (date.getMonth() + 1).toString();
+        let day = date.getDate().toString();
+        let year = date.getFullYear();
+        if (month.length < 2) {
+            month = '0' + month;
+        }
+        if (day.length < 2) {
+            day = '0' + day;
+        }
+        const inputdate=[year, month, day].join('-');
+        // const query=await pool.query(`SELECT users.name,inmate_table.hostel_admission_no,hostel_room.room_no,hostel_blocks.block_name 
+        // from messout,inmate_table,users,inmate_room,hostel_room,hostel_blocks 
+        // where $1 between messout.fromdate and messout.todate 
+        // and inmate_table.hostel_admission_no != messout.hostel_admission_no 
+        // and inmate_table.admission_no = users.user_id 
+        // and inmate_table.hostel_admission_no = inmate_room.hostel_admission_no 
+        // and inmate_room.room_id = hostel_room.room_id 
+        // and hostel_room.block_id = hostel_blocks.block_id`,[inputdate])
+        const query=await pool.query(`SELECT users.name,inmate_table.hostel_admission_no, hostel_room.room_no,hostel_blocks.block_name
+        FROM inmate_table,users,inmate_room,hostel_room,hostel_blocks
+        WHERE inmate_table.hostel_admission_no NOT IN(SELECT messout.hostel_admission_no from messout where $1 between messout.fromdate and messout.todate)
+        and inmate_table.admission_no = users.user_id 
+        and inmate_table.hostel_admission_no = inmate_room.hostel_admission_no 
+        and inmate_room.room_id = hostel_room.room_id 
+        and hostel_room.block_id = hostel_blocks.block_id
+        and hostel_blocks.hostel='MH'`,[inputdate])
+        console.log(query.rows)
+        res.send(query.rows)
     }
     catch(e){
-        
+        console.log(e)
     } 
 }
 
@@ -173,6 +201,6 @@ module.exports={
     viewCertificates,
     applyMessOut,
     messOutRequests,
-    currentInmates,
+    currentMessInmates,
     uploadMessBill
 }

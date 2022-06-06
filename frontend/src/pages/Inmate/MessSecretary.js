@@ -1,60 +1,15 @@
-import React, { useState,useEffect } from 'react'
-import CurrentInmates from '../../components/CurrentInmates';
+import React, { useState,useEffect,useContext } from 'react'
+import CurrentMessInmates from '../../components/CurrentMessInmates';
 import MessOutReqs from '../../components/MessOutReqs';
 import {motion} from 'framer-motion'
+import { baseUrl } from '../../baseUrl';
 import axios from 'axios'
+import {UserContext} from '../../Contexts/UserContext'
 function MessSecretary() {
-  const applications=[
-    {
-      SlNo:"1234",
-      Certificate:"xyz",
-      Date:"cse"
-    },
-    {
-      SlNo:"1234",
-      Certificate:"xyz",
-      Date:"cse"
-    },
-    {
-      SlNo:"1234",
-      Certificate:"xyz",
-      Date:"cse"
-    },
-    {
-      SlNo:"1234",
-      Certificate:"xyz",
-      Date:"cse"
-    },
-    {
-      SlNo:"1234",
-      Certificate:"xyz",
-      Date:"cse"
-    },
-    {
-      SlNo:"1234",
-      Certificate:"xyz",
-      Date:"cse"
-    },
-    {
-      SlNo:"1234",
-      Certificate:"xyz",
-      Date:"cse"
-    },
-    {
-      SlNo:"1234",
-      Certificate:"xyz",
-      Date:"cse"
-    }
 
-    
-  ]
-
-
-  const [hostelDataSelected, setHostelDataSelected] = useState(applications)
   const [tabSelected, setTabSelected] = useState(1)
-  const [selectedRowIndex, setSelectedRowIndex] = useState(-1)
-  const [selectedHostel, setSelectedHostel] = useState(null)
   const [noofDays,setNoofDays]=useState(0)
+  const [inmates, setInmates] = useState([])
 
   useEffect(() => {
     axios.get('http://localhost:8080/inmate/messoutdays')
@@ -82,18 +37,16 @@ function MessSecretary() {
               <div
                 className='cursor-pointer '
                 onClick={()=>{
-                  setHostelDataSelected(applications)
                   setTabSelected(1)
                 }}
               >
-                  <div>Inmates <span className='ml-2 p-2 text-white bg-stone-800 rounded-lg cursor-default'>200</span></div>
-                  <div className={tabSelected===1?'mt-2 h-1 self-center w-6/12 bg-stone-800 rounded-full':''}/>
+                  <div>Current Mess Inmates <span className='ml-2 p-2 text-white bg-stone-800 rounded-lg cursor-default'>{inmates.length}</span></div>
+                  <div className={tabSelected===1?'mt-2 h-1 self-center w-10/12 bg-stone-800 rounded-full':''}/>
               </div>
 
               <div 
                 className='ml-5 cursor-pointer'
                 onClick={()=>{
-                  setHostelDataSelected(applications)
                   setTabSelected(2)
                 }}
               >
@@ -105,7 +58,7 @@ function MessSecretary() {
           {tabSelected===1&&<div className='text-sm mb-2'>Showing 1-8 out of 200 results</div>}
           <br />
         </div>
-        {tabSelected===1?<CurrentInmates/>:<MessOutReqs noofDays={noofDays} setNoofDays={setNoofDays}/>}
+        {tabSelected===1?<CurrentMessInmates inmates={inmates} setInmates={setInmates}/>:<MessOutReqs noofDays={noofDays} setNoofDays={setNoofDays}/>}
       </motion.div>
     </div>
   )

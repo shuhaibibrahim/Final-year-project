@@ -47,7 +47,7 @@ function MessOutHistory({messOutHistory,setMessOutHistory,isEmpty,setIsEmpty,set
                       <td className='p-3'>{index+1}</td>
                       <td className='p-3'>{fdate.getDate()+'/'+fdate.getMonth()+'/'+fdate.getFullYear()}</td>
                       <td className='p-3'>{tdate.getDate()+'/'+tdate.getMonth()+'/'+tdate.getFullYear()}</td>
-                      <td className='p-3'>{(tdate.getTime()-fdate.getTime())/(1000 * 3600 * 24)}</td>
+                      <td className='p-3'>{((tdate.getTime()-fdate.getTime())/(1000 * 3600 * 24))+1}</td>
                       <td className='p-3'><button className="submit-button-black">Cancel</button></td>
                     </tr>
                  )})}
