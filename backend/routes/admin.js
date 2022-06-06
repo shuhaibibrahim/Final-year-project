@@ -30,5 +30,6 @@ router.post('/updateApplication', admin.updateApplication)
 router.get('/getBlocks', admin.getBlocks)
 router.post('/addBlock', admin.addBlock)
 router.post('/addFloor', admin.addFloor)
+router.get('/deleteBlock', admin.deleteBlock)
 
 module.exports=router

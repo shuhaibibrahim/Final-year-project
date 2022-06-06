@@ -3,10 +3,10 @@ const {pool}=require('../db')
 //Inmate Functions
 const inmateList=(req,res)=>{
 
-    pool.query(`SELECT * FROM Users u, STUDENT s, BATCH b, INMATE_TABLE it, INMATE_ROOM ir, HOSTEL_ROOM hr
+    pool.query(`SELECT * FROM Users u, STUDENT s, BATCH b, INMATE_TABLE it, INMATE_ROOM ir, HOSTEL_ROOM hr, HOSTEL_BLOCKS hb
                 where s.BatchId=b.batchId and u.User_Id=s.Admission_No and s.Admission_No=it.Admission_No and
                 it.Hostel_Admission_No=ir.Hostel_Admission_No and ir.Room_Id=hr.Room_Id and 
-                hr.Hostel=$1`, [req.query.hostel], (err, resp) => {
+                hr.block_id=hb.block_id and hb.hostel=$1`, [req.query.hostel], (err, resp) => {
         if (err) {
             throw err
         }
@@ -284,8 +284,9 @@ const updateApplication=(req,res)=>{
 const getBlocks=(req,res)=>{
 
     pool.query(`SELECT MIN(Room_No) as rangeFrom, MAX(Room_No) as rangeTo, block_name, hb.block_id, floor_no
-                FROM HOSTEL_ROOM hr, HOSTEL_BLOCKS hb
-                WHERE hr.block_id=hb.block_id and hb.Hostel=$1
+                FROM HOSTEL_ROOM hr right join HOSTEL_BLOCKS hb
+                ON hr.block_id=hb.block_id 
+                WHERE hb.Hostel=$1
                 GROUP BY hb.block_id, block_name, floor_no`, [req.query.hostel], (err, resp) => {
         if (err) {
             console.log(err)
@@ -305,7 +306,8 @@ const addBlock=(req,res)=>{
                 RETURNING *`, [req.body.hostel, req.body.blockName], (err, resp) => {
         if (err) {
             console.log(err)
-            throw err
+
+            console.log(req.body)
         }
 
         res.send(resp.rows)
@@ -329,7 +331,31 @@ const addFloor=async (req,res)=>{
         }
     }
 
+    pool.query(`SELECT MIN(Room_No) as rangeFrom, MAX(Room_No) as rangeTo, floor_no
+                FROM HOSTEL_ROOM hr
+                WHERE block_id=$1 and floor_no=$2
+                GROUP BY floor_no`,[req.body.blockId, req.body.floorNo], (err, resp)=>{
+                    console.log(resp.rows)
+
+                    res.send(resp.rows[0])
+                })
+
     console.log("finished")
+}
+
+const deleteBlock=(req,res)=>{
+
+    pool.query(`DELETE FROM HOSTEL_BLOCKS
+                WHERE block_id=$1 RETURNING *`, [req.query.blockId], (err, resp) => {
+        if (err) {
+            console.log(err)
+
+            console.log(req.body)
+        }
+
+        console.log("here ",resp.rows)
+        res.send(resp.rows)
+    })
 }
 
 const applyHostelOut = async(req,res)=>{
@@ -374,6 +400,7 @@ module.exports={
     //hostel blocks
     getBlocks,
     addBlock,
-    addFloor
+    addFloor,
+    deleteBlock
 
 }

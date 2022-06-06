@@ -8,10 +8,11 @@ function LoginForm() {
     const [admissionno,setAdmissionNo]=useState("")
     const [username, setUsername] = useState("")
     const [password,setPassword]=useState("")
-    const {setUser} =useContext(UserContext)
+    const {setUser, setLoading} =useContext(UserContext)
 
     const login=()=>{
         console.log("here login")
+        setLoading(true)
         axios.post('http://localhost:8080/auth/login', {
                 'username': username,
                 'password': password
@@ -21,9 +22,11 @@ function LoginForm() {
         .then(function (response) {
             console.log("success" , response.data);
             setUser(response.data)
+            setLoading(false)
         })
         .catch(function (error) {
             console.log("FAILED!!! ",error);
+            setLoading(false)
         });
     }
 
