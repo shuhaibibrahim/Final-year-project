@@ -25,6 +25,8 @@ router.get('/getCertificates', admin.getCertificates)
 router.post('/createApplication', admin.createApplication)
 router.get('/deleteApplication', admin.deleteApplication)
 router.post('/updateApplication', admin.updateApplication)
+router.get('/getTableAndCols', admin.getTableAndCols)
+router.post('/updateCertificateTemplateText', admin.updateCertificateTemplateText)
 
 //hostel blocks
 router.get('/getBlocks', admin.getBlocks)

@@ -39,6 +39,8 @@ function AdminPaths() {
 
     const [modal, setModal] = useState(null)
 
+    const [altTextIndex, setAltTextIndex] = useState(-1)
+
     const updateXarrow = useXarrow();
     // useEffect(() => {
     //     const script = document.createElement("script");
@@ -275,9 +277,14 @@ function AdminPaths() {
                                     {pathItem.certificates!=""&&pathItem.certificates.map((certificate, certIndex)=>(
                                         <div 
                                             key={certIndex}
-                                            className='bg-slate-200 text-stone-800 font-bold w-8 h-8 rounded-full flex items-center justify-center relative'
+                                            className='bg-slate-200 cursor-pointer text-stone-800 font-bold w-8 h-8 rounded-full flex items-center justify-center relative'
+                                            onMouseEnter={()=>{setAltTextIndex(certIndex+"-"+index)}} onMouseLeave={()=>{setAltTextIndex(-1)}}
                                         >
-                                            <div>{certificates.findIndex(c=>c.name==certificate.name)}</div>
+                                            {certificates.findIndex(c=>c.name==certificate.name)}
+                                            {altTextIndex==certIndex+"-"+index&&(
+                                                <div className='absolute top-9 left-0 text-white bg-stone-600 whitespace-nowrap rounded-full p-3 text-xs'>{certificate.name}</div>
+                                            )}
+
                                             <div
                                                 className='absolute -top-2 -right-2 cursor-pointer text-red-500 cursor-pointer rounded-full hover:bg-black'
                                                 onClick={()=>{
