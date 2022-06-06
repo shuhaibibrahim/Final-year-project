@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import {motion} from "framer-motion" 
 import axios from 'axios'
-import AlertDialog from '../../components/AlertDialog'
-import ConfirmDialog from '../../components/ConfirmDialog'
 function StudentsDetails() {
 
 
@@ -18,20 +16,6 @@ function StudentsDetails() {
   const [open1, setOpen1] = useState(false);
   const [open2, setOpen2] = useState(false);
 
-  // const getAndSetRoles=()=>{
-  //   axios.get('http://localhost:8080/admin/inmates/getRoles',{
-  //     params:{
-  //       hostelAdmNo: hostelDataSelected[selectedRowIndex].hostel_admission_no,
-  //     }
-  //   })
-  //   .then(function (response) {
-  //       console.log("Inmate roles is set" ,response.data)
-  //       setSelectedInmateRoles([...response.data])
-  //   })
-  //   .catch(function (error) {
-  //       console.log("FAILED!!! ",error);
-  //   });
-  // }
 
   useEffect(() => {
       console.log("first useEffect is called")
