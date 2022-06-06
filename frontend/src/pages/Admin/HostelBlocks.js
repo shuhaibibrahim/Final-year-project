@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import {motion} from "framer-motion" 
 import axios from 'axios'
+import { UserContext } from '../../Contexts/UserContext'
 
 function HostelBlocks() {
 
@@ -64,8 +65,8 @@ function HostelBlocks() {
   
   const tabs=["Mens Hostel", "Ladies Hostel"]
 
-  const [seatMHData, setSeatMHData] = useState(seatMH)
-  const [seatLHData, setSeatLHData] = useState(seatLH)
+  const [seatMHData, setSeatMHData] = useState({})
+  const [seatLHData, setSeatLHData] = useState({})
 
   const [blockSelected, setBlockSelected] = useState(null)
   const [addBlock, setAddBlock] = useState(false)
@@ -80,6 +81,7 @@ function HostelBlocks() {
 
   const [modalType, setModalType] = useState(0) //0 for existing attribute modal 1 for derived attribute modal
 
+  const {setLoading} = useContext(UserContext)
   const backdropClickHandler = (event) => {
     if (event.target === event.currentTarget) {
         // setModal(<div/>)
@@ -94,6 +96,37 @@ function HostelBlocks() {
         }
     })
     .then(function (response) {
+       console.log(response.data)
+
+       var tempData={}
+       response.data.forEach(item => {
+           console.log(item)
+           if(tempData[item.block_id]==undefined)
+           {
+               tempData[item.block_id]={}
+               tempData[item.block_id].blockName=item.block_name
+               tempData[item.block_id].floorData=[]
+           }
+
+           if(item.floor_no!=null)
+           {
+               tempData[item.block_id].floorData.push(
+                   {
+                       floorNo:item.floor_no,
+                       roomRange:item.rangefrom+"-"+item.rangeto
+                   }
+               )
+           }
+       });
+
+       if(tabSelected==0) //MH
+       {
+            setSeatMHData(tempData)
+       }
+       else if(tabSelected==1) //LH
+       {
+            setSeatLHData(tempData)
+       }
     })
     .catch(function (error) {
         console.log("FAILED!!! ",error);
@@ -102,7 +135,7 @@ function HostelBlocks() {
 
   useEffect(() => {
     getBlocksData()
-  }, [])
+  }, [tabSelected])
 
   useEffect(() => {
     if(modal!=null)
@@ -113,7 +146,7 @@ function HostelBlocks() {
     
     if(modalType===0) //modaltype=0 to add floor
     {
-        const hostelData=tabSelected==0?seatMHData:seatLHData
+        const hostelData=tabSelected==0?{...seatMHData}:{...seatLHData}
         setModal(
             <div onClick={backdropClickHandler} className="bg-slate-500/[.8] z-20 fixed inset-0 flex justify-center items-center">
                 <div className='flex flex-col bg-white rounded-2xl w-5/12 h-auto pt-3 relative overflow-hidden'>
@@ -140,8 +173,10 @@ function HostelBlocks() {
                         <input 
                             type="number"
                             className='p-2 w-80 outline-none ring-slate-200 ring-2 rounded-xl'
+                            disabled
+                            // placeholder={hostelData[blockSelected].floorData.length}
                             required={true}
-                            value={hostelData[blockSelected].length}
+                            value={hostelData[blockSelected].floorData.length}
                         />
 
                         <label className='mt-2 text-stone-800 font-semibold'>Room Range</label>
@@ -179,17 +214,35 @@ function HostelBlocks() {
                                 e.preventDefault()
                                 if(rangeFrom>=0&&rangeTo>=0)
                                 {
+                                    setLoading(true)
                                     axios.post('http://localhost:8080/admin/addFloor',{
-                                        floorNo: 1,
+                                        floorNo: hostelData[blockSelected].floorData.length,
                                         rangeFrom: rangeFrom,
                                         rangeTo: rangeTo,
                                         blockId: blockSelected
                                     })
                                     .then(function (response) {
                                         console.log(response)
+
+                                        var updatedFloorData=[...hostelData[blockSelected].floorData]
+                                        
+                                        updatedFloorData.push({
+                                            floorNo: response.data.floor_no,
+                                            roomRange:response.data.rangefrom+"-"+response.data.rangeto
+                                        })
+
+                                        hostelData[blockSelected].floorData=[...updatedFloorData]
+                                        
+                                        if(tabSelected==0)
+                                            setSeatMHData({...hostelData})
+                                        else    
+                                            setSeatLHData({...hostelData})
+
+                                        setLoading(false)
                                     })
                                     .catch(function (error) {
                                         console.log("FAILED!!! ",error);
+                                        setLoading(false)
                                     });
 
                                     // var newHostelData={...hostelData}
@@ -243,13 +296,15 @@ function HostelBlocks() {
             floorsData:[...hostelData[blockId].floorData]
         })
     }
+    
+    console.log(render)
 
     return render.map((item, index)=>(
         <tr 
         className='border-b border-slate-200 border-solid'
         >
             <td className='py-3'>{item.blockName}</td>
-            <td className='py-2'>
+            <td className='py-2 flex flex-row space-x-2'>
                 <div 
                 className='flex flex-row space-x-1 cursor-pointer items-center w-fit p-3 text-white font-bold bg-blue-500 hover:bg-blue-700 rounded-xl'
                 onClick={()=>{
@@ -258,11 +313,34 @@ function HostelBlocks() {
                     // console.log(JSON.parse(currentApplicationsData[index].fields))
                 }}
                 >
-                <div>View</div>
+                    <div>View</div>
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
                     </svg>
                 </div>
+
+                {/* Delete Application */}
+                <div 
+                    className='button-red p-2 flex items-center justify-center'
+
+                    onClick={()=>{
+                      axios.get('http://localhost:8080/admin/deleteBlock',{
+                        params:{
+                            blockId: item.blockId
+                        }
+                      })
+                      .then(function (response) {
+                        getBlocksData()
+                      })
+                      .catch(function (error) {
+                          console.log("FAILED!!! ",error);
+                      });
+                    }}
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>                    
+                  </div>
             </td>
         </tr>
     ))
@@ -308,18 +386,21 @@ function HostelBlocks() {
                                         })
                                         .then(function (response) {
                                             console.log(response.data)
+
+                                            getBlocksData()
+                                        
+                                            setAddBlock(false)
+                                            setNewBlockName("")
                                         })
                                         .catch(function (error) {
                                             console.log("FAILED!!! ",error);
                                         });
 
                                         // hostelData[newBlockName]=[]
-                                        if(tabSelected==0)//mh
-                                            setSeatMHData({...hostelData})
-                                        else //lh
-                                            setSeatLHData({...hostelData})
-                                        setAddBlock(false)
-                                        setNewBlockName("")
+                                        // if(tabSelected==0)//mh
+                                        //     setSeatMHData({...hostelData})
+                                        // else //lh
+                                        //     setSeatLHData({...hostelData})
                                     }}
                                 >Add Block
                                 </div>

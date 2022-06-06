@@ -77,7 +77,7 @@ function App() {
 
   useEffect(() => {
     setAuthenticating(true)
-
+    setLoading(true)
     console.log("Im inside useffect isauthenticated")
     axios.get('http://localhost:8080/auth/isAuthenticated',{
         withCredentials: true
@@ -85,6 +85,7 @@ function App() {
     .then(function (response) {
 
         setAuthenticating(false)
+        setLoading(false)
 
         console.log("success" , response ,"response.data");
         if(response.data!="")
@@ -94,6 +95,7 @@ function App() {
     })
     .catch(function (error) {
         setAuthenticating(false)
+        setLoading(false)
         console.log("FAILED!!! ",error);
     });
   }, [])
