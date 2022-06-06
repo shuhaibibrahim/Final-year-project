@@ -15,8 +15,8 @@ const saLinks=[
         icon: editSvg,
     },
     {
-        title:" Hostel Allotment",
-        to:"staffadvisor/hostelallotment",
+        title:" View Applications",
+        to:"staffadvisor/SaViewApplication",
         icon: bookSvg,
     }
 ]

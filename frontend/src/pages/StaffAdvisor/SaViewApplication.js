@@ -1,18 +1,14 @@
 import React, { useState,useEffect, useContext } from 'react'
-import CertificateForm from '../../components/CertificateForm'
 import ApplicationListStaffAdvisor from '../../components/ApplicationListStaffAdvisor'
 import {motion} from 'framer-motion'
 
 import { UserContext } from '../../Contexts/UserContext';
 
-function HostelAllotment() {
-  
-
+function SaViewApplication() {
   
   const {user} = useContext(UserContext)
 
   const [certificates, setCertificates] = useState([])
-  // const [tabSelected, setTabSelected] = useState(1)
   const [appsno,setAppsno]=useState(0)
 
   return (
@@ -31,26 +27,15 @@ function HostelAllotment() {
           <div className='flex flex-row tex-black text-sm font-bold relative mb-3'>
               <div
                 className='cursor-pointer '
-                // onClick={()=>{
-                //   setTabSelected(1)
-                // }}
+                
               >
                   <div>View Applications <span className='ml-2 p-2 text-white bg-stone-800 rounded-lg cursor-default'>{appsno}</span></div>
                   <div className='mt-2 h-1 self-center w-9/12 bg-stone-800 rounded-full'/>
               </div>
 
-              {/* <div 
-                className='ml-5 cursor-pointer'
-                onClick={()=>{
-                  // setTabSelected(2)
-                }}
-              >
-                <div>Apply for New Certificate</div>
-                <div className={tabSelected===2?'mt-2 h-1 w-12/12 self-center bg-stone-800 rounded-full':''}/>
-              </div>     */}
+              
           </div>
 
-          {/* {<div className='text-sm mb-2'>Showing 1-8 out of 200 results</div>} */}
           <br />
         </div>
         {<ApplicationListStaffAdvisor certificates={certificates} setCertificates={setCertificates} setAppsno={setAppsno}/>}
@@ -58,4 +43,4 @@ function HostelAllotment() {
     </div>
   )
 }
-export default HostelAllotment
+export default SaViewApplication
