@@ -59,6 +59,7 @@ import {UserContext,LoadingContext} from './Contexts/UserContext'
 import AdvisorHome from './pages/StaffAdvisor/AdvisorHome';
 import HodHome from './pages/HOD/HodHome';
 import BackdropLoading from './components/BackdropLoading';
+import ViewApplications from './pages/Warden/ViewApplications';
 
 function App() {
   const [user, setUser] = useState(undefined)
@@ -143,6 +144,7 @@ function App() {
               <Route index element={<HostelAdmission/>}/>
               <Route path="admission" element={<HostelAdmission/>}/>
               <Route path="hostelregistry" element={<HostelRegistry/>}/>
+              <Route path="applications" element={<ViewApplications/>}/>
             </Route>
 
             <Route path="/sergeant" element={<SergeantHome/>}>

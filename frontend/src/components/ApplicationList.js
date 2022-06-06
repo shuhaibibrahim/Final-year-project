@@ -7,11 +7,13 @@ import BlockIcon from '@mui/icons-material/Block';
 const ApplicationList=({setCertificates,setAppsno,certificates})=>{
     const {user,setLoading} = useContext(UserContext)
     useEffect(() => {
+        setLoading(true)
         axios.get(`${baseUrl}/inmate/viewcertificates`,{params:{user_id:user.user_id}})
         .then(res=>{
           console.log(res.data)
           setCertificates(res.data)
           setAppsno(res.data.length)
+          setLoading(false)
         })
       }, [])
     return (

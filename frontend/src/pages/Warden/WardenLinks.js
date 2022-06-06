@@ -10,6 +10,11 @@ const wardenLinks=[
         icon:fitnessSvg,
     },
     {
+        title:"View Applications",
+        to:"warden/applications",
+        icon:editSvg,
+    },
+    {
         title:"Hostel Registry",
         to:"warden/hostelregistry",
         icon: editSvg,

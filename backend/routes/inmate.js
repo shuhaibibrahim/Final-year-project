@@ -57,7 +57,7 @@ router.put('/messoutdays',async (req,res)=>{
 router.get('/messoutrequests', inmate.messOutRequests)
 
 //View Current Inmates (Also for Mess Director)
-router.get('/viewinmates',inmate.currentInmates)
+router.get('/viewmessinmates',inmate.currentMessInmates)
 
 //MESS DIRECTOR
 router.post('/uploadbill',inmate.uploadMessBill)

@@ -3,11 +3,10 @@ import UploadMessBill from '../../components/UploadMessBill'
 import MessOutList from '../../components/MessOutList'
 import {motion} from 'framer-motion'
 import MessDuesView from '../../components/MessDuesView'
-import CurrentInmates from '../../components/CurrentInmates'
+import CurrentMessInmates from '../../components/CurrentMessInmates'
 function MessDirector() {
   const [tabSelected, setTabSelected] = useState(1)
-  const [selectedRowIndex, setSelectedRowIndex] = useState(-1)
-  const [selectedHostel, setSelectedHostel] = useState(null)
+  const [inmates,setInmates] = useState([])
   return (
     <div className='flex flex-col w-full items-center min-h-screen h-full overflow-y-scroll'>
       <div className='flex flex-row justify-between w-11/12 pt-4 items-center'>
@@ -28,8 +27,8 @@ function MessDirector() {
                   setTabSelected(1)
                 }}
               >
-                  <div>Inmates List<span className='ml-2 p-2 text-white bg-stone-800 rounded-lg cursor-default'>200</span></div>
-                  <div className={tabSelected===1?'mt-2 h-1 self-center w-6/12 bg-stone-800 rounded-full':''}/>
+                  <div>Current Mess Inmates <span className='ml-2 p-2 text-white bg-stone-800 rounded-lg cursor-default'>{inmates.length}</span></div>
+                  <div className={tabSelected===1?'mt-2 h-1 self-center w-10/12 bg-stone-800 rounded-full':''}/>
               </div>
 
               <div 
@@ -64,7 +63,7 @@ function MessDirector() {
           {tabSelected===1&&<div className='text-sm mb-2'>Showing 1-8 out of 200 results</div>}
           <br />
         </div>
-        {tabSelected===1&&<CurrentInmates/>}
+        {tabSelected===1&&<CurrentMessInmates inmates={inmates} setInmates={setInmates}/>}
         {tabSelected===2&&<MessOutList/>}
         {tabSelected===3&&<UploadMessBill/>}
         {tabSelected===4&&<MessDuesView/>}
