@@ -280,6 +280,91 @@ const updateApplication=(req,res)=>{
     })
 }
 
+const getTableAndCols=(req,res)=>{
+    console.log( "body : ",req.query)
+
+    pool.query(`SELECT template_text
+                FROM CERTIFICATES c
+                WHERE c.certificate_id=$1`, [req.query.certificateId], (err, resp) => {
+        if (err) {
+            console.log(err)
+        }
+        console.log('path details : ', resp.rows)
+
+        var certificateData=resp.rows[0]
+
+        var columnsData=[] //to store the column names
+        var tables=[] //to store the table names
+
+        pool.query(`SELECT column_name FROM information_schema.columns
+                    WHERE TABLE_NAME = 'users';`, (err, resp) => {
+            if (err) {
+                console.log(err)
+            }
+
+            tables.push('users') 
+            columnsData=resp.rows.filter(item=>(item.column_name!='is_admin'&&item.column_name!='password'))
+
+            columnsData=columnsData.map(item=>'users.'+item.column_name)
+
+            pool.query(`SELECT column_name FROM information_schema.columns
+                        WHERE TABLE_NAME = 'student'`, async (err, resp) =>{
+                if (err) {
+                    console.log(err)
+                    throw err
+                }
+
+                tables.push('student')
+                columnsData=[...columnsData, ...resp.rows.map(item=>'student.'+item.column_name)]
+
+
+                var inmateData=await pool.query(`SELECT column_name 
+                                                FROM information_schema.columns
+                                                WHERE TABLE_NAME = 'inmate_table'`)
+                
+                tables.push('inmate_table')
+                var tempArray=inmateData.rows.filter(item=>item.column_name!='admission_no') 
+                columnsData=[...columnsData, ...tempArray.map(item=>'inmate_table.'+item.column_name)]
+
+                var hostelData=await pool.query(`SELECT column_name 
+                                                FROM information_schema.columns
+                                                WHERE TABLE_NAME = 'hostel_blocks'`)
+
+                tables.push('hostel_blocks')
+                tempArray=hostelData.rows.filter(item=>(item.column_name!='block_id')) 
+                columnsData=[...columnsData, ...tempArray.map(item=>'hostel_blocks.'+item.column_name)]
+
+
+                res.send({
+                    "templateText":certificateData.template_text,
+                    "tables":tables,
+                    "columnsData":columnsData
+                })
+                
+            })
+
+
+        })
+
+    })
+}
+
+const updateCertificateTemplateText=(req, res)=>{
+    console.log( "body : ",req.body)
+    pool.query(`UPDATE CERTIFICATES
+                SET template_text=$1
+                WHERE Certificate_ID=$2
+                RETURNING *`, [req.body.templateText, req.body.certificateId], (err, resp) => {
+        if (err) {
+            console.log(err)
+            throw err
+        }
+        console.log('certificate updated : ', resp.rows)
+
+        res.send(resp.rows)
+    })
+}
+
 //Hostel Blocks
 const getBlocks=(req,res)=>{
 
@@ -396,6 +481,8 @@ module.exports={
     createApplication,
     deleteApplication,
     updateApplication,
+    getTableAndCols,
+    updateCertificateTemplateText,
 
     //hostel blocks
     getBlocks,

@@ -58,11 +58,15 @@ tbody tr td{
 }
 
 .button-blue{
-  @apply rounded-lg p-2 bg-blue-500 cursor-pointer  text-white text-base font-medium hover:bg-blue-700
+  @apply p-3 w-fit font-bold text-white rounded-xl bg-blue-500 cursor-pointer hover:bg-blue-700
 }
 
 .button-red{
-  @apply rounded-lg p-2 bg-red-500 cursor-pointer text-white text-base font-medium hover:bg-red-700
+  @apply p-3 w-fit font-bold text-white rounded-xl bg-red-500 cursor-pointer hover:bg-red-700
+}
+
+.button-stone{
+  @apply p-3 w-fit font-bold text-white rounded-xl bg-stone-800 cursor-pointer hover:bg-stone-600
 }
 
 .submit-button-black{

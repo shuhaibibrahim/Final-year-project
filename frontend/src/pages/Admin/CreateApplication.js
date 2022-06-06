@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import {motion} from "framer-motion" 
 import axios from 'axios'
 import { ListItemSecondaryAction } from '@mui/material'
+import { UserContext } from '../../Contexts/UserContext'
 
 function CreateApplications() {
 
@@ -128,12 +129,18 @@ function CreateApplications() {
   const [tabSelected, setTabSelected] = useState(0) //selected tab index
   const [modal, setModal] = useState(null) //modal showing columns
 
-  const [modalType, setModalType] = useState(0) //0 for existing attribute modal 1 for derived attribute modal
+  const [modalType, setModalType] = useState(-1) //0 for existing attribute modal 1 for derived attribute modal
+
+  //for certificate template text editing
+  const [certificateTemplateText, setCertificateTemplateText] = useState("")
+  const [tablesReturned, setTablesReturned] = useState([])
+  const [columnsReturned, setColumnsReturned] = useState([])
 
   const backdropClickHandler = (event) => {
     if (event.target === event.currentTarget) {
         // setModal(<div/>)
         setModal(null)
+        setModalType(-1)
     }
   }
 
@@ -165,12 +172,49 @@ function CreateApplications() {
   useEffect(() => {
     if(modal!=null)
       RenderModal()
-  }, [newLabel, newName, newType, radioItem, radioFields, modalType])
+  }, [newLabel, newName, newType, radioItem, radioFields, modalType, certificateTemplateText])
+  
 
-  const RenderModal=(fieldInsertIndex)=>{
-    // 
+  const {setLoading} =useContext(UserContext)
 
-    if(modalType===0)
+
+  const getAndSetTablesCols=()=>{
+    const applicationIndex=tabSelected==0?applicationSelectedIndex:createdApplicationIndex
+
+    setLoading(true)
+    axios.get('http://localhost:8080/admin/getTableAndCols',{
+        params:{
+          certificateId: currentApplicationsData[applicationIndex].certificateId
+        }
+      })
+      .then(function (response) {
+
+          setCertificateTemplateText(response.data["templateText"])
+          setTablesReturned(response.data["tables"])
+          setColumnsReturned(response.data["columnsData"])
+
+          console.log("calling render modal modaltype : ",modalType)
+          setModalType(1)  //rendering modal for certificate template
+          
+          setLoading(false)
+          console.log("response is : ",response.data)
+      })
+      .catch(function (error) {
+          setLoading(false)
+          console.log("FAILED!!! ",error);
+      });
+  }
+
+  useEffect(() => {
+    if(modalType!=-1)
+      RenderModal() //when directly called there was bug (modal was rendering on alternative clicks)
+                            //RenderModal() is called inside getAndSetTablesCols() after the data is fetched
+  }, [modalType])
+  
+  const RenderModal=()=>{
+
+    console.log("RenderModal called modaltype is", modalType)
+    if(modalType===0)//add  new field
     {
       //created application index if we are in 'create application' tab
       //application selected index if we are in 'edit application' tab 
@@ -186,6 +230,7 @@ function CreateApplications() {
                         onClick={()=>{
                             setModal(null)
                             // setSelectedColumnIndex(-1)
+                            setModalType(-1)
                         }}
                     >
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -373,6 +418,94 @@ function CreateApplications() {
             </div>
         )
     }
+    else if(modalType===1) //certificate template
+    {
+      //created application index if we are in 'create application' tab
+      //application selected index if we are in 'edit application' tab 
+      const applicationIndex=tabSelected==0?applicationSelectedIndex:createdApplicationIndex
+
+      console.log("im called")
+      setModal(
+            <div onClick={backdropClickHandler} className="bg-slate-500/[.8] z-20 fixed inset-0 flex justify-center items-center">
+                <div className='flex flex-col bg-white rounded-2xl w-9/12 h-auto  pt-3 relative overflow-hidden'>
+
+                  <div
+                      // className='absolute top-1 right-1 flex justify-center items-center bg-red-500 aspect-square w-7 h-7 cursor-pointer text-center text-xs font-bold text-white rounded-full hover:bg-red-700'
+                      className='absolute top-1 right-1 cursor-pointer text-red-500 cursor-pointer rounded-full hover:text-red-700'
+                      onClick={()=>{
+                          setModal(null)
+                          // setSelectedColumnIndex(-1)
+                          setModalType(-1)
+                      }}
+                  >
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                  </div>
+                  
+                  <div className='text-stone-800 border-b border-solid border-stone-800 text-lg p-2 font-semibold w-full'>
+                    Certificate Template
+                  </div>
+
+                  <div className='mt-3 flex flex-row items-center justify-between px-2 w-full'>
+                    <div className='text-stone-800 text-base font-semibold w-full'>
+                      Title : {currentApplicationsData[applicationIndex].applicationName}
+                    </div>
+
+                    <div className='flex flex-row space-x-2'>
+                      {tablesReturned.map((tableName, index)=>(
+                        <select 
+                          key={index} 
+                          onChange={e=>{
+                            setCertificateTemplateText(t=>t+"<<"+e.target.value+">>")
+                            document.getElementById("certificateTemplateTextArea").focus()
+                          }} //<<tablename.columnname>> is added to certificate template text
+                          className=' p-2 outline-none rounded-xl'
+                        >
+                          <option>{tableName.split('_').join(' ')}</option>
+                          {columnsReturned.map((column,cIndex)=>{
+                            if(column.split('.')[0]==tableName)
+                              return <option key={cIndex} value={column}>{column.split('.')[1]}</option>
+                          })}
+                        </select>
+                      ))}
+
+                    </div>
+                  </div>
+
+                  <textarea 
+                    id="certificateTemplateTextArea"
+                    className='p-3 mx-3 mt-3 mb-3 h-48 rounded-xl ring-2 ring-slate-200 focus:outline-none' 
+                    value={certificateTemplateText}
+                    onChange={e=>{setCertificateTemplateText(e.target.value)}}
+                  />
+
+                  <div className='flex flex-row justify-end px-2 py-2'>
+                    <div 
+                      className='button-blue'
+                      onClick={()=>{
+                          axios.post('http://localhost:8080/admin/updateCertificateTemplateText',{
+                            templateText:certificateTemplateText,
+                            certificateId: currentApplicationsData[applicationIndex].certificateId,
+                          })
+                          .then(function (response) {
+                            setModal(null)
+                            setModalType(-1)
+                          })
+                          .catch(function (error) {
+                              console.log("FAILED!!! ",error);
+                          });
+                      }}
+                    >
+                      Update
+                    </div>
+                  </div>
+
+                </div>
+            </div>
+      )
+        
+    }
   }
 
   //function to capitalize first letter of a word
@@ -522,6 +655,7 @@ function CreateApplications() {
     </div>)
   }
 
+
   const editApplication=()=>{
     return(
       <div className='w-full h-full flex flex-row text-sm overflow-hidden'>
@@ -564,14 +698,20 @@ function CreateApplications() {
             {applicationSelectedIndex>=0?(
             <div className='w-full h-full flex flex-col overflow-hidden'>
               <div className='w-full flex flex-row justify-between items-center px-3 text-center py-3 bg-slate-200 text-stone-800 font-bold'>
-                {capitalizeString(currentApplicationsData[applicationSelectedIndex].applicationName,'_')}
 
+                <div 
+                  className='button-blue'
+                  onClick={()=>{
+                    getAndSetTablesCols()
+                  }}
+                >
+                  Certificate template
+                </div>
                 <div className='flex flex-row space-x-2 items-center'>
                   <div 
                     className='p-3 w-fit font-bold text-white rounded-xl bg-stone-800 cursor-pointer hover:bg-stone-600'
                     onClick={()=>{
                       setModalType(0)
-                      RenderModal()
                     }}
                     >+ Add a new field
                   </div>
@@ -601,7 +741,8 @@ function CreateApplications() {
                   </div>
                 </div>
               </div>
-
+              
+              <div className='w-full p-3 sticky top-0 text-stone-800 font-bold text-center'>{capitalizeString(currentApplicationsData[applicationSelectedIndex].applicationName,'_')}</div>
               {applicationSelectedIndex!=-1&&renderFields()}
             </div>
             ):(
@@ -683,17 +824,26 @@ function CreateApplications() {
                   </div>
                 </div>
 
-                {/* <div className='flex flex-row space-x-4'> */}
+                <div className='flex flex-row space-x-2'>
+                  {createdApplicationIndex!=-1&&(
+                    <div 
+                      className='button-blue'
+                      onClick={()=>{
+                        getAndSetTablesCols()
+                      }}
+                    >
+                        Certificate template
+                    </div>
+                  )}
 
                   <div 
                     className='p-3 w-fit font-bold text-white rounded-xl bg-stone-800 cursor-pointer hover:bg-stone-600'
                     onClick={()=>{
                       setModalType(0)
-                      RenderModal()
                     }}
                     >+ Add a new field
                   </div>
-                {/* </div> */}
+                </div>
               </div>
               
               {createdApplicationIndex!=-1&&
@@ -703,34 +853,36 @@ function CreateApplications() {
                   
 
                   {/* Delete this application */}
-                  <div 
-                    className='absolute text-white font-bold bg-red-500 hover:bg-red-700 text-sm p-3 rounded-xl right-2'
-                    onClick={()=>{
+                  <div className='absolute right-2 w-fit'>
+                    <div 
+                      className='text-white font-bold bg-red-500 hover:bg-red-700 text-sm p-3 rounded-xl'
+                      onClick={()=>{
 
-                      axios.get('http://localhost:8080/admin/deleteApplication',{
-                        params:{
-                          certificateId: currentApplicationsData[createdApplicationIndex].certificateId
-                        }
-                      })
-                      .then(function (response) {
+                        axios.get('http://localhost:8080/admin/deleteApplication',{
+                          params:{
+                            certificateId: currentApplicationsData[createdApplicationIndex].certificateId
+                          }
+                        })
+                        .then(function (response) {
 
-                        //removing the application from state
-                        var newApplications=[...currentApplicationsData]
-                      
-                        if(applicationSelectedIndex==newApplications.length)
-                          setApplicationSelectedIndex(-1)
+                          //removing the application from state
+                          var newApplications=[...currentApplicationsData]
+                        
+                          if(applicationSelectedIndex==newApplications.length)
+                            setApplicationSelectedIndex(-1)
 
-                        newApplications.pop()
-                        setCreatedApplicationIndex(-1)
-                        setCurrentApplicationsData([...newApplications])
-                      })
-                      .catch(function (error) {
-                          console.log("FAILED!!! ",error);
-                      });
+                          newApplications.pop()
+                          setCreatedApplicationIndex(-1)
+                          setCurrentApplicationsData([...newApplications])
+                        })
+                        .catch(function (error) {
+                            console.log("FAILED!!! ",error);
+                        });
 
-                    }}
-                  >
-                      Delete this application
+                      }}
+                    >
+                        Delete this application
+                    </div>
                   </div>
                 </div>
                 )

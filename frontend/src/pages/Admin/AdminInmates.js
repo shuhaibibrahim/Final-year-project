@@ -230,6 +230,7 @@ function AdminInmates() {
               <tr className='bg-primary text-left sticky top-0'>
                 <th className='py-3'>Admission Number</th>
                 <th>Name</th>
+                <th>Course</th>
                 <th>Department</th>
                 <th>Batch</th>
                 <th>Phone</th>
@@ -255,6 +256,7 @@ function AdminInmates() {
                   >
                     <td className='py-3'>{user.admission_no}</td>
                     <td>{user.name}</td>
+                    <td>{user.course}</td>
                     <td>{user.department}</td>
                     <td>{user.batchid}</td>
                     <td>{user.mobile_no}</td>
@@ -391,7 +393,7 @@ function AdminInmates() {
           >
             <option value={null}>NIL</option>
             <option value="md">Mess Director</option>
-            <option value="ms">Mess Secretory</option>
+            <option value="ms">Mess Secretary</option>
           </select>
 
           <button 
