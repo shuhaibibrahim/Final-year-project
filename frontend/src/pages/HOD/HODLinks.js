@@ -15,8 +15,8 @@ const hodLinks=[
         icon: editSvg,
     },
     {
-        title:" Hostel Allotment",
-        to:"hod/hostelallotment",
+        title:" View Applications",
+        to:"hod/HodViewApplication",
         icon: bookSvg,
     }
 ]

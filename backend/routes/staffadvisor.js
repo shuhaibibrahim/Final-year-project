@@ -7,4 +7,9 @@ const staffadvisor=require('../controllers/staffadvisor')
 
 router.get('/inmates', staffadvisor.inmateList)
  
+
+//StaffAdvisor - view CERTIFICATE ROUTES
+
+//View Certificates
+router.get('/viewcertificates', staffadvisor.viewCertificates)
 module.exports=router
