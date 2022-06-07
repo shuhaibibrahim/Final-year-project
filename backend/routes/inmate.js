@@ -22,6 +22,9 @@ router.post('/roomchange',inmate.submitRoomChange)
 //View MessOut history
 router.get('/messouthistory',inmate.viewMessOutHistory)
 
+//Cancel messout
+router.delete('/cancelmessout',inmate.cancelMessOut)
+
 //View MessOut days
 router.get('/messoutdays',inmate.messOutDays)
 

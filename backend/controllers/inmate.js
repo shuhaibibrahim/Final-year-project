@@ -1,4 +1,19 @@
 const {pool} = require('../db')
+
+const dateConverter = (inputdate)=>{
+        const date=new Date(inputdate);
+        let month = (date.getMonth() + 1).toString();
+        let day = date.getDate().toString();
+        let year = date.getFullYear();
+        if (month.length < 2) {
+            month = '0' + month;
+        }
+        if (day.length < 2) {
+            day = '0' + day;
+        }
+        return [year, month, day].join('-');
+}
+
 const applyHostelOut = async(req,res)=>{
     try{
         const {user_id,fromDate,toDate,reason}=req.body
@@ -190,6 +205,20 @@ const uploadMessBill = async (req,res) =>{
     } 
 }
 
+const cancelMessOut = async(req,res)=>{
+    try{
+        const {user_id,fromdate,todate}=req.query
+        const fdate=dateConverter(fromdate)
+        const tdate=dateConverter(todate)
+        const query = await pool.query('DELETE FROM messout WHERE hostel_admission_no=(SELECT hostel_admission_no from inmate_table where admission_no=$1) and fromdate=$2 and todate=$3 returning *',[user_id,fdate,tdate])
+        console.log(query)
+        res.json(query.rows)
+    }
+    catch(e){
+        console.log(e)
+    }
+}
+
 module.exports={
     applyHostelOut,
     submitComplaint,
@@ -202,5 +231,6 @@ module.exports={
     applyMessOut,
     messOutRequests,
     currentMessInmates,
-    uploadMessBill
+    uploadMessBill,
+    cancelMessOut
 }
