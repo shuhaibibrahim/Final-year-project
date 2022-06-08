@@ -9,6 +9,7 @@ const admin=require('./routes/admin')
 const student=require('./routes/student')
 const inmate=require('./routes/inmate')
 const hod=require('./routes/hod')
+const warden=require('./routes/warden')
 const staffadvisor=require('./routes/staffadvisor')
 const bodyParser = require('body-parser')
 var passport = require('passport');
@@ -82,6 +83,7 @@ app.use('/inmate',inmate)
 
 app.use('/staffadvisor',staffadvisor)
 app.use('/hod',hod)
+app.use('/warden',warden)
 
 app.listen(port, () => {
   console.log(`App listening on port ${port}`)

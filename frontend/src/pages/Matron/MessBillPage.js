@@ -5,7 +5,7 @@ import UploadMessBill from '../../components/UploadMessBill'
 import MessOutList from '../../components/MessOutList'
 import CurrentMessInmates from '../../components/CurrentMessInmates'
 function MessBillPage() {
-
+  const [inmates,setInmates]=useState([])
   return (
     <div className='flex flex-col w-full items-center min-h-screen h-full overflow-y-scroll'>
       <div className='flex flex-row justify-between w-11/12 pt-4 items-center'>
@@ -20,7 +20,11 @@ function MessBillPage() {
       <div className='flex flex-col items-center py-3 space-y-4 w-11/12 mt-8 bg-white rounded-xl'>
         {/* white box nav bar */}
           <div className='text-xl font-bold'>Inmate List</div>
+<<<<<<< HEAD
           {/* <CurrentMessInmates/> */}
+=======
+          <CurrentMessInmates inmates={inmates} setInmates={setInmates}/>
+>>>>>>> 27427dea3ba0341fa7b2870d903a9fed7b9be4e4
       </div>
     </div>
   )

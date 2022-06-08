@@ -1,156 +1,186 @@
-import React, { useState } from 'react'
+import React, { useState,useEffect,useContext } from 'react'
 import {motion} from "framer-motion" 
+import { baseUrl } from '../../baseUrl'
+import axios from 'axios'
+import { UserContext } from '../../Contexts/UserContext'
 
 function HostelRegistry() {
-  const inmateDataMH=[
-    {
-      hostelAdmNo:"1235",
-      name:"xyz",
-      dept:"cse",
-      phone:"9876857465",
-      email:"xyz@gmail.com",
-      from:"01-02-2022",
-      to:"09-02-2022"
-    },
-    {
-      hostelAdmNo:"2434",
-      name:"xyz",
-      dept:"cse",
-      phone:"9876857465",
-      email:"xyz@gmail.com",
-      from:"01-02-2022",
-      to:"09-02-2022"
-    },
-    {
-      hostelAdmNo:"1234",
-      name:"xyz",
-      dept:"cse",
-      phone:"9876857465",
-      email:"xyz@gmail.com",
-      from:"01-02-2022",
-      to:"09-02-2022"
-    },
-    {
-      hostelAdmNo:"1234",
-      name:"xyz",
-      dept:"cse",
-      phone:"9876857465",
-      email:"xyz@gmail.com",
-      from:"01-02-2022",
-      to:"09-02-2022"
-    },
-    {
-      hostelAdmNo:"1234",
-      name:"xyz",
-      dept:"cse",
-      phone:"9876857465",
-      email:"xyz@gmail.com",
-      from:"01-02-2022",
-      to:"09-02-2022"
-    },
-    {
-      hostelAdmNo:"1234",
-      name:"xyz",
-      dept:"cse",
-      phone:"9876857465",
-      email:"xyz@gmail.com",
-      from:"01-02-2022",
-      to:"09-02-2022"
-    },
-    {
-      hostelAdmNo:"1234",
-      name:"xyz",
-      dept:"cse",
-      phone:"9876857465",
-      email:"xyz@gmail.com",
-      from:"01-02-2022",
-      to:"09-02-2022"
-    },
-    {
-      hostelAdmNo:"1234",
-      name:"xyz",
-      dept:"cse",
-      phone:"9876857465",
-      email:"xyz@gmail.com",
-      from:"01-02-2022",
-      to:"09-02-2022"
-    }
-  ]
 
-  const inmateDataLH=[
-    {
-      hostelAdmNo:"1289",
-      name:"pqr",
-      dept:"cse",
-      phone:"9876857465",
-      email:"xyz@gmail.com",
-      from:"01-02-2022",
-      to:"09-02-2022"
-    },
-    {
-      hostelAdmNo:"1289",
-      name:"pqr",
-      dept:"cse",
-      phone:"9876857465",
-      email:"xyz@gmail.com",
-      from:"01-02-2022",
-      to:"09-02-2022"
-    },
-    {
-      hostelAdmNo:"1289",
-      name:"pqr",
-      dept:"cse",
-      phone:"9876857465",
-      email:"xyz@gmail.com",
-      from:"01-02-2022",
-      to:"09-02-2022"
-    },
-    {
-      hostelAdmNo:"1289",
-      name:"pqr",
-      dept:"cse",
-      phone:"9876857465",
-      email:"xyz@gmail.com",
-      from:"01-02-2022",
-      to:"09-02-2022"
-    },
-    {
-      hostelAdmNo:"1289",
-      name:"pqr",
-      dept:"cse",
-      phone:"9876857465",
-      email:"xyz@gmail.com",
-      from:"01-02-2022",
-      to:"09-02-2022"
-    },
-    {
-      hostelAdmNo:"1289",
-      name:"pqr",
-      dept:"cse",
-      phone:"9876857465",
-      email:"xyz@gmail.com",
-      from:"01-02-2022",
-      to:"09-02-2022"
-    },
-    {
-      hostelAdmNo:"1289",
-      name:"pqr",
-      dept:"cse",
-      phone:"9876857465",
-      email:"xyz@gmail.com",
-      from:"01-02-2022",
-      to:"09-02-2022"
-    },
-    {
-      hostelAdmNo:"1289",
-      name:"pqr",
-      dept:"cse",
-      phone:"9876857465",
-      email:"xyz@gmail.com",
-      from:"01-02-2022",
-      to:"09-02-2022"
+  const {setLoading} = useContext(UserContext)
+  useEffect(() => {
+    setLoading(true)
+    axios.get(`${baseUrl}/warden/hostelregistry`)
+    .then(res=>{
+      setLoading(true)
+      console.log(res.data)
+      setInmateData(res.data)
+      for(let i=0;i<inmateData.length;i++){
+        if(inmateData[i].hostel=="MH"){
+          inmateDataMH.push(inmateData[i])
+        }
+        else{
+          inmateDataLH.push(inmateData[i])
+        }
     }
-  ]
+    setLoading(false)
+
+    })
+  }, [])
+
+  const [inmateData,setInmateData]=useState([])
+  var inmateDataMH=[]
+  var inmateDataLH=[]
+
+  
+  // const inmateDataMH=[
+  //   {
+  //     hostelAdmNo:"1235",
+  //     name:"xyz",
+  //     dept:"cse",
+  //     phone:"9876857465",
+  //     email:"xyz@gmail.com",
+  //     from:"01-02-2022",
+  //     to:"09-02-2022"
+  //   },
+  //   {
+  //     hostelAdmNo:"2434",
+  //     name:"xyz",
+  //     dept:"cse",
+  //     phone:"9876857465",
+  //     email:"xyz@gmail.com",
+  //     from:"01-02-2022",
+  //     to:"09-02-2022"
+  //   },
+  //   {
+  //     hostelAdmNo:"1234",
+  //     name:"xyz",
+  //     dept:"cse",
+  //     phone:"9876857465",
+  //     email:"xyz@gmail.com",
+  //     from:"01-02-2022",
+  //     to:"09-02-2022"
+  //   },
+  //   {
+  //     hostelAdmNo:"1234",
+  //     name:"xyz",
+  //     dept:"cse",
+  //     phone:"9876857465",
+  //     email:"xyz@gmail.com",
+  //     from:"01-02-2022",
+  //     to:"09-02-2022"
+  //   },
+  //   {
+  //     hostelAdmNo:"1234",
+  //     name:"xyz",
+  //     dept:"cse",
+  //     phone:"9876857465",
+  //     email:"xyz@gmail.com",
+  //     from:"01-02-2022",
+  //     to:"09-02-2022"
+  //   },
+  //   {
+  //     hostelAdmNo:"1234",
+  //     name:"xyz",
+  //     dept:"cse",
+  //     phone:"9876857465",
+  //     email:"xyz@gmail.com",
+  //     from:"01-02-2022",
+  //     to:"09-02-2022"
+  //   },
+  //   {
+  //     hostelAdmNo:"1234",
+  //     name:"xyz",
+  //     dept:"cse",
+  //     phone:"9876857465",
+  //     email:"xyz@gmail.com",
+  //     from:"01-02-2022",
+  //     to:"09-02-2022"
+  //   },
+  //   {
+  //     hostelAdmNo:"1234",
+  //     name:"xyz",
+  //     dept:"cse",
+  //     phone:"9876857465",
+  //     email:"xyz@gmail.com",
+  //     from:"01-02-2022",
+  //     to:"09-02-2022"
+  //   }
+  // ]
+
+  // const inmateDataLH=[
+  //   {
+  //     hostelAdmNo:"1289",
+  //     name:"pqr",
+  //     dept:"cse",
+  //     phone:"9876857465",
+  //     email:"xyz@gmail.com",
+  //     from:"01-02-2022",
+  //     to:"09-02-2022"
+  //   },
+  //   {
+  //     hostelAdmNo:"1289",
+  //     name:"pqr",
+  //     dept:"cse",
+  //     phone:"9876857465",
+  //     email:"xyz@gmail.com",
+  //     from:"01-02-2022",
+  //     to:"09-02-2022"
+  //   },
+  //   {
+  //     hostelAdmNo:"1289",
+  //     name:"pqr",
+  //     dept:"cse",
+  //     phone:"9876857465",
+  //     email:"xyz@gmail.com",
+  //     from:"01-02-2022",
+  //     to:"09-02-2022"
+  //   },
+  //   {
+  //     hostelAdmNo:"1289",
+  //     name:"pqr",
+  //     dept:"cse",
+  //     phone:"9876857465",
+  //     email:"xyz@gmail.com",
+  //     from:"01-02-2022",
+  //     to:"09-02-2022"
+  //   },
+  //   {
+  //     hostelAdmNo:"1289",
+  //     name:"pqr",
+  //     dept:"cse",
+  //     phone:"9876857465",
+  //     email:"xyz@gmail.com",
+  //     from:"01-02-2022",
+  //     to:"09-02-2022"
+  //   },
+  //   {
+  //     hostelAdmNo:"1289",
+  //     name:"pqr",
+  //     dept:"cse",
+  //     phone:"9876857465",
+  //     email:"xyz@gmail.com",
+  //     from:"01-02-2022",
+  //     to:"09-02-2022"
+  //   },
+  //   {
+  //     hostelAdmNo:"1289",
+  //     name:"pqr",
+  //     dept:"cse",
+  //     phone:"9876857465",
+  //     email:"xyz@gmail.com",
+  //     from:"01-02-2022",
+  //     to:"09-02-2022"
+  //   },
+  //   {
+  //     hostelAdmNo:"1289",
+  //     name:"pqr",
+  //     dept:"cse",
+  //     phone:"9876857465",
+  //     email:"xyz@gmail.com",
+  //     from:"01-02-2022",
+  //     to:"09-02-2022"
+  //   }
+  // ]
 
   const [hostelDataSelected, setHostelDataSelected] = useState(inmateDataMH)
   const [tabSelected, setTabSelected] = useState("MH")
@@ -200,19 +230,23 @@ function HostelRegistry() {
                 <th>From Date</th>
                 <th>To Date</th>
               </tr>
-                {hostelDataSelected.map((user, index)=>(
+                {inmateData.map((user, index)=>{
+                  var fdate=new Date(user.fromdate)
+                  var tdate=new Date(user.todate)
+                  return(
                   <tr 
+                    key={index+1}
                     className={'border-b border-slate-200 border-solid hover:bg-gray-300'}
                   >
-                    <td className='break-all py-3'>{user.hostelAdmNo}</td>
+                    <td className='break-all py-3'>{user.hostel_admission_no}</td>
                     <td className='break-all'>{user.name}</td>
-                    <td className='break-all'>{user.dept}</td>
-                    <td className='break-all'>{user.phone}</td>
+                    <td className='break-all'>{user.department}</td>
+                    <td className='break-all'>{user.mobile_no}</td>
                     <td className='break-all'>{user.email}</td>
-                    <td className='break-all'>{user.from}</td>
-                    <td className='break-all'>{user.to}</td>
+                    <td className='break-all'>{fdate.getDate()+'/'+fdate.getMonth()+'/'+fdate.getFullYear()}</td>
+                    <td className='break-all'>{tdate.getDate()+'/'+tdate.getMonth()+'/'+tdate.getFullYear()}</td>
                   </tr>
-                ))}
+                )})}
           </table>
         </div>
       </>
