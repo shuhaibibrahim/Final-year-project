@@ -1,11 +1,15 @@
 import axios from 'axios'
-import {useEffect,useContext} from 'react'
+import {useEffect,useContext,useState} from 'react'
 import { UserContext } from '../Contexts/UserContext'
 import { baseUrl } from '../baseUrl'
 import DownloadIcon from '@mui/icons-material/Download';
 import BlockIcon from '@mui/icons-material/Block';
+import DownloadDialog from './DownloadDialog';
 const ApplicationList=({setCertificates,setAppsno,certificates})=>{
     const {user,setLoading} = useContext(UserContext)
+    const [open,setOpen] = useState(false)
+    const [certificateText,setCertificateText] = useState("")
+    const [certificateName,setCertificateName] = useState("")
     useEffect(() => {
         setLoading(true)
         axios.get(`${baseUrl}/inmate/viewcertificates`,{params:{user_id:user.user_id}})
@@ -16,6 +20,25 @@ const ApplicationList=({setCertificates,setAppsno,certificates})=>{
           setLoading(false)
         })
       }, [])
+
+      const downloadCertificate = (certificateId,applicationId,certificateName)=>{
+        setLoading(true)
+        console.log(certificateId)
+        axios.get(`${baseUrl}/certificates/download`,{
+          params:{
+            certificate_id: certificateId,
+            application_id: applicationId
+          }
+        })
+        .then(res=>{
+          console.log(res)
+          setCertificateText(res.data[0].template_text)
+          setCertificateName(certificateName)
+          setLoading(false)
+          setOpen(true)
+
+        })
+      }
     return (
       // <div className='w-full'>
       <>
@@ -30,20 +53,23 @@ const ApplicationList=({setCertificates,setAppsno,certificates})=>{
                 <th className='p-3'>Status</th>
                 <th className='p-3'>Download</th>
               </tr>
-              {certificates.map((user, index)=>(
+              {certificates.map((certificate, index)=>{
+                var patharray=certificate.path.split("-")
+                return(
                 <tr 
                   className='border-b text-center border-slate-200 border-solid hover:bg-gray-300'
                   key={index}>
                   <td className='p-3'>{index+1}</td>
-                  <td className='p-3'>{user.name}</td>
-                  <td className='p-3'>{user.date.slice(0,10)}</td>
-                  <td className='p-3'>{user.status}</td>
-                  <td className='p-3'>{user.approved?"Approved":(user.rejected?"Rejected":"In Progress")}</td>
-                  <td className='p-3'>{user.approved?<DownloadIcon className='cursor-pointer'/>:<BlockIcon/>}</td>
+                  <td className='p-3 capitalize'>{certificate.name}</td>
+                  <td className='p-3'>{certificate.date.slice(0,10)}</td>
+                  <td className='p-3'>{patharray[certificate.status]}</td>
+                  <td className='p-3'>{certificate.approved?"Approved":(certificate.rejected?"Rejected":"In Progress")}</td>
+                  <td className='p-3'>{certificate.approved?<DownloadIcon className="cursor-pointer" onClick={()=>{downloadCertificate(certificate.certificate_id,certificate.application_id,certificate.name)}}></DownloadIcon>:<BlockIcon/>}</td>
                 </tr>
-              ))}
+              )})}
           </table>
         </div>
+        <DownloadDialog open={open} setOpen={setOpen} certificateText={certificateText} certificateName={certificateName}/>
       </>
     )
   }

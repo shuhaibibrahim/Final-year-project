@@ -4,7 +4,7 @@ import { baseUrl } from "../baseUrl"
 import { UserContext } from "../Contexts/UserContext"
 import ConfirmDialog from '../components/ConfirmDialog'
 
-function MessOutHistory({messOutHistory,setMessOutHistory,isEmpty,setIsEmpty}) {
+function MessOutHistory({messOutHistory,setMessOutHistory,isEmpty,setIsEmpty,setNoofDays}) {
 
   const {user,setLoading}=useContext(UserContext)
   const [open1, setOpen1] = useState(false);
@@ -16,6 +16,11 @@ function MessOutHistory({messOutHistory,setMessOutHistory,isEmpty,setIsEmpty}) {
   const [tempto,setTempTo]=useState("")
   useEffect(() => {
     setLoading(true)
+    axios.get('http://localhost:8080/inmate/messoutdays')
+        .then((res)=>{
+          console.log(res.data)
+          setNoofDays(res.data[0].value)
+        })
     axios.get(`${baseUrl}/inmate/messouthistory`,{params:{user_id:user.user_id}})
     .then(res=>{
       console.log(res.data)

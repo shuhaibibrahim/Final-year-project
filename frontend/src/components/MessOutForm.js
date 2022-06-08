@@ -14,14 +14,6 @@ function MessOutForm({noofDays,messOutHistory,setMessOutHistory,setIsEmpty,setNo
     const [open2, setOpen2] = useState(false);
     const {user,setLoading} = useContext(UserContext)
     
-    useEffect(() => {
-        axios.get('http://localhost:8080/inmate/messoutdays')
-        .then((res)=>{
-          console.log(res.data)
-          setNoofDays(res.data[0].value)
-        })
-    }, [])
-    
     const submitForm = ()=>{
         setLoading(true)
         axios.post('http://localhost:8080/inmate/applymessout',{

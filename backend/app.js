@@ -11,6 +11,7 @@ const inmate=require('./routes/inmate')
 const hod=require('./routes/hod')
 const warden=require('./routes/warden')
 const staffadvisor=require('./routes/staffadvisor')
+const certificates=require('./routes/certificates')
 const bodyParser = require('body-parser')
 var passport = require('passport');
 
@@ -84,6 +85,9 @@ app.use('/inmate',inmate)
 app.use('/staffadvisor',staffadvisor)
 app.use('/hod',hod)
 app.use('/warden',warden)
+
+//----------------------certificate routes----------------------
+app.use('/certificates',certificates)
 
 app.listen(port, () => {
   console.log(`App listening on port ${port}`)
