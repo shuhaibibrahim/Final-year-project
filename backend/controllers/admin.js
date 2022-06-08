@@ -366,7 +366,7 @@ const updateCertificateTemplateText=(req, res)=>{
 }
 
 //Hostel Blocks
-const getBlocks=(req,res)=>{
+const getBlocks=(req,res)=>{ //this function will be reused for seatMatrix also
 
     pool.query(`SELECT MIN(Room_No) as rangeFrom, MAX(Room_No) as rangeTo, block_name, hb.block_id, floor_no
                 FROM HOSTEL_ROOM hr right join HOSTEL_BLOCKS hb
@@ -456,6 +456,46 @@ const applyHostelOut = async(req,res)=>{
     }
 }
 
+//seat matrix
+const updateSeatMatrix=(req,res)=>{
+    
+    console.log( "body : ",req.body)
+
+    var count=0;
+    for(var index in req.body.roomData)
+    {
+            var room=req.body.roomData[index]
+
+            // console.log(`UPDATE HOSTEL_ROOM
+            // SET user_type=${room.userType}, maximum_inmates=${room.maximumInmates}
+            // WHERE room_no=${room.roomNo} and floor_no=${req.body.floorNo}
+            // and block_id=${req.body.blockId}
+            // RETURNING *`)
+            // console.log(room)
+            pool.query(`UPDATE HOSTEL_ROOM
+                        SET user_type=$1, maximum_inmates=$2
+                        WHERE room_no=${room.roomNo} and floor_no=${req.body.floorNo}
+                        and block_id=${req.body.blockId}
+                        RETURNING *`, [room.userType, room.maximumInmates], (err, resp) => {
+                if (err) {
+                    console.log(err)
+                }
+                
+                console.log(resp.rows)
+                count++
+                console.log(count," - ",req.body.roomData.length)
+                if(count==req.body.roomData.length)
+                {
+                    console.log("updated")
+                    res.send("Updated")
+                }
+            })
+
+    }
+}
+
+
+
 module.exports={
     //inmate
     inmateList, 
@@ -488,6 +528,8 @@ module.exports={
     getBlocks,
     addBlock,
     addFloor,
-    deleteBlock
+    deleteBlock,
 
+    //seatMatrix
+    updateSeatMatrix
 }

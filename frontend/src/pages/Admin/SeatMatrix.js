@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import {motion} from "framer-motion" 
+import axios from 'axios'
 
 function SeatMatrix() {
 
@@ -67,8 +68,8 @@ function SeatMatrix() {
   
     const tabs=["Mens Hostel", "Ladies Hostel"]
 
-    const [seatMHData, setSeatMHData] = useState(seatMH)
-    const [seatLHData, setSeatLHData] = useState(seatLH)
+    const [seatMHData, setSeatMHData] = useState({})
+    const [seatLHData, setSeatLHData] = useState({})
 
     const [blockSelected, setBlockSelected] = useState(null)
     const [floorIndexSelected, setFloorIndexSelected] = useState(null)
@@ -85,7 +86,56 @@ function SeatMatrix() {
     const [modal, setModal] = useState(null) //modal showing columns
 
     const [modalType, setModalType] = useState(0) //0 for existing attribute modal 1 for derived attribute modal
+    const [maximumInmates, setMaximumInmates] = useState(0)
+
+    const getBlocksData=()=>{
+        axios.get('http://localhost:8080/admin/getBlocks',{
+            params:{
+                hostel: tabSelected==0?"MH":"LH"
+            }
+        })
+        .then(function (response) {
+           console.log(response.data)
     
+           var tempData={}
+           response.data.forEach(item => {
+               console.log(item)
+               if(tempData[item.block_id]==undefined)
+               {
+                   tempData[item.block_id]={}
+                   tempData[item.block_id].blockName=item.block_name
+                   tempData[item.block_id].floorData=[]
+               }
+    
+               if(item.floor_no!=null)
+               {
+                   tempData[item.block_id].floorData.push(
+                       {
+                           floorNo:item.floor_no,
+                           roomRange:item.rangefrom+"-"+item.rangeto
+                       }
+                   )
+               }
+           });
+    
+           console.log(tempData)
+           if(tabSelected==0) //MH
+           {
+                setSeatMHData(tempData)
+           }
+           else if(tabSelected==1) //LH
+           {
+                setSeatLHData(tempData)
+           }
+        })
+        .catch(function (error) {
+            console.log("FAILED!!! ",error);
+        });
+      }
+    
+      useEffect(() => {
+        getBlocksData()
+      }, [tabSelected])
 
     useEffect(() => {
         //Fetch this data from database hostel_room table
@@ -95,7 +145,8 @@ function SeatMatrix() {
             roomDataFetched.push({
                 roomNo:roomNo,
                 selected:false,
-                userType:null
+                userType:null,
+                maximumInmates: null
             })
         })
 
@@ -104,9 +155,9 @@ function SeatMatrix() {
     
     useEffect(() => {
         var hostelData=tabSelected==0?{...seatMHData}:{...seatLHData}
-        if(hostelData[blockSelected]!=undefined && hostelData[blockSelected][floorIndexSelected]!=undefined)
+        if(hostelData[blockSelected]!=undefined && hostelData[blockSelected].floorData[floorIndexSelected]!=undefined)
         {
-            var range=hostelData[blockSelected][floorIndexSelected].roomRange.split('-')
+            var range=hostelData[blockSelected].floorData[floorIndexSelected].roomRange.split('-')
             setRangeFrom(parseInt(range[0]))
             setRangeTo(parseInt(range[1]))
                 
@@ -115,7 +166,7 @@ function SeatMatrix() {
 
     useEffect(() => {
         var hostelData=tabSelected==0?{...seatMHData}:{...seatLHData}
-        if(hostelData[blockSelected]!=undefined && hostelData[blockSelected][floorIndexSelected]!=undefined)
+        if(hostelData[blockSelected]!=undefined && hostelData[blockSelected].floorData[floorIndexSelected]!=undefined)
         {
             var newRoomData=[...roomData]
          
@@ -141,16 +192,96 @@ function SeatMatrix() {
         }
     }, [selectAll])
     
+    const updateSeatMatrix=()=>{
+        var hostelData=tabSelected==0?{...seatMHData}:{...seatLHData}
+
+        axios.post('http://localhost:8080/admin/updateSeatMatrix',{
+            roomData:roomData,
+            blockId: blockSelected,
+            floorNo: hostelData[blockSelected].floorData[floorIndexSelected].floorNo
+        })
+        .then(function (response) {
+            console.log("success" , response ,"response.data");
+            alert("Updated")
+        })
+        .catch(function (error) {
+            console.log("FAILED!!! ",error);
+        });
+    }
     
     const Matrix=({hostelData})=>{
-        if(hostelData[blockSelected]!=undefined && hostelData[blockSelected][floorIndexSelected]!=undefined)
+        if(hostelData[blockSelected]!=undefined && hostelData[blockSelected].floorData[floorIndexSelected]!=undefined)
         {
 
             return(
                 <div className='w-full p-3'>
-                    <div classNaSme='font-bold text-stone-800 text-base'>{blockSelected} : Floor No - {hostelData[blockSelected][floorIndexSelected].floorNo}</div>
+                    <div classNaSme='font-bold text-stone-800 text-base'>{hostelData[blockSelected].blockName} : Floor No - {hostelData[blockSelected].floorData[floorIndexSelected].floorNo}</div>
 
-                    <div className='flex flex-row space-x-32'>
+                    <div className='flex flex-row w-full justify-between items-start'>
+
+                        <div className='flex flex-col space-y-2'>
+                            <div className='flex flex-row space-x-2 items-center'>
+                                <div className='text-stone-800 text-sm font-bold'>Assign To</div>
+                                <select 
+                                    className=' p-2 outline-none rounded-xl '
+                                    value={userType}
+                                    onChange={e=>{setUserType(e.target.value)}}
+                                >
+                                    <option value="1">First year</option>
+                                    <option value="2">Second year</option>
+                                    <option value="3">Third year</option>
+                                    <option value="4">Fourth year</option>
+                                    <option value="5">Fifth year</option>
+                                    <option value="pg 1">PG first year</option>
+                                    <option value="pg 1">PG second year</option>
+                                    <option value="phd">PHD</option>
+                                </select>
+
+                                <div 
+                                    className='button-blue'
+                                    onClick={()=>{
+                                        var newRoomData=[...roomData]
+                                        newRoomData.forEach((room,index)=>{
+                                            if(room.selected==true)
+                                            {
+                                                newRoomData[index].userType=userType
+                                            }
+                                        })
+                                        setRoomData([...roomData])
+                                    }}
+                                >
+                                    Assign selected rooms
+                                </div>
+                            </div>
+
+                            <div className='flex flex-row space-x-2 items-center'>
+                                <input 
+                                    type='number' 
+                                    min={0} 
+                                    placeholder="Maximum inmates"
+                                    className='p-2 w-52 outline-none ring-slate-200 ring-2 rounded-xl'
+                                    value={maximumInmates}
+                                    onChange={(e)=>{setMaximumInmates(e.target.value)}}
+                                />
+
+                                <div 
+                                    className='button-blue'
+                                    onClick={()=>{
+                                        var newRoomData=[...roomData]
+                                        newRoomData.forEach((room,index)=>{
+                                            if(room.selected==true)
+                                            {
+                                                newRoomData[index].maximumInmates=maximumInmates
+                                            }
+                                        })
+                                        setRoomData([...roomData])
+                                    }}
+                                >
+                                    Assign selected rooms
+                                </div>
+                            </div>
+                        </div>
+
                         <div className='flex flex-row space-x-2 items-center'>
                             <input 
                                 type="checkbox" 
@@ -158,40 +289,7 @@ function SeatMatrix() {
                                 onChange={(e)=>{setSelectAll(value=>!value)}}
                                 checked={selectAll}
                             />
-                            <div className='text-stone-800 text-sm font-bold'>Sellect All</div>
-                        </div>
-
-                        <div className='flex flex-row space-x-2 items-center'>
-                            <div className='text-stone-800 text-sm font-bold'>Assign To</div>
-                            <select 
-                                className=' p-2 outline-none rounded-xl '
-                                value={userType}
-                                onChange={e=>{setUserType(e.target.value)}}
-                            >
-                                <option value="1">First year</option>
-                                <option value="2">Second year</option>
-                                <option value="3">Third year</option>
-                                <option value="4">Fourth year</option>
-                                <option value="5">Fifth year</option>
-                                <option value="pg">PG</option>
-                                <option value="phd">PHD</option>
-                            </select>
-
-                            <div 
-                                className='button-blue'
-                                onClick={()=>{
-                                    var newRoomData=[...roomData]
-                                    newRoomData.forEach((room,index)=>{
-                                        if(room.selected==true)
-                                        {
-                                            newRoomData[index].userType=userType
-                                        }
-                                    })
-                                    setRoomData([...roomData])
-                                }}
-                            >
-                                Assign selected rooms
-                            </div>
+                            <div className='text-stone-800 text-sm font-bold'>Select All</div>
                         </div>
                         
                     </div>
@@ -237,9 +335,12 @@ function SeatMatrix() {
         var hostelData=tabSelected==0?{...seatMHData}:{...seatLHData}
         var blocks=[]
 
-        for(var blockName in hostelData)
+        for(var blockId in hostelData)
         {
-            blocks.push(blockName)
+            blocks.push({
+                blockId: blockId,
+                blockName: hostelData[blockId].blockName
+            })
         }
 
         console.log(blocks)
@@ -256,8 +357,8 @@ function SeatMatrix() {
                             onChange={(e)=>{setBlockSelected(e.target.value)}}
                         >
                             <option value={null}>-- select --</option>
-                            {blocks.map((blockName, index)=>(
-                                <option key={index} value={blockName}>{blockName}</option>
+                            {blocks.map((block, index)=>(
+                                <option key={index} value={block.blockId}>{block.blockName}</option>
                             ))}
                         </select>
                     </div>
@@ -269,7 +370,7 @@ function SeatMatrix() {
                             onChange={(e)=>{setFloorIndexSelected(e.target.value)}}
                         >
                             <option value={null}>-- select --</option>
-                            {hostelData[blockSelected]&&hostelData[blockSelected].map((floorItem, floorIndex)=>(
+                            {hostelData[blockSelected]&&hostelData[blockSelected].floorData.map((floorItem, floorIndex)=>(
                                 <option key={floorIndex} value={floorIndex}>{floorItem.floorNo}</option>
                             ))}
                         </select>
@@ -281,6 +382,12 @@ function SeatMatrix() {
                     {Matrix({hostelData})} 
                 </div>
 
+                <div 
+                    className='button-blue self-end mt-2'
+                    onClick={updateSeatMatrix}
+                >
+                    Update
+                </div>
             </div>
             {/* </div>
             </div> */}

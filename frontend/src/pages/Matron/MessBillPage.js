@@ -20,7 +20,7 @@ function MessBillPage() {
       <div className='flex flex-col items-center py-3 space-y-4 w-11/12 mt-8 bg-white rounded-xl'>
         {/* white box nav bar */}
           <div className='text-xl font-bold'>Inmate List</div>
-          <CurrentMessInmates/>
+          {/* <CurrentMessInmates/> */}
       </div>
     </div>
   )

@@ -34,4 +34,7 @@ router.post('/addBlock', admin.addBlock)
 router.post('/addFloor', admin.addFloor)
 router.get('/deleteBlock', admin.deleteBlock)
 
+//Seat Matrix
+router.post('/updateSeatMatrix', admin.updateSeatMatrix)
+
 module.exports=router

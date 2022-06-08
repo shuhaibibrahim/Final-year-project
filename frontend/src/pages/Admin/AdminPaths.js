@@ -282,7 +282,7 @@ function AdminPaths() {
                                         >
                                             {certificates.findIndex(c=>c.name==certificate.name)}
                                             {altTextIndex==certIndex+"-"+index&&(
-                                                <div className='absolute top-9 left-0 text-white bg-stone-600 whitespace-nowrap rounded-full p-3 text-xs'>{certificate.name}</div>
+                                                <div className={'absolute left-0 text-white bg-stone-600 whitespace-nowrap rounded-full p-3 text-xs z-40 '+ (index==pathData.length-1?'bottom-9':'top-9')}>{certificate.name}</div>
                                             )}
 
                                             <div
