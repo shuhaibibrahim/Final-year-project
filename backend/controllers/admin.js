@@ -494,6 +494,89 @@ const updateSeatMatrix=(req,res)=>{
     }
 }
 
+//allotment rules
+const getHostelApplicationCols=(req,res)=>{
+    
+    pool.query(`SELECT column_name FROM information_schema.columns
+                        WHERE TABLE_NAME = 'hostel_application'`, async (err, resp) =>{
+        if (err) {
+            console.log(err)
+            throw err
+        }
+
+        var columnsData=[...resp.rows.map(item=>'hostel_application'+'.'+item.column_name)]
+
+        pool.query(`SELECT column_name FROM information_schema.columns
+                    WHERE TABLE_NAME = 'student_progress' and column_name!='admission_no'`, async (err, resp) =>{
+            if (err) {
+            console.log(err)
+            throw err
+            }
+
+            columnsData=[...columnsData, ...resp.rows.map(item=>'student_progress'+'.'+item.column_name)]
+
+            // console.log(columnsData)
+
+            res.send(columnsData)
+
+        })
+        
+    })
+}
+
+const getAllotmentColumns=(req, res)=>{
+    console.log("called")
+    pool.query(`SELECT * FROM allotment_columns`, (err, resp) => {
+        if (err) {
+            console.log(err)
+            throw err
+        }
+
+        console.log(resp.rows.map(col=>({
+            columnType: col.column_type,
+            columnName: col.columns,
+            columnLetter: col.column_letter,
+            formula: col.formula,
+        })))
+
+        res.send(resp.rows.map(col=>({
+            columnType: col.column_type,
+            columnName: col.columns,
+            columnLetter: col.column_letter,
+            formula: col.formula,
+        })))
+    })
+}
+
+const updateRule=(req,res)=>{
+
+    // console.log(req.body)
+    pool.query('delete from allotment_columns returning *',(err,resp)=>{
+        // console.log(resp.rows)
+    })
+
+    var count=0
+    var rows=[]
+    req.body.columnsData.forEach((colData)=>{
+        pool.query(`INSERT INTO allotment_columns (column_type,columns, column_letter, formula)
+        VALUES ($1,$2,$3,$4)
+        RETURNING *`, [colData.columnType, colData.columnName,colData.columnLetter,colData.formula],(err, resp)=>{
+
+            if (err) {
+                console.log(err)
+            }
+            count++
+
+            if(count===req.body.columnsData.length)
+            {
+                console.log(resp)
+                res.send().status(200)
+            }
+        })
+    })
+
+}
+
 
 
 module.exports={
@@ -531,5 +614,10 @@ module.exports={
     deleteBlock,
 
     //seatMatrix
-    updateSeatMatrix
+    updateSeatMatrix,
+
+    //allotment rules
+    getHostelApplicationCols,
+    getAllotmentColumns,
+    updateRule
 }

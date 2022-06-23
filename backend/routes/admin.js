@@ -37,4 +37,9 @@ router.get('/deleteBlock', admin.deleteBlock)
 //Seat Matrix
 router.post('/updateSeatMatrix', admin.updateSeatMatrix)
 
+//Allotment Rules
+router.get('/getHostelCols', admin.getHostelApplicationCols)
+router.get('/getAllotmentColumns', admin.getAllotmentColumns)
+router.post('/updateRule', admin.updateRule)
+
 module.exports=router

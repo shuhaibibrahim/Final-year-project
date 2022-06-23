@@ -1,10 +1,11 @@
 import { UpdateTwoTone } from '@mui/icons-material';
+import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import Spreadsheet from "react-spreadsheet";
 
 function AllotmentRule() {
   
-  const allColumns=[
+  const hostelCols=[
     "Keam Rank",
     "Location",
     "Family Annual Income",
@@ -16,11 +17,7 @@ function AllotmentRule() {
     "col 6"
   ]
 
-  const columns=[
-    "Keam Rank",
-    "Location",
-    "Family Annual Income"
-  ]
+  const columns=[]
 
   const derivedColumns=[
     {
@@ -40,16 +37,23 @@ function AllotmentRule() {
   
   const tabs=["Current Rule", "Update Rule"]
 
-  const [allColumnsData, setAllColumnsData] = useState(allColumns)
+  const [hostelColsData, setHostelColsData] = useState([])
 
   //current rules states
-  const [columnsData, setColumnsData] = useState(columns)
-  const [derivedColumnsData, setDerivedColumnsData] = useState(derivedColumns)
-  const [combinedColumnsData, setCombinedColumnsData] = useState()
+  //Every column is stored as an array of object
+
+  // {
+  //   columnName:newAttribute,
+  //   columnLetter:"",
+  //   formula:newEquation,
+  // }
+  const [columnsData, setColumnsData] = useState([]) //current existing cols retrieved from databse
+  const [derivedColumnsData, setDerivedColumnsData] = useState([]) //current derived cols retrieved from databse
+  const [combinedColumnsData, setCombinedColumnsData] = useState([])
   
   //udated rules states
-  const [updatedColumnsData, setUpdatedColumnsData] = useState(columns)
-  const [updatedDerivedColumnsData, setUpdatedDerivedColumnsData] = useState(derivedColumns)
+  const [updatedColumnsData, setUpdatedColumnsData] = useState([])
+  const [updatedDerivedColumnsData, setUpdatedDerivedColumnsData] = useState([])
   const [selectedColumnIndex, setSelectedColumnIndex] = useState(-1)
 
   const [newEquation, setNewEquation] = useState("")
@@ -57,24 +61,7 @@ function AllotmentRule() {
   const [newOrder, setNewOrder] = useState("Asc")
   const [updatedRule, setUpdatedRule] = useState([])
 
-  const [rankRule, setRankRule] = useState([
-    {
-      name:"Keam Rank",
-      order:"Asc"
-    },
-    {
-      name:"Family Annual Income",
-      order:"Asc"
-    },
-    {
-      name:"Location",
-      order:"Asc"
-    },
-    {
-      name:"derivedCol1",
-      order:"Asc"
-    }
-  ])
+  const [rankRule, setRankRule] = useState([])
   const [rankSortOrder, setRankSortOrder] = useState("Ascending")
   
   
@@ -82,6 +69,86 @@ function AllotmentRule() {
   const [modal, setModal] = useState(null) //modal showing columns
 
   const [modalType, setModalType] = useState(0) //0 for existing attribute modal 1 for derived attribute modal
+
+  const [altTextIndex, setAltTextIndex] = useState(-1) //to show the formula on hover
+
+  const getAllotmentColumns=()=>{
+    axios.get('http://localhost:8080/admin/getAllotmentColumns')
+    .then(function (response) {
+      console.log("allotmnent cols: ",response.data)
+
+      const cols=[...response.data]
+
+      console.log("colsss:",cols.filter(col=>col.columnType=='existing'))
+
+      setColumnsData(cols.filter(col=>col.columnType=='existing'))
+      setUpdatedColumnsData(cols.filter(col=>col.columnType=='existing'))
+
+      setDerivedColumnsData(cols.filter(col=>col.columnType=='derived'))
+      setUpdatedDerivedColumnsData(cols.filter(col=>col.columnType=='derived'))
+    })
+    .catch(function (error) {
+        console.log("FAILED!!! ",error);
+    });
+  }
+
+  useEffect(() => {
+    axios.get('http://localhost:8080/admin/getHostelCols')
+    .then(function (response) {
+       console.log(response.data)
+       setHostelColsData(response.data)
+
+    })
+    .catch(function (error) {
+        console.log("FAILED!!! ",error);
+    });
+
+    getAllotmentColumns()
+  }, [])
+
+  const postModification=()=>{
+    axios.post('http://localhost:8080/admin/updateRule',{
+      columnsData:combinedColumnsData,
+      rankRuleData: updatedRule
+    })
+    .then(function (response) {
+       console.log(response.data)
+       alert("Success")
+
+       getAllotmentColumns()
+
+    })
+    .catch(function (error) {
+        console.log("FAILED!!! ",error);
+    });
+  }
+  
+  
+  useEffect(() => {
+    if(modal!=null)
+      RenderModal()
+  }, [selectedColumnIndex, modalType, newAttribute, newOrder, updatedRule, newEquation])
+
+  const combineColsData=(existingCols, derivedCols) => {
+
+    existingCols.forEach((item,index)=>{
+      existingCols[index].columnLetter=String.fromCharCode(65+index)
+    })
+
+    setUpdatedColumnsData([...existingCols])
+
+    
+    derivedCols.forEach((item,index)=>{
+      derivedCols[index].columnLetter=String.fromCharCode(updatedColumnsData.length+65+index) //derived cols start after existing cols
+    })
+
+    setUpdatedDerivedColumnsData([...derivedCols])
+    
+    setCombinedColumnsData([...existingCols,...derivedCols])
+
+  }
+  
+
   const backdropClickHandler = (event) => {
     if (event.target === event.currentTarget) {
         // setModal(<div/>)
@@ -89,22 +156,10 @@ function AllotmentRule() {
         setSelectedColumnIndex(-1)
     }
   }
-
-  useEffect(() => {
-    if(modal!=null)
-      RenderModal()
-  }, [selectedColumnIndex, modalType, newAttribute, newOrder, updatedRule, newEquation])
-
-  useEffect(() => {
-    var newDerivedList=derivedColumns.map(item=>{return item.colName})
-    setCombinedColumnsData([...columns, ...newDerivedList])
-  }, [derivedColumns, columns])
-  
-
   const RenderModal=(item)=>{
     // Existing columns modal
     if(modalType===0)
-      setModal(
+    setModal(
           <div onClick={backdropClickHandler} className="bg-slate-500/[.8] z-20 fixed inset-0 flex justify-center items-center">
               <div className='flex flex-col bg-white rounded-2xl w-5/12 h-1/2 pt-3 relative overflow-hidden'>
 
@@ -124,7 +179,7 @@ function AllotmentRule() {
                   <div className='text-stone-800 border-b border-solid border-stone-800 text-lg p-2 font-semibold w-full'>All Column Fields</div>
 
                   <div className='overflow-y-auto w-full'>
-                    {allColumnsData.map((item, index)=>(
+                    {hostelColsData.map((item, index)=>(
                       <div 
                         key={index} 
                         className={'text-stone-800 text-base font-medium w-full p-3'+(index==selectedColumnIndex?' bg-blue-300 ':' hover:bg-gray-300')}
@@ -135,7 +190,9 @@ function AllotmentRule() {
                             selectedColumnIndex(-1)
                         }}
                       >
-                        {item}
+                        {/* Column names are in the form tablename.columnname */}
+                        {item.split('.')[1]} 
+                        {/* Only columnname is displayed */}
                       </div>
                     ))}
                   </div>
@@ -147,7 +204,17 @@ function AllotmentRule() {
                       onClick={()=>{
                         if(selectedColumnIndex!=-1)
                         {
-                          setUpdatedColumnsData([...updatedColumnsData,allColumnsData[selectedColumnIndex]])
+                          //Each column stores the column name, the column letter(in excel sheet), and formula(blank for existing columns)
+                          //combineColsData(existingCols, dervedCols)
+                          combineColsData([...updatedColumnsData,
+                            {
+                              columnType:"existing",
+                              columnName:hostelColsData[selectedColumnIndex],
+                              columnLetter:"",
+                              formula:""
+                            }
+                          ], updatedDerivedColumnsData) //combining existing columns and derived columns
+
                           setModal(null)
                         }
                       }}
@@ -186,7 +253,11 @@ function AllotmentRule() {
                 <div className='text-stone-500 text-base px-2 font-semibold w-full flex flex-row flex-wrap'>
                   {/* All columns */}
                   {combinedColumnsData.map((col, index)=>(
-                    <div className='mr-3'>{String.fromCharCode(65+index)} : {col}</div>
+                    // Existing columns will be stored in the form tablename.columnname
+                    col.columnName.includes('.')?
+                    <div className='mr-3'>{String.fromCharCode(65+index)} : {col.columnName.split('.')[1]}</div>
+                    :
+                    <div className='mr-3'>{String.fromCharCode(65+index)} : {col.columnName}</div>
                   ))}
                 </div>
 
@@ -213,12 +284,17 @@ function AllotmentRule() {
                   <button 
                     className='button-blue self-end'
                     onClick={()=>{
-                        setDerivedColumnsData([...derivedColumnsData,
+
+                        //combineColsData(existingCols, dervedCols)
+                        combineColsData(updatedColumnsData, [...updatedDerivedColumnsData,
                           {
-                            colName:newAttribute,
-                            equation:newEquation
+                            columnType:"derived",
+                            columnName:newAttribute,
+                            columnLetter:"",
+                            formula:newEquation,
                           }
-                        ])
+                        ]) //combining existing columns and derived columns
+
                         setNewAttribute("")
                         setNewEquation("")
                         setModal(null)
@@ -256,9 +332,18 @@ function AllotmentRule() {
                 </div>
 
                 <div className='flex flex-col text-stone-800 text-base p-2 font-semibold w-full'>
-                  {updatedRule.map((item,index)=>(
-                    <div key={index}>{index+1} . {item.name} - {item.order}</div>
-                  ))}
+
+                  {/* updatedRule has the form : ['A:ColumnName1:Asc', 'B:ColumnName2:Asc'] */}
+                  {updatedRule.map((item,index)=>
+                    item.split(':')[1].includes('.')?
+                    (
+                      <div key={index}>{index+1} . {item.split(':')[1].split('.')[1]} - {item.split(':')[2]}</div>
+                    ):
+                    (
+                      <div key={index}>{index+1} . {item.split(':')[1]} - {item.split(':')[2]}</div>
+                    )
+                  )}
+
                 </div>
                 <div className='flex flex-row w-full space-x-4 items-center ml-2'>
                   <div className='flex flex-col justify-start'>
@@ -271,7 +356,10 @@ function AllotmentRule() {
                     >
                       <option value=""></option>
                       {combinedColumnsData.map((item,index)=>(
-                        <option value={item} key={index}>{item}</option>
+                        item.columnName.includes('.')?
+                        <option value={index} key={index}>{item.columnName.split('.')[1]}</option>
+                        :
+                        <option value={index} key={index}>{item.columnName}</option>
                       ))}
                     </select>
                   </div>
@@ -294,11 +382,11 @@ function AllotmentRule() {
                     onClick={()=>{
                       setUpdatedRule([
                         ...updatedRule,
-                        {
-                          name:newAttribute,
-                          order:newOrder
-                        }
+                        // eg : A:columnName:Asc 
+                        combinedColumnsData[newAttribute].columnLetter+':'+combinedColumnsData[newAttribute].columnName+':'+newOrder
                       ])
+
+                      console.log(updatedRule)
                     }}
                   >
                     Add
@@ -306,22 +394,34 @@ function AllotmentRule() {
                 </div>
 
 
-                {/* Add button */}
-                <div className='flex p-2 self-end'>
-                  <button 
-                    className='button-blue self-end'
-                    onClick={()=>{
-                      if(newAttribute!="")
-                      {
-                        setRankRule(updatedRule)
-                        setNewAttribute("")
-                        setNewOrder("Asc")
-                        setModal(null)
-                      }
-                    }}
-                  >
-                    Update
-                  </button>
+                {/* Clear and Update buttons*/}
+                <div className='flex p-2 w-full justify-between'>
+                  {updatedRule.length>0&&(
+                      <div 
+                        className='button-blue'
+                        onClick={()=>{
+                          setUpdatedRule([])
+                        }}
+                      >
+                        Clear All
+                      </div>
+                  )}
+
+                  {updatedRule.length>0&&(
+                    <button 
+                      className='button-blue self-end'
+                      onClick={()=>{
+                        if(newAttribute!="")
+                        {
+                          setNewAttribute("")
+                          setNewOrder("Asc")
+                          setModal(null)
+                        }
+                      }}
+                    >
+                      Update
+                    </button>
+                  )}
                 </div>
             </div>
         </div>
@@ -339,10 +439,10 @@ function AllotmentRule() {
         </div>
 
         <div className='flex flex-wrap w-full mt-5'>  
-        {/* sfasfsdfsd */}
+
           {columnsData.map((item, index)=>(
             <div key={index} className='text-center mr-2 py-2 px-3 bg-stone-800 text-white text-sm font-medium rounded-full'>
-              {item}
+              {item.columnLetter + ' : ' +item.columnName.split('.')[1]}
             </div>
           ))}
         </div>
@@ -357,8 +457,16 @@ function AllotmentRule() {
         <div className='flex flex-wrap w-full mt-5'>  
         {/* sfasfsdfsd */}
           {derivedColumnsData.map((item, index)=>(
-            <div key={index} className='text-center mr-2 mt-2 py-2 px-3 bg-stone-800 text-white text-sm font-medium rounded-full'>
-              {item.colName}
+            <div 
+              key={index} 
+              className='text-center mr-2 mt-2 py-2 px-3 bg-stone-800 text-white text-sm font-medium rounded-full relative cursor-pointer'
+              onMouseEnter={()=>{setAltTextIndex(index)}} onMouseLeave={()=>{setAltTextIndex(-1)}}
+            >
+              {item.columnLetter + ' : ' + item.columnName}
+
+              {altTextIndex==index&&(
+                  <div className={'absolute left-0 text-white bg-stone-600 whitespace-nowrap rounded-full p-3 text-xs z-40 top-9 '}>formula : {item.formula}</div>
+              )}
             </div>
           ))}
         </div>
@@ -372,9 +480,15 @@ function AllotmentRule() {
         </div>
         
         <div className='mt-5 text-stone-800 font-semibold text-base flex flex-row flex-wrap space-x-2'>
-          {rankRule.map((item, index)=>(
-            <div key={index}>{item.name} {item.order} ,</div>
-          ))}
+          {rankRule.map((item, index)=>
+            item.split(':')[1].includes('.')?
+            (
+              <div key={index}>{item.split(':')[1].split('.')[1]} {item.split(':')[2]} ,</div>
+            ):
+            (
+              <div key={index}>{item.split(':')[1]} {item.split(':')[2]} ,</div>
+            )
+          )}
         </div>
         
       </div>
@@ -393,14 +507,16 @@ function AllotmentRule() {
         <div className='flex flex-wrap w-full mt-5'>  
           {updatedColumnsData.map((item, index)=>(
             <div key={index} className='flex flex-row justify-between items-center mr-2 py-2 px-3 bg-stone-800 text-white text-sm font-medium rounded-full'>
-              <div>{item}</div>
+              <div>{item.columnName.split('.')[1]}</div>
               {/* remove button */}
               <div
                   className='ml-2 text-white cursor-pointer rounded-full hover:text-red-600'
                   onClick={()=>{
                       var newUpdatedColumnsData=[...updatedColumnsData]
                       newUpdatedColumnsData.splice(index,1)
-                      setUpdatedColumnsData(newUpdatedColumnsData)
+                      // setUpdatedColumnsData(newUpdatedColumnsData)
+                      
+                      combineColsData(newUpdatedColumnsData,updatedDerivedColumnsData) //combining existing columns and derived columns
                   }}
               >
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -428,16 +544,18 @@ function AllotmentRule() {
         </div>
 
         <div className='flex flex-wrap w-full mt-5'>  
-          {derivedColumnsData.map((item, index)=>(
+          {updatedDerivedColumnsData.map((item, index)=>(
             <div key={index} className='flex flex-row justify-between items-center mr-2 py-2 px-3 bg-stone-800 text-white text-sm font-medium rounded-full'>
-              <div>{item.colName}</div>
+              <div>{item.columnName}</div>
               {/* remove button */}
               <div
                   className='ml-2 text-white cursor-pointer rounded-full hover:text-red-600'
                   onClick={()=>{
-                      var newDerivedColumnsData=[...derivedColumnsData]
+                      var newDerivedColumnsData=[...updatedDerivedColumnsData]
                       newDerivedColumnsData.splice(index,1)
-                      setDerivedColumnsData(newDerivedColumnsData)
+                      // setUpdatedDerivedColumnsData(newDerivedColumnsData)
+
+                      combineColsData(updatedColumnsData,newDerivedColumnsData) //combining existing columns and derived columns
                   }}
               >
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -468,10 +586,16 @@ function AllotmentRule() {
         
           
         <div className='text-stone-800 font-semibold text-base flex flex-row flex-wrap space-x-2'>
-          <div className='mr-3'>Current Rule : </div>
-          {rankRule.map((item, index)=>(
-            <div key={index}>{item.name} {item.order} ,</div>
-          ))}
+          <div className=''>Current Rule : </div>
+          {rankRule.map((item, index)=>
+          item.split(':')[1].includes('.')?
+          (
+            <div key={index}>{item.split(':')[1].split('.')[1]} {item.split(':')[2]} ,</div>
+          ):
+          (
+            <div key={index}>{item.split(':')[1]} {item.split(':')[2]} ,</div>
+          )
+          )}
         </div>
         
         <div 
@@ -525,9 +649,19 @@ function AllotmentRule() {
           {tabSelected==0&&currentRule()}
           {tabSelected==1&&updateRule()}
 
+
         </div>
 
           
+      </div>
+
+      <div className='w-11/12 flex mt-2 justify-end'>
+        <div 
+          className='button-blue'
+          onClick={postModification}
+        >
+          Update Modifications
+        </div>
       </div>
     </div>
   )
