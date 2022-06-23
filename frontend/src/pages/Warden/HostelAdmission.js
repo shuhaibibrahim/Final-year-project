@@ -1,6 +1,8 @@
 import React, { useState,useEffect } from 'react'
 import RankList from '../../components/RankList'
 import {motion} from 'framer-motion'
+import ViewRankList from './ViewRankList'
+import ViewHostelApplications from './ViewHostelApplications'
 function HostelAdmission() {
   const [modal, setModal] = useState(null) //modal showing columns
   const backdropClickHandler = (event) => {
@@ -162,62 +164,9 @@ function HostelAdmission() {
 
           </div>
           </div>
-          <div className='flex items-center justify-start w-11/12'>
-          <select className='p-3 ring-slate-200 ring-2 rounded-xl outline-none'>
-                <option value="mh">Mens Hostel</option>
-                <option value="lh">Ladies Hostel</option>
-          </select>     
-          </div>
-          {tabSelected===1&& <div className='w-11/12'>
-            <div className="flex items-center justify-end mb-5">
-              <button className="bg-stone-800 text-white p-2 rounded-lg text-sm mr-5">Download as Excel</button>
-              <button className="bg-stone-800 text-white p-2 rounded-lg text-sm">Publish Rank List</button>
-            </div>
-            <RankList/>
-            </div>}
-          {tabSelected===2&& <div className='w-11/12'>
-          <table className='w-full relative table-auto'>
-              <tr className='rounded-xl p-3 bg-primary text-center'>
-                <th className='p-3'>Sl.No</th>
-                <th className='p-3'>Name</th>
-                <th className='p-3'>Admission No.</th>
-                <th className='p-3'>Branch</th>
-                
-              </tr>
-              {users.map((user, index)=>(
-                <tr 
-                  className={'border-b text-center border-slate-200 border-solid hover:bg-gray-300'}>
-                  <td className='p-3'>{user.SlNo}</td>
-                  <td className='p-3'>{user.Name}</td>
-                  <td className='p-3'>{user.AdmNo}</td>
-                  <td className='p-3'>{user.Branch}</td>
-                </tr>
-              ))}
-          </table>
-          </div>}
-          {tabSelected===3&& <div className='w-11/12'>
-          <table className='w-full relative table-auto'>
-              <tr className='rounded-xl p-3 bg-primary text-center'>
-                <th className='p-3'>Sl.No</th>
-                <th className='p-3'>Name</th>
-                <th className='p-3'>Admission No.</th>
-                <th className='p-3'>Branch</th>
-                <th className='p-3'></th>
-              </tr>
-              {users.map((user, index)=>(
-                <tr 
-                  className={'border-b text-center border-slate-200 border-solid hover:bg-gray-300'}>
-                  <td className='p-3'>{user.SlNo}</td>
-                  <td className='p-3'>{user.Name}</td>
-                  <td className='p-3'>{user.AdmNo}</td>
-                  <td className='p-3'>{user.Branch}</td>
-                  <td className='p-3'><button className='submit-button-black' onClick={()=>{RenderModal()}}>View Details</button></td>
-                </tr>
-              ))}
-          </table>
-          </div>
-
-          }
+          {tabSelected===1&& <ViewRankList/>}
+          {tabSelected===2&& <div>Waiting List</div>}
+          {tabSelected===3&& <ViewHostelApplications/>}
       </motion.div>
     </div>
   )

@@ -1,7 +1,7 @@
 import React,{useState} from 'react'
 import Uploader from '../../components/Uploader'
 import { saveAs } from "file-saver";
-import excelfile from "../../components/1.xlsx"
+import excelfile from "../../components/sample-template.xlsx"
 
 
 function SignupInvite() {

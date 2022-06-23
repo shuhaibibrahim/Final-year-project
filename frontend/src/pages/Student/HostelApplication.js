@@ -1,16 +1,20 @@
-import {useState} from "react"
+import {useState,useContext} from "react"
 import {motion} from "framer-motion" 
 import axios from 'axios'
 import RankList from "../../components/RankList"
+import {UserContext} from '../../Contexts/UserContext'
 
 function HostelApplication() {
   const [currpage,setCurrPage]=useState(1)
   const [tabSelected, setTabSelected] = useState(1)
   const [admno,setAdmno]=useState(180287)
+  const {user}=useContext(UserContext)
   const [details,setDetails]=useState({})
 
   const submitHandler =()=>{
+    setDetails({...details,user_id:user.user_id})
     axios.post('http://localhost:8080/student/hostelapplication',details)
+    .then(res=>console.log(res))
   }
 
   return (
@@ -39,9 +43,11 @@ function HostelApplication() {
 
         {currpage===2 && <div><h2 className="font-bold">Personal Details</h2>
         <form action="">
-            <div className="grid grid-cols-2 w-6/12">
+            <div className="grid grid-cols-2 gap-y-3 w-6/12">
+              <label htmlFor="" className="mt-2">Admission Number</label>
+              <input type="text" name="user_id"  value={user.user_id} className="px-2 py-1 ring-slate-200 ring-2 rounded-xl outline-none" disabled/>
               <label htmlFor="" className="mt-2">Admission Criteria</label>
-              <select name="admissioncriteria" id="" value={details.admissioncriteria} onChange={(e)=>setDetails({...details,[e.target.name]:e.target.value})} className="border-solid border-2 rounded-lg mt-2 px-1">
+              <select name="admission_criteria" id="" value={details.admission_criteria} onChange={(e)=>setDetails({...details,[e.target.name]:e.target.value})} className="px-2 py-1 ring-slate-200 ring-2 rounded-xl outline-none">
                 <option value="">Select an option</option>
                 <option value="KEAM">KEAM</option>
                 <option value="NATA">NATA</option>
@@ -51,9 +57,9 @@ function HostelApplication() {
                 <option value="Gate">GATE</option>
               </select>
               <label htmlFor="" className="mt-2">Year of Admission</label>
-              <input type="number" name="yearofadmission"  value={details.yearofadmission} onChange={(e)=>{setDetails({...details,[e.target.name]:e.target.value})}} className="border-solid border-2 rounded-lg mt-2 px-1"/>
+              <input type="number" name="yearofadmission"  value={details.yearofadmission} onChange={(e)=>{setDetails({...details,[e.target.name]:e.target.value})}} className="p-2 ring-slate-200 ring-2 rounded-xl outline-none"/>
               <label htmlFor="" className="mt-2">Qualifying Exam</label>
-              <select name="qualifyingexam" id=""  value={details.qualifyingexam} onChange={(e)=>{setDetails({...details,[e.target.name]:e.target.value})}} className="border-solid border-2 rounded-lg mt-2 px-1">
+              <select name="exam_type" id=""  value={details.exam_type} onChange={(e)=>{setDetails({...details,[e.target.name]:e.target.value})}} className="p-2 ring-slate-200 ring-2 rounded-xl outline-none">
                 <option value="">Select an option</option>
                 <option value="KEAM">KEAM</option>
                 <option value="NATA">NATA</option>
@@ -63,11 +69,9 @@ function HostelApplication() {
                 <option value="Gate">GATE</option>
               </select>
               <label htmlFor="" className="mt-2">Qualifying Exam Rank</label>
-              <input type="text" name="examrank"  value={details.examrank} onChange={(e)=>{setDetails({...details,[e.target.name]:e.target.value})}} className="border-solid border-2 rounded-lg mt-2 px-1"/>
-              <label htmlFor="" className="mt-2">Admission Number</label>
-              <input type="text" name="admissionno"  value={details.admissionno} onChange={(e)=>{setDetails({...details,[e.target.name]:e.target.value})}} className="border-solid border-2 rounded-lg mt-2 px-1"/>
+              <input type="text" name="rank"  value={details.rank} onChange={(e)=>{setDetails({...details,[e.target.name]:e.target.value})}} className="p-2 ring-slate-200 ring-2 rounded-xl outline-none"/>
               <label htmlFor="" className="mt-2">University Number</label>
-              <input type="text" name="universityno" value={details.universityno} onChange={(e)=>{setDetails({...details,[e.target.name]:e.target.value})}} className="border-solid border-2 rounded-lg mt-2 px-1"/>
+              <input type="text" name="universityno" value={details.universityno} onChange={(e)=>{setDetails({...details,[e.target.name]:e.target.value})}} className="p-2 ring-slate-200 ring-2 rounded-xl outline-none"/>
             </div>
           <div className="w-full flex items-center justify-between mt-5">
               <motion.button whileHover={{x:-10, backgroundColor:'red'}}  className="p-3 bg-stone-800 text-white rounded-xl" onClick={()=>setCurrPage(currpage-1)}>Back</motion.button>
@@ -77,35 +81,38 @@ function HostelApplication() {
 
         {currpage===3 && <div><h2 className="font-bold">Personal Details</h2>
         <form action="">
-            <div className="grid grid-cols-2 w-6/12">
+            <div className="grid grid-cols-2 gap-y-3 w-6/12">
               <label htmlFor="" className="mt-2">Date of Birth</label>
-              <input type="date" name="dateofbirth" value={details.dateofbirth} onChange={(e)=>{setDetails({...details,[e.target.name]:e.target.value})}} className="border-solid border-2 rounded-lg mt-2 px-1"/>
+              <input type="date" name="dob" value={details.dob} onChange={(e)=>{setDetails({...details,[e.target.name]:e.target.value})}} className="p-2 ring-slate-200 ring-2 rounded-xl outline-none"/>
               <label htmlFor="" className="mt-2">Category</label>
-              <input type="text" name="category" value={details.category} onChange={(e)=>{setDetails({...details,[e.target.name]:e.target.value})}}  className="border-solid border-2 rounded-lg outline-0 mt-2 px-1"/>
+              <input type="text" name="category" value={details.category} onChange={(e)=>{setDetails({...details,[e.target.name]:e.target.value})}}  className="p-2 ring-slate-200 ring-2 rounded-xl outline-none"/>
               <label htmlFor="" className="mt-2">Religion</label>
-              <select name="religion" id=""  value={details.religion} onChange={(e)=>{setDetails({...details,[e.target.name]:e.target.value})}} className="border-solid border-2 rounded-lg mt-2 px-1">
+              <select name="religion" id=""  value={details.religion} onChange={(e)=>{setDetails({...details,[e.target.name]:e.target.value})}} className="p-2 ring-slate-200 ring-2 rounded-xl outline-none">
                 <option value="">Select an option</option>
-                <option value="Hindu">Hindu</option>
-                <option value="Christian">Christian</option>
-                <option value="Islam">Islam</option>
+                <option value="KEAM">KEAM</option>
+                <option value="NATA">NATA</option>
+                <option value="GoI(CSAB)">GoI(CSAB)</option>
+                <option value="PMJK">PMJK</option>
+                <option value="Lateral">Lateral Entry</option>
+                <option value="Gate">GATE</option>
               </select>
               <label htmlFor="" className="mt-2">Caste</label>
-              <input type="text" name="caste"  value={details.caste} onChange={(e)=>{setDetails({...details,[e.target.name]:e.target.value})}} className="border-solid border-2 outline-0 rounded-md mt-2 px-1"/>
+              <input type="text" name="caste"  value={details.caste} onChange={(e)=>{setDetails({...details,[e.target.name]:e.target.value})}} className="px-2 py-1 ring-slate-200 ring-2 rounded-xl outline-none"/>
               <label htmlFor="" className="mt-2">BPL ?</label>
               <div className="flex items-center">
-                <input type="radio" onChange={(e)=>{setDetails({...details,[e.target.name]:e.target.value})}} name="isbpl" value="Yes" className="border-solid border-2 mt-2 px-1"/><label htmlFor="" className="ml-1 mr-4">Yes</label>
-                <input type="radio" onChange={(e)=>{setDetails({...details,[e.target.name]:e.target.value})}} name="isbpl" value="No" className="border-solid border-2 mt-2 px-1"/><label htmlFor="" className="ml-1">No</label>
+                <input type="radio" onChange={(e)=>{setDetails({...details,[e.target.name]:e.target.value})}} name="bpl" value="Yes" className="border-solid border-2 mt-2 px-1"/><label htmlFor="" className="ml-1 mr-4">Yes</label>
+                <input type="radio" onChange={(e)=>{setDetails({...details,[e.target.name]:e.target.value})}} name="bpl" value="No" className="border-solid border-2 mt-2 px-1"/><label htmlFor="" className="ml-1">No</label>
               </div>
               <label htmlFor="" className="mt-2">Eligible for Fee Concession?</label>
               <div className="flex items-center">
-                <input type="radio" onChange={(e)=>{setDetails({...details,[e.target.name]:e.target.value})}} name="feeconcession" value="Yes" className="border-solid border-2 rounded-lg mt-2 px-1"/><label htmlFor="" className="ml-1 mr-4">Yes</label>
-                <input type="radio" onChange={(e)=>{setDetails({...details,[e.target.name]:e.target.value})}} name="feeconcession" value="No" className="border-solid border-2 rounded-lg mt-2 px-1"/><label htmlFor="" className="ml-1">No</label>
+                <input type="radio" onChange={(e)=>{setDetails({...details,[e.target.name]:e.target.value})}} name="eligible_for_concession" value="Yes" className="border-solid border-2 rounded-lg mt-2 px-1"/><label htmlFor="" className="ml-1 mr-4">Yes</label>
+                <input type="radio" onChange={(e)=>{setDetails({...details,[e.target.name]:e.target.value})}} name="eligible_for_concession" value="No" className="border-solid border-2 rounded-lg mt-2 px-1"/><label htmlFor="" className="ml-1">No</label>
               </div>
               
               <label htmlFor="" className="mt-2">Annual Income</label>
-              <input type="text" name="annualincome" value={details.annualincome} onChange={(e)=>{setDetails({...details,[e.target.name]:e.target.value})}} className="border-solid border-2 rounded-lg mt-2 px-1"/>
+              <input type="text" name="annual_income" value={details.annual_income} onChange={(e)=>{setDetails({...details,[e.target.name]:e.target.value})}} className="px-2 py-1 ring-slate-200 ring-2 rounded-xl outline-none"/>
               <label htmlFor="" className="mt-2">Residential Address</label>
-              <textarea type="text" name="address" value={details.address} onChange={(e)=>{setDetails({...details,[e.target.name]:e.target.value})}}  className="border-solid border-2 rounded-lg mt-2 px-1"/>
+              <textarea type="text" name="present_address" value={details.present_address} onChange={(e)=>{setDetails({...details,[e.target.name]:e.target.value})}}  className="px-2 py-1 ring-slate-200 ring-2 rounded-xl outline-none"/>
             </div>
             <div className="w-full flex items-center justify-between mt-5">
               <motion.button whileHover={{x:-10, backgroundColor:'red'}}  className="p-3 bg-stone-800 text-white rounded-xl" onClick={()=>setCurrPage(currpage-1)}>Back</motion.button>
@@ -115,26 +122,44 @@ function HostelApplication() {
 
         {currpage===4 && <div><h2 className="font-bold">Personal Details</h2>
         <form action="">
-            <div className="grid grid-cols-2 w-6/12">
+            <div className="grid grid-cols-2 gap-y-3 w-6/12">
               <label htmlFor="" className="mt-2">Parent Name</label>
-              <input type="text" name="parentname"  value={details.parentname} onChange={(e)=>{setDetails({...details,[e.target.name]:e.target.value})}} className="border-solid border-2 rounded-lg mt-2 px-1"/>
-              <label htmlFor="" className="mt-2">Parent Number</label>
-              <input type="text" name="parentno"  value={details.parentno} onChange={(e)=>{setDetails({...details,[e.target.name]:e.target.value})}} className="border-solid border-2 rounded-lg mt-2 px-1"/>
+              <input type="text" name="parent_name" value={details.parent_name} onChange={(e)=>{setDetails({...details,[e.target.name]:e.target.value})}} className="px-2 py-1 ring-slate-200 ring-2 rounded-xl outline-none"/>
+              <label htmlFor="" className="mt-2">Parent Mobile Number</label>
+              <input type="text" name="parent_number" value={details.parent_number} onChange={(e)=>{setDetails({...details,[e.target.name]:e.target.value})}} className="px-2 py-1 ring-slate-200 ring-2 rounded-xl outline-none"/>
               <label htmlFor="" className="mt-2">Local Guardian Name</label>
-              <input type="text" name="guardianname" value={details.guardianname} onChange={(e)=>{setDetails({...details,[e.target.name]:e.target.value})}} className="border-solid border-2 rounded-lg mt-2 px-1"/>
-              <label htmlFor="" className="mt-2">Local Guardian Number</label>
-              <input type="text" name="guardianno" value={details.guardianno} onChange={(e)=>{setDetails({...details,[e.target.name]:e.target.value})}} className="border-solid border-2 rounded-lg mt-2 px-1"/>
+              <input type="text" name="local_guardian_name" value={details.local_guardian_name} onChange={(e)=>{setDetails({...details,[e.target.name]:e.target.value})}} className="px-2 py-1 ring-slate-200 ring-2 rounded-xl outline-none"/>
+              <label htmlFor="" className="mt-2">Local Guardian Mobile Number</label>
+              <input type="text" name="local_guardian_number" value={details.local_guardian_number} onChange={(e)=>{setDetails({...details,[e.target.name]:e.target.value})}} className="px-2 py-1 ring-slate-200 ring-2 rounded-xl outline-none"/>
               <label htmlFor="" className="mt-2">Parent Address</label>
-              <textarea type="text" name="parentaddress" value={details.parentaddress} onChange={(e)=>{setDetails({...details,[e.target.name]:e.target.value})}} className="border-solid border-2 rounded-lg mt-2 px-1"/>
+              <textarea type="text" name="parent_address" value={details.parent_address} onChange={(e)=>{setDetails({...details,[e.target.name]:e.target.value})}} className="px-2 py-1 ring-slate-200 ring-2 rounded-xl outline-none"/>
               <label htmlFor="" className="mt-2">Local Guardian Address</label>
-              <textarea type="text" name="guardianaddress" value={details.guardianaddress} onChange={(e)=>{setDetails({...details,[e.target.name]:e.target.value})}}  className="border-solid border-2 rounded-lg mt-2 px-1"/>
+              <textarea type="text" name="local_guardian_address" value={details.local_guardian_address} onChange={(e)=>{setDetails({...details,[e.target.name]:e.target.value})}}  className="px-2 py-1 ring-slate-200 ring-2 rounded-xl outline-none"/>
             </div>
             <div className="w-full flex items-center justify-between mt-5">
               <motion.button whileHover={{x:-10, backgroundColor:'red'}}  className="p-3 bg-stone-800 text-white rounded-xl" onClick={()=>setCurrPage(currpage-1)}>Back</motion.button>
-              <motion.button whileHover={{x:10, backgroundColor:'green'}}  className="p-3 bg-stone-800 text-white rounded-xl" onClick={submitHandler} type="submit">Submit Application</motion.button>
+              <motion.button whileHover={{x:10, backgroundColor:'green'}}  className="p-3 bg-stone-800 text-white rounded-xl" onClick={()=>setCurrPage(currpage+1)} type="submit">Next</motion.button>
           </div>
         </form></div>}  
-        {currpage===5 && <div>
+
+        {currpage==5 && <div>
+        <p className="font-semibold text-black mb-3">Enter Semester Exam Marks (if applicable)</p> 
+        <div className="grid grid-cols-2 gap-2 w-1/2 mt-3"> 
+          <p>S1: </p> <input className="p-2 ring-slate-200 ring-2 rounded-xl outline-none" type="number"/>
+          <p>S2: </p> <input className="p-2 ring-slate-200 ring-2 rounded-xl outline-none" type="number"/>
+          <p>S3: </p> <input className="p-2 ring-slate-200 ring-2 rounded-xl outline-none" type="number"/>
+          <p>S4: </p> <input className="p-2 ring-slate-200 ring-2 rounded-xl outline-none" type="number"/>
+          <p>S5: </p> <input className="p-2 ring-slate-200 ring-2 rounded-xl outline-none" type="number"/>
+          <p>S6: </p> <input className="p-2 ring-slate-200 ring-2 rounded-xl outline-none" type="number"/>
+          <p>S7: </p> <input className="p-2 ring-slate-200 ring-2 rounded-xl outline-none" type="number"/>
+          <p>S8: </p> <input className="p-2 ring-slate-200 ring-2 rounded-xl outline-none" type="number"/>
+        </div>
+        <div className="w-full flex items-center justify-between mt-5">
+              <motion.button whileHover={{x:-10, backgroundColor:'red'}}  className="p-3 bg-stone-800 text-white rounded-xl" onClick={()=>setCurrPage(currpage-1)}>Back</motion.button>
+              <motion.button whileHover={{x:10, backgroundColor:'green'}}  className="p-3 bg-stone-800 text-white rounded-xl" onClick={submitHandler} type="submit">Submit Application</motion.button>
+        </div>
+        </div>}
+        {currpage===6 && <div>
           <div className='flex flex-row tex-black text-sm font-bold relative mb-5'>
               <div
                 className='cursor-pointer '
