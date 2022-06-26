@@ -28,7 +28,7 @@ function SignUpPage() {
   return (
     <div className="bg-slate-200 min-h-screen">
       <nav className="flex w-5/6 ml-auto mr-auto pt-5">
-        <Link to="/">HostelCompanion</Link>   
+        <Link to="/">HostelCompanion1</Link>   
       </nav>
       <div className="flex items-center justify-between m-auto w-5/6" style={{minHeight:"80vh"}}>
       <div className="flex flex-col items-center justify-around">

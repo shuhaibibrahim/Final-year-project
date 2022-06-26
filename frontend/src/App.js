@@ -60,6 +60,7 @@ import AdvisorHome from './pages/StaffAdvisor/AdvisorHome';
 import HodHome from './pages/HOD/HodHome';
 import BackdropLoading from './components/BackdropLoading';
 import ViewApplications from './pages/Warden/ViewApplications';
+import FacultySignUp from './pages/FacultySignUp'
 
 function App() {
   const [user, setUser] = useState(undefined)
@@ -108,7 +109,7 @@ function App() {
           {user===null&&(<Route path="/" element={<LandingPage/>}/>)}
           {user==null&&(<Route path="/login" element={<LoginPage/>}/>)}
           {user==null&&(<Route path="/signup" element={<SignUpPage/>}/>)}
-
+          {user==null&&(<Route path="/facultysignup" element={<FacultySignUp/>}/>)}
           {user!=null&&(user.designation=='faculty')&&(
           <Route path="/" element={<CommonHome user={user}/>}>
             {/* Admin Routes */}

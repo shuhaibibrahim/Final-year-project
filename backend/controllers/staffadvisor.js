@@ -1,7 +1,7 @@
 const {pool}=require('../db')
 const mailer = require('../controllers/mailer')
 const CryptoJS = require("crypto-js");
-const encryption = require('../controllers/encryption')
+const notification=require('../controllers/notification')
 //Inmate Functions
 const inmateList=(req,res)=>{
 
@@ -101,6 +101,7 @@ const signUpInvite = async (req,res)=>{
             }
     
             console.log('Message sent: ' + info.response);
+            res.send("Success")
         });
     });
     
