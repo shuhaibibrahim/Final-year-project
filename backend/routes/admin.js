@@ -12,6 +12,9 @@ router.get('/inmates/removeRole', admin.removeInmateRole)
 
 //faculty
 router.get('/faculties', admin.facultyList)
+router.get('/faculty/getRoles', admin.getFacultyRoles)
+router.post('/faculty/postRole', admin.postFacultyRole)
+router.get('/faculty/removeRole', admin.removeFacultyRole)
 
 //application paths
 router.get('/getPathsData', admin.getPathsData)

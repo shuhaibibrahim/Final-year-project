@@ -81,11 +81,11 @@ function AllotmentRule() {
 
       console.log("colsss:",cols.filter(col=>col.columnType=='existing'))
 
-      setColumnsData(cols.filter(col=>col.columnType=='existing'))
-      setUpdatedColumnsData(cols.filter(col=>col.columnType=='existing'))
+      setColumnsData(cols.filter(col=>col.columnType=='existing').map(item=>({...item})))
+      setUpdatedColumnsData(cols.filter(col=>col.columnType=='existing').map(item=>({...item})))
 
-      setDerivedColumnsData(cols.filter(col=>col.columnType=='derived'))
-      setUpdatedDerivedColumnsData(cols.filter(col=>col.columnType=='derived'))
+      setDerivedColumnsData(cols.filter(col=>col.columnType=='derived').map(item=>({...item})))
+      setUpdatedDerivedColumnsData(cols.filter(col=>col.columnType=='derived').map(item=>({...item})))
     })
     .catch(function (error) {
         console.log("FAILED!!! ",error);
@@ -107,6 +107,7 @@ function AllotmentRule() {
   }, [])
 
   const postModification=()=>{
+    console.log(combinedColumnsData)
     axios.post('http://localhost:8080/admin/updateRule',{
       columnsData:combinedColumnsData,
       rankRuleData: updatedRule
@@ -135,13 +136,11 @@ function AllotmentRule() {
       existingCols[index].columnLetter=String.fromCharCode(65+index)
     })
 
-    setUpdatedColumnsData([...existingCols])
-
-    
     derivedCols.forEach((item,index)=>{
-      derivedCols[index].columnLetter=String.fromCharCode(updatedColumnsData.length+65+index) //derived cols start after existing cols
+      derivedCols[index].columnLetter=String.fromCharCode(existingCols.length+65+index) //derived cols start after existing cols
     })
-
+    
+    setUpdatedColumnsData([...existingCols])
     setUpdatedDerivedColumnsData([...derivedCols])
     
     setCombinedColumnsData([...existingCols,...derivedCols])

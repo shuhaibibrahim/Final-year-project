@@ -68,6 +68,98 @@ const facultyList=(req,res)=>{
     })
 }
 
+const getFacultyRoles=(req, res)=>{
+    pool.query(`SELECT Role FROM ROLES_FACULTY
+                WHERE UserId=$1`, [req.query.penNo], (err, resp) => {
+        if (err) {
+            throw err
+        }
+
+        res.send(resp.rows.map(item=>item.role))
+    })
+}
+
+const postFacultyRole=(req,res)=>{
+    console.log("here",req.body)
+    pool.query(`INSERT INTO Roles_Faculty(UserId, Role)
+                Values ($1, $2) RETURNING *`, [req.body.penNo, req.body.role], (err, respRoles) => {
+        if (err) {
+            console.log("err1 : ",err)
+        }
+
+        // console.log(req)
+
+        if(req.body.role=="SA") //staff advisor
+        {
+            pool.query(`SELECT * FROM BATCH 
+                        WHERE 
+                        batch_name=$1 and semester=$2 and course=$3 and department=$4
+                        and programme=$5`, [req.body.batchName, req.body.sem, req.body.course, req.body.dept, req.body.program], (err, respGetBatch) => {
+                if (err) {
+                    console.log("err2 : ",err)
+                }
+
+                if(respGetBatch.rowCount.length==0)
+                {
+                    pool.query(`INSERT INTO BATCH(programme, department, course, year, semester, batch_name)
+                                Values ($1, $2, $3, $4, $5, $6) RETURNING *`, [req.body.program, req.body.dept, req.body.course, req.body.year, req.body.sem, req.body.batchName], (err, respBatch) => {
+                        if (err) {
+                            console.log("err2 : ",err)
+                        }
+    
+                        pool.query(`INSERT INTO staff_advisor(roleid, batchid)
+                                    Values ($1, $2) RETURNING *`, [respRoles.rows[0].roleid, respBatch.rows[0].batchid], (err, resp1) => {
+                                if (err) {
+                                    console.log("err2=3 : ",err)
+                                }
+    
+                                res.send("Success")
+                            })
+                        })
+                }
+                else
+                {
+                    pool.query(`INSERT INTO staff_advisor(roleid, batchid)
+                            Values ($1, $2) RETURNING *`, [respRoles.rows[0].roleid, respGetBatch.rows[0].batchid], (err, resp) => {
+                        if (err) {
+                            console.log("err2=3 : ",err)
+                        }
+
+                        res.send("Success")
+                    })
+                }
+                               
+            })
+        }
+        else if(req.body.role=="HOD") //hod
+        {
+            pool.query(`INSERT INTO staff_advisor(roleid, department)
+                    Values ($1, $2) RETURNING *`, [respRoles.rows[0].roleid, req.body.dept], (err, resp) => {
+                if (err) {
+                    console.log("err4 : ",err)
+                }
+
+                res.send("Success")
+            })
+        }
+
+        res.send("Success")
+    })
+}
+
+const removeFacultyRole=(req,res)=>{
+    console.log("delete called at bacend", req.query)
+    pool.query(`DELETE FROM ROLES_FACULTY 
+                WHERE UserID=$1 AND Role=$2 returning *`, [req.query.penNo, req.query.role], (err, resp) => {
+        if (err) {
+          throw err
+        }
+        console.log('deleted:', resp.rows)
+
+        res.send("success")
+    })
+}
+
 //Hostel Registry
 const hostelRegistry=(req,res)=>{
 
@@ -283,7 +375,7 @@ const updateApplication=(req,res)=>{
 const getTableAndCols=(req,res)=>{
     console.log( "body : ",req.query)
 
-    pool.query(`SELECT template_text
+    pool.query(`SELECT template_text, application_template
                 FROM CERTIFICATES c
                 WHERE c.certificate_id=$1`, [req.query.certificateId], (err, resp) => {
         if (err) {
@@ -326,6 +418,7 @@ const getTableAndCols=(req,res)=>{
                 var tempArray=inmateData.rows.filter(item=>item.column_name!='admission_no') 
                 columnsData=[...columnsData, ...tempArray.map(item=>'inmate_table.'+item.column_name)]
 
+                //hostel data
                 var hostelData=await pool.query(`SELECT column_name 
                                                 FROM information_schema.columns
                                                 WHERE TABLE_NAME = 'hostel_blocks'`)
@@ -334,6 +427,15 @@ const getTableAndCols=(req,res)=>{
                 tempArray=hostelData.rows.filter(item=>(item.column_name!='block_id')) 
                 columnsData=[...columnsData, ...tempArray.map(item=>'hostel_blocks.'+item.column_name)]
 
+                //certificate template columns
+                var tempJson=JSON.parse(certificateData.application_template)
+
+                tables.push('certificate_application')
+                console.log("tempJSON : ",Object.keys(tempJson))
+                
+                columnsData=[...columnsData, ...Object.keys(tempJson).map(key=>("json.certificate_application.application_from."+key))]
+                //since certificate template field and its value are stored as a json string in the certificate_application,
+                //the key will be stored in the template_text as json.certificate_application.application_from.key
 
                 res.send({
                     "templateText":certificateData.template_text,
@@ -526,13 +628,16 @@ const getHostelApplicationCols=(req,res)=>{
 
 const getAllotmentColumns=(req, res)=>{
     console.log("called")
-    pool.query(`SELECT * FROM allotment_columns`, (err, resp) => {
+    pool.query('SELECT * FROM allotment_columns order by column_letter', (err, resp) => {
         if (err) {
             console.log(err)
             throw err
         }
 
-        console.log(resp.rows.map(col=>({
+        const data=[...resp.rows]
+
+        console.log(data)
+        console.log(data.map(col=>({
             columnType: col.column_type,
             columnName: col.columns,
             columnLetter: col.column_letter,
@@ -548,32 +653,42 @@ const getAllotmentColumns=(req, res)=>{
     })
 }
 
-const updateRule=(req,res)=>{
+const updateRule=async(req,res)=>{
 
     // console.log(req.body)
-    pool.query('delete from allotment_columns returning *',(err,resp)=>{
-        // console.log(resp.rows)
-    })
+    try{
+        pool.query('DELETE from allotment_columns RETURNING *').then((err1, resp)=>{
 
-    var count=0
-    var rows=[]
-    req.body.columnsData.forEach((colData)=>{
-        pool.query(`INSERT INTO allotment_columns (column_type,columns, column_letter, formula)
-        VALUES ($1,$2,$3,$4)
-        RETURNING *`, [colData.columnType, colData.columnName,colData.columnLetter,colData.formula],(err, resp)=>{
-
-            if (err) {
-                console.log(err)
+            if(err1){
+                console.log(err1)
             }
-            count++
 
-            if(count===req.body.columnsData.length)
-            {
-                console.log(resp)
-                res.send().status(200)
-            }
+            var count=0;
+
+            console.log("req.body : ",req.body.columnsData)
+            req.body.columnsData.forEach(async (colData)=>{
+    
+                pool.query(`INSERT INTO allotment_columns (column_type,columns, column_letter, formula)
+                VALUES ($1,$2,$3,$4)
+                RETURNING *`, [colData.columnType, colData.columnName,colData.columnLetter,colData.formula],(err, resp)=>{
+
+                    if(err)
+                    {
+                        console.log(err)
+                    }
+                    
+                    count++;
+                    if(count==req.body.columnsData.length)
+                    {
+                        res.send().status(200)
+                    }
+                })
+    
+            })
         })
-    })
+    }catch(err){
+        console.log(err)
+    }
 
 }
 
@@ -588,6 +703,9 @@ module.exports={
 
     //faculty
     facultyList, 
+    getFacultyRoles,
+    postFacultyRole,
+    removeFacultyRole,
 
     //hostel registry
     hostelRegistry,
