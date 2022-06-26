@@ -5,5 +5,9 @@ const warden=require('../controllers/warden')
 //Hostel Registry
 router.get('/hostelregistry',warden.hostelRegistry)
 
+router.get('/gethostelapplications',warden.getHostelApplications)
+
+router.get('/generateranklist',warden.generateRankList)
+
 
 module.exports=router;

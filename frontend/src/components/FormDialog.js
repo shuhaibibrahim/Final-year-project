@@ -10,6 +10,7 @@ import {UserContext} from '../Contexts/UserContext'
 export default function FormDialog({open,setOpen,modalText,modalHeading,field,certificateId}) {
 
   const [details,setDetails]=useState({})
+  const [fullWidth, setFullWidth] = useState(true); 
   const {user}=useContext(UserContext)
 
   
@@ -92,7 +93,10 @@ export default function FormDialog({open,setOpen,modalText,modalHeading,field,ce
     }
     return (<div className='w-full overflow-y-auto flex flex-col px-3'>
       {render.map(inputDiv=>inputDiv)}
-    <button type="submit" onSubmit={submitForm} className='submit-button-black'>Submit</button>
+    <div className='flex items-center justify-end mt-3'>
+      <button type="submit" onSubmit={submitForm} className='submit-button-black'>Submit</button>
+    </div>
+    
     </div>)
 
   }
@@ -103,6 +107,8 @@ export default function FormDialog({open,setOpen,modalText,modalHeading,field,ce
         onClose={handleClose}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
+        fullWidth={fullWidth}
+        maxWidth="md"
       >
         <DialogTitle id="alert-dialog-title" className='text-black font-semibold flex items-center justify-between capitalize'>
           {modalHeading}

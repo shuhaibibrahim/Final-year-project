@@ -11,9 +11,11 @@ const inmate=require('./routes/inmate')
 const hod=require('./routes/hod')
 const warden=require('./routes/warden')
 const staffadvisor=require('./routes/staffadvisor')
+const certificates=require('./routes/certificates')
 const bodyParser = require('body-parser')
 var passport = require('passport');
-
+const {pool} = require('./db')
+const bcrypt = require('bcrypt')
 
 //----------------------MIDDLEWARES-----------------------
 //Body parser middleware - passport returned ad request without this
@@ -70,6 +72,16 @@ app.get('/auth/isAuthenticated' ,passport.session(), (req, res, next)=>{
 });
 //----------------------End of auth routes----------------------
 
+
+//----------------------Auth routes--------------------------
+app.post('/facultysignup',async (req,res)=>{
+  console.log(req.body)
+  const saltRounds = 10;
+  const hash = bcrypt.hashSync(req.body.password, saltRounds);
+  const query= await pool.query(`insert into users(user_id,password,name,email,mobile_no,designation,is_admin) values($1,$2,$3,$4,$5,'faculty',FALSE)`,[req.body.penNo,hash,req.body.name,req.body.email,req.body.mobile_no])
+  console.log(query)
+})
+
 //----------------------admin routes----------------------
 app.use('/admin', admin)
 //----------------------End of auth routes----------------------
@@ -84,6 +96,9 @@ app.use('/inmate',inmate)
 app.use('/staffadvisor',staffadvisor)
 app.use('/hod',hod)
 app.use('/warden',warden)
+
+//----------------------certificate routes----------------------
+app.use('/certificates',certificates)
 
 app.listen(port, () => {
   console.log(`App listening on port ${port}`)

@@ -37,7 +37,7 @@ function LoginForm() {
             <p>Please enter your details</p>
             <form action=""> 
                 <div className="flex flex-col mt-2">
-                    <label htmlFor="">Admission Number</label>
+                    <label htmlFor="">User Id</label>
                     <input 
                         type="text" 
                         className="w-full py-2 px-3 rounded-xl ring-2 ring-slate-300 focus:outline-none" 

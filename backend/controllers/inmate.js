@@ -1,5 +1,5 @@
 const {pool} = require('../db')
-
+const notification=require('../controllers/notification')
 const dateConverter = (inputdate)=>{
         const date=new Date(inputdate);
         let month = (date.getMonth() + 1).toString();
@@ -101,9 +101,18 @@ const applyCertificate = async(req,res)=>{
         // const getadmno=await pool.query("SELECT hostel_admission_no FROM inmate_table WHERE admission_no=$1",[user_id])
         // const hostel_admno=getadmno.rows[0].hostel_admission_no
         const date=new Date()
-        const query=await pool.query("INSERT INTO certificate_application(admission_no,certificate_id,date,approved,rejected,status,application_form) VALUES($1,$2,$3,FALSE,FALSE,0,$4) RETURNING *",[user_id,certificate_id,date,applicationform])
+        const getPath=await pool.query(`select path from path p,certificates c 
+        where p.pathno=c.pathno and c.certificate_id=${certificate_id}`)
+        console.log(getPath)
+        var approved=false
+        if(getPath.rows[0].path==null){
+            approved=true
+        }
+        const query=await pool.query("INSERT INTO certificate_application(admission_no,certificate_id,date,approved,rejected,status,application_form) VALUES($1,$2,$3,$4,FALSE,0,$5) RETURNING *",[user_id,certificate_id,date,approved,applicationform])
         console.log(query)
 
+        notification.notifyEmail(query.rows[0].admission_no,query.rows[0].certificate_id,query.rows[0].status,getPath.rows[0].path);
+        res.send("success")
     }
     catch(e){
         console.error(e)
@@ -113,15 +122,13 @@ const applyCertificate = async(req,res)=>{
 const viewCertificates = async (req,res)=>{
     try{
         const user_id=req.query.user_id
-        const certificates=await pool.query('SELECT CA.application_id,CA.certificate_id,CA.date,C.name,CA.approved,CA.rejected,CA.status,CA.feedback,CA.application_form FROM certificate_application as CA,certificates as C WHERE admission_no=$1 AND CA.certificate_id=C.certificate_id',[user_id])
-        // const certificates=await pool.query('SELECT * FROM certificate_application where hostel_admission_no=(SELECT hostel_admission_no FROM inmate_table WHERE admission_no=$1)',[user_id])
+        const certificates=await pool.query('SELECT CA.application_id,CA.certificate_id,CA.date,C.name,CA.approved,CA.rejected,CA.status,CA.feedback,CA.application_form,p.path FROM certificate_application as CA,certificates as C,path as P WHERE admission_no=$1 AND CA.certificate_id=C.certificate_id and C.pathno=P.pathno',[user_id])
         console.log(certificates.rows)
         res.json(certificates.rows)
     }
     catch(e){
         console.error(e)
-    }
-    
+    }  
 }
 
 const applyMessOut = async (req,res)=>{
