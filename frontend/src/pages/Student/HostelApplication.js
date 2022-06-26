@@ -89,12 +89,9 @@ function HostelApplication() {
               <label htmlFor="" className="mt-2">Religion</label>
               <select name="religion" id=""  value={details.religion} onChange={(e)=>{setDetails({...details,[e.target.name]:e.target.value})}} className="p-2 ring-slate-200 ring-2 rounded-xl outline-none">
                 <option value="">Select an option</option>
-                <option value="KEAM">KEAM</option>
-                <option value="NATA">NATA</option>
-                <option value="GoI(CSAB)">GoI(CSAB)</option>
-                <option value="PMJK">PMJK</option>
-                <option value="Lateral">Lateral Entry</option>
-                <option value="Gate">GATE</option>
+                <option value="hindu">Hindu</option>
+                <option value="christian">Christian</option>
+                <option value="muslim">Muslim</option>
               </select>
               <label htmlFor="" className="mt-2">Caste</label>
               <input type="text" name="caste"  value={details.caste} onChange={(e)=>{setDetails({...details,[e.target.name]:e.target.value})}} className="px-2 py-1 ring-slate-200 ring-2 rounded-xl outline-none"/>

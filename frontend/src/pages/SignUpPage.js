@@ -1,7 +1,30 @@
+import {useEffect,useState} from 'react'
 import SignUpForm from "../components/SignUpForm"
 import {Link} from "react-router-dom"
 import Hostel from '../icons/hostel-image.jpeg'
+import { useSearchParams } from 'react-router-dom';
+import axios from 'axios';
+import { baseUrl } from '../baseUrl';
+import CryptoJS from 'crypto-js'
 function SignUpPage() {
+  
+  const [inputs,setInputs]=useState("")
+  const [searchParams] = useSearchParams();
+  const [filledDetails,setFilledDetails]=useState([])
+  function decrypt(data,key){
+    let decData = CryptoJS.enc.Base64.parse(data).toString(CryptoJS.enc.Utf8);
+    return CryptoJS.AES.decrypt(decData, key).toString(CryptoJS.enc.Utf8);
+  }
+
+  useEffect(() => {
+    
+    var ciphertext=searchParams.get('cred')
+    console.log(ciphertext)
+    var plainText=decrypt(ciphertext,'secret key 123')
+    console.log(plainText.toString())
+    setFilledDetails(plainText.slice(1,plainText.length-1).split(":"))
+  }, [])
+  
   return (
     <div className="bg-slate-200 min-h-screen">
       <nav className="flex w-5/6 ml-auto mr-auto pt-5">
@@ -14,7 +37,7 @@ function SignUpPage() {
             <img src={Hostel} className="w-full h-72 rounded-lg -rotate-12 -translate-y-2 -translate-x-2" alt="" />
           </div>
         </div>
-      <SignUpForm/>
+      <SignUpForm filledDetails={filledDetails}/>
       </div>
     </div>
   )

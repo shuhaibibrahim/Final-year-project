@@ -28,11 +28,12 @@ const getHostelApplications = async (req,res)=>{
 const generateRankList= async(req,res) =>{
     try{
 
-        const headerquery=await pool.query(`SELECT * from allotment_columns`)
-        const colquery=await pool.query(`SELECT * from allotment_columns where column_type='existing'`)
-        const colData=colquery.rows.map(col=>col.columns)
+        const headerquery=await pool.query(`SELECT * from allotment_columns order by column_letter`)
+        console.log(headerquery.rows)
+        const existingcolquery=await pool.query(`SELECT * from allotment_columns where column_type='existing'`)
+        const colData=existingcolquery.rows.map(col=>col.columns)
 
-        console.log(colData)
+        // console.log(colData)
 
         const queryText='SELECT '+ colData.join(',') + ' from hostel_application, student_progress, users where hostel_application.user_id=users.user_id'
         const query=await pool.query(queryText);
@@ -41,8 +42,15 @@ const generateRankList= async(req,res) =>{
         const worksheet = workbook.addWorksheet('RankList');
         worksheet.columns=[]
         var temp=[]
-        Object.keys(headerquery.rows[0]).forEach(element => {
-            temp.push({header:element,key:element})
+        headerquery.rows.forEach(element => {
+            if(element.column_type==='existing'){
+                temp.push({header:element.columns.split('.')[1],key:element.columns})
+                //Existing column format : 'table.columnname'
+            }
+            else{
+                temp.push({header:element.columns,key:element.columns})
+                //Derived column format : 'columnname'
+            }
         });
         worksheet.columns=[...temp]
         // console.log(worksheet.columns)
@@ -50,17 +58,32 @@ const generateRankList= async(req,res) =>{
         var rows=[]
         for(let i=0;i<noofrows;i++){
             var row=[]
-            Object.keys(query.rows[i]).forEach(element => {
-                row.push(query.rows[i][element])
-            });
+            headerquery.rows.forEach(col=>{
+                if(col.column_type==='existing')
+                {
+                    row.push(query.rows[i][col.columns.split('.')[1]])
+                }
+            })
+            // Object.keys(query.rows[i]).forEach(colHeader => {
+            //     row.push(query.rows[i][colHeader])
+            // });
             rows.push(row)
         }
+
+        worksheet.eachRow((row, rowNo)=>{
+            headerquery.rows.forEach(col=>{
+                if(col.column_type==='derived')
+                    worksheet.getCell(col.column_letter+''+(rowNo+1)).value={formula:col.formula}
+            })
+        })
+        console.log(rows)
         worksheet.addRows(rows);
         console.log("running")
         await workbook.xlsx.writeFile("Ranklist.xlsx");
 
     }
     catch(e){
+        console.log(e)
     }
 }
 

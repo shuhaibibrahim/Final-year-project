@@ -8,11 +8,11 @@ router.get('/',(req,res) =>{
 router.post('/hostelapplication',async (req,res)=>{
     console.log(req.body)
     const query=await pool.query(`INSERT INTO hostel_application(user_id,dob,religion,caste,category,
-        admission_criteria,parent_name,parent_address,local_guardian_name,local_guardian_address,
-        local_guardian_number,annual_income,bpl,present_address,
-        eligible_for_concession) values($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15)`,[req.body.user_id,req.body.dob,req.body.religion,
-        req.body.caste,req.body.category,req.body.admission_criteria,req.body.parent_name,req.body.parent_address
-        ,req.body.local_guardian_name,req.body.local_guardian_address,req.body.local_guardian_number,req.body.annual_income
+        admission_criteria,parent_name,parent_number,parent_address,local_guardian_name,local_guardian_number,local_guardian_address,
+        annual_income,bpl,present_address,
+        eligible_for_concession) values($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16) returning *`,[req.body.user_id,req.body.dob,req.body.religion,
+        req.body.caste,req.body.category,req.body.admission_criteria,req.body.parent_name,req.body.parent_number,req.body.parent_address
+        ,req.body.local_guardian_name,req.body.local_guardian_number,req.body.local_guardian_address,req.body.annual_income
         ,req.body.bpl,req.body.parent_address,req.body.eligible_for_concession])
         console.log(query)
     const semmarks=[]
