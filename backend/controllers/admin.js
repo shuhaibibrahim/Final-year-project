@@ -114,7 +114,7 @@ const postFacultyRole=(req,res)=>{
                     console.log("err2 : ",err)
                 }
 
-                if(respGetBatch.rowCount.length==0)
+                if(respGetBatch.rows.length==0)
                 {
                     pool.query(`INSERT INTO BATCH(programme, department, course, year, semester, batch_name)
                                 Values ($1, $2, $3, $4, $5, $6) RETURNING *`, [req.body.program, req.body.dept, req.body.course, req.body.year, req.body.sem, req.body.batchName], (err, respBatch) => {

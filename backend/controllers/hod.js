@@ -44,7 +44,168 @@ const viewCertificates = async (req,res)=>{
     
 }
 
-module.exports={inmateList,
+//staff advisor role adding
+// const facultyList=(req,res)=>{
+
+//     var rows=[]
+//     pool.query(`select department from HOD h, roles_faculty rf, faculty f 
+//                 where 
+//                 f.pen_no=rf.user_id and
+//                 rf.roleid=h.roleid and
+//                 f.pen_no=$1`, [req.query.penNo], (err, resp)=>{
+        
+//         if(err)
+//         {
+//             console.log(err)
+//         }
+
+//         pool.query(`SELECT *  FROM Users u, FACULTY f, roles_faculty rf, staff_advisor s, batch b
+//                     where 
+//                     u.User_Id=f.PEN_NO and 
+//                     f.pen_no=rf.user_id and 
+//                     rf.roleid=staff_advisor.roleid and
+//                     rf.batchid=batch.batchid
+//                     and batch.department=$1`,[resp.rows[0].department], (err, resp1) => {
+//             if (err) {
+//                 console.log(err)
+//                 throw err
+//             }
+//             console.log('user:', resp1.rows)
+//             res.send(resp1.rows)
+//         })
+//     })
+// }
+
+const getHodDept=(req, res)=>{
+    console.log(`select department from HOD h, roles_faculty rf, faculty f 
+    where 
+    f.pen_no=${req.query.hodPenNo} and
+    f.pen_no=rf.userid and
+    rf.roleid=h.roleid`)
+    pool.query(`select department from HOD h, roles_faculty rf, faculty f 
+                where 
+                f.pen_no=$1 and
+                f.pen_no=rf.userid and
+                rf.roleid=h.roleid`, [req.query.hodPenNo], (err, resp)=>{
+    
+        if(err)
+        {
+            console.log(err)
+        }
+
+        console.log("dsad",resp.rows)
+        res.send(resp.rows[0])
+    })
+}
+
+const facultyList=(req,res)=>{
+
+    var rows=[]
+    pool.query(`SELECT *  FROM Users u, FACULTY f
+                where u.User_Id=f.PEN_NO`, (err, resp) => {
+        if (err) {
+            console.log(err)
+            throw err
+        }
+        console.log('user:', resp.rows)
+        res.send(resp.rows)
+    })
+}
+
+const getFacultyRoles=(req, res)=>{
+    
+    console.log(req.query)
+    pool.query(`SELECT Role FROM ROLES_FACULTY rf, staff_advisor s, batch b
+        WHERE
+        rf.UserId=$1 and
+        rf.roleid=s.roleid and
+        s.batchid=b.batchid and
+        b.department=$2`, [req.query.advPenNo, req.query.dept], (err, resp1) => {
+        if (err) {
+        throw err
+        }
+
+        res.send(resp1.rows.map(item=>item.role))
+    })
+}
+
+const postFacultyRole=(req,res)=>{
+    console.log("here",req.body)
+    try{
+
+        pool.query(`INSERT INTO Roles_Faculty(UserId, Role)
+                    Values ($1, 'SA') RETURNING *`, [req.body.penNo], (err, respRoles) => {
+            if (err) {
+                console.log("err1 : ",err)
+            }
+    
+            pool.query(`SELECT * FROM BATCH 
+                        WHERE 
+                        batch_name=$1 and semester=$2 and course=$3 and department=$4
+                        and programme=$5`, [req.body.batchName, req.body.sem, req.body.course, req.body.dept, req.body.program], (err, respGetBatch) => {
+                if (err) {
+                    console.log("err2 : ",err)
+                }
+    
+                if(respGetBatch.rows.length==0)
+                {
+                    pool.query(`INSERT INTO BATCH(programme, department, course, year, semester, batch_name)
+                                Values ($1, $2, $3, $4, $5, $6) RETURNING *`, [req.body.program, req.body.dept, req.body.course, req.body.year, req.body.sem, req.body.batchName], (err, respBatch) => {
+                        if (err) {
+                            console.log("err2 : ",err)
+                        }
+    
+                        pool.query(`INSERT INTO staff_advisor(roleid, batchid)
+                                    Values ($1, $2) RETURNING *`, [respRoles.rows[0].roleid, respBatch.rows[0].batchid], (err, resp1) => {
+                                if (err) {
+                                    console.log("err2=3 : ",err)
+                                }
+    
+                                res.send(resp1.data)
+                            })
+                        })
+                }
+                else
+                {
+                    pool.query(`INSERT INTO staff_advisor(roleid, batchid)
+                            Values ($1, $2) RETURNING *`, [respRoles.rows[0].roleid, respGetBatch.rows[0].batchid], (err, resp) => {
+                        if (err) {
+                            console.log("err2=3 : ",err)
+                        }
+    
+                        res.send({message : "success"})
+                    })
+                }
+                                
+            })
+    
+            res.send({message : "success"})
+        })
+    }catch(e){
+        console.log(e)
+    }
+}
+
+const removeFacultyRole=(req,res)=>{
+    console.log("delete called at bacend", req.query)
+    pool.query(`DELETE FROM ROLES_FACULTY 
+                WHERE UserID=$1 AND Role=$2 returning *`, [req.query.penNo, req.query.role], (err, resp) => {
+        if (err) {
+          throw err
+        }
+        console.log('deleted:', resp.rows)
+
+        res.send("success")
+    })
+}
+
+module.exports={
+    inmateList,
     viewCertificates,
+    getHodDept,
+    facultyList,
+    getFacultyRoles,
+    postFacultyRole,
+    removeFacultyRole
 
 }
