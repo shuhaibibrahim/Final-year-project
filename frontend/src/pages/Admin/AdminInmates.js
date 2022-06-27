@@ -1,146 +1,14 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import {motion} from "framer-motion" 
 import axios from 'axios'
 import AlertDialog from '../../components/AlertDialog'
 import ConfirmDialog from '../../components/ConfirmDialog'
+import optimizedSearch from '../../components/Search'
 
 function AdminInmates() {
-  const inmateDataMH=[
-    {
-      admNo:"1235",
-      name:"xyz",
-      dept:"cse",
-      batch:"batchId",
-      phone:"9876857465",
-      email:"xyz@gmail.com",
-      roles:["md", "ms"]
-    },
-    {
-      admNo:"2434",
-      name:"xyz",
-      dept:"cse",
-      batch:"batchId",
-      phone:"9876857465",
-      email:"xyz@gmail.com"
-    },
-    {
-      admNo:"1234",
-      name:"xyz",
-      dept:"cse",
-      batch:"batchId",
-      phone:"9876857465",
-      email:"xyz@gmail.com"
-    },
-    {
-      admNo:"1234",
-      name:"xyz",
-      dept:"cse",
-      batch:"batchId",
-      phone:"9876857465",
-      email:"xyz@gmail.com"
-    },
-    {
-      admNo:"1234",
-      name:"xyz",
-      dept:"cse",
-      batch:"batchId",
-      phone:"9876857465",
-      email:"xyz@gmail.com"
-    },
-    {
-      admNo:"1234",
-      name:"xyz",
-      dept:"cse",
-      batch:"batchId",
-      phone:"9876857465",
-      email:"xyz@gmail.com"
-    },
-    {
-      admNo:"1234",
-      name:"xyz",
-      dept:"cse",
-      batch:"batchId",
-      phone:"9876857465",
-      email:"xyz@gmail.com"
-    },
-    {
-      admNo:"1234",
-      name:"xyz",
-      dept:"cse",
-      batch:"batchId",
-      phone:"9876857465",
-      email:"xyz@gmail.com"
-    }
-  ]
-
-  const inmateDataLH=[
-    {
-      admNo:"1289",
-      name:"pqr",
-      dept:"cse",
-      batch:"batchId",
-      phone:"9876857465",
-      email:"xyz@gmail.com"
-    },
-    {
-      admNo:"1289",
-      name:"pqr",
-      dept:"cse",
-      batch:"batchId",
-      phone:"9876857465",
-      email:"xyz@gmail.com"
-    },
-    {
-      admNo:"1289",
-      name:"pqr",
-      dept:"cse",
-      batch:"batchId",
-      phone:"9876857465",
-      email:"xyz@gmail.com"
-    },
-    {
-      admNo:"1289",
-      name:"pqr",
-      dept:"cse",
-      batch:"batchId",
-      phone:"9876857465",
-      email:"xyz@gmail.com"
-    },
-    {
-      admNo:"1289",
-      name:"pqr",
-      dept:"cse",
-      batch:"batchId",
-      phone:"9876857465",
-      email:"xyz@gmail.com"
-    },
-    {
-      admNo:"1289",
-      name:"pqr",
-      dept:"cse",
-      batch:"batchId",
-      phone:"9876857465",
-      email:"xyz@gmail.com"
-    },
-    {
-      admNo:"1289",
-      name:"pqr",
-      dept:"cse",
-      batch:"batchId",
-      phone:"9876857465",
-      email:"xyz@gmail.com"
-    },
-    {
-      admNo:"1289",
-      name:"pqr",
-      dept:"cse",
-      batch:"batchId",
-      phone:"9876857465",
-      email:"xyz@gmail.com"
-    }
-  ]
-
-  const [hostelDataSelected, setHostelDataSelected] = useState([])
+  
+  const [hostelDataSelectedOriginal, setHostelDataSelectedOriginal] = useState([]) //All data from which data for display will be filtered
+  const [hostelDataSelected, setHostelDataSelected] = useState([]) //display data
   const [tabSelected, setTabSelected] = useState("MH")
   const [selectedRowIndex, setSelectedRowIndex] = useState(-1)
   const [selectedHostel, setSelectedHostel] = useState(null) //hostel in which a row is selected
@@ -151,6 +19,9 @@ function AdminInmates() {
   const [modalHeading,setModalHeading]=useState("")
   const [open1, setOpen1] = useState(false);
   const [open2, setOpen2] = useState(false);
+
+  const [searchText, setSearchText] = useState("")
+  const [filter, setFilter] = useState([])
 
   const getAndSetRoles=()=>{
     axios.get('http://localhost:8080/admin/inmates/getRoles',{
@@ -177,7 +48,13 @@ function AdminInmates() {
         .then(function (response) {
             // console.log("success" , response ,"response.data");
             console.log("hostel data is set")
-            setHostelDataSelected(response.data)
+            setHostelDataSelectedOriginal(response.data.map(item=>({...item}))) //object inside array may not be deep copied
+            setHostelDataSelected(optimizedSearch(
+              {
+                searchText:searchText, 
+                originalData:response.data.map(item=>({...item})), 
+                filters:filter
+              }))
         })
         .catch(function (error) {
             console.log("FAILED!!! ",error);
@@ -188,6 +65,14 @@ function AdminInmates() {
         getAndSetRoles()
       }
   }, [tabSelected])
+
+  useEffect(() => {
+    setHostelDataSelected(optimizedSearch({
+      searchText:searchText, 
+      originalData:hostelDataSelectedOriginal, 
+      filters:filter
+    }))
+  }, [filter])
   
 
   const HostelList=()=>{
@@ -196,33 +81,91 @@ function AdminInmates() {
       // <div className='w-full'>
       <>
         {/* search and filter */}
-        <div className='flex flex-row bg-primary rounded-lg w-11/12 items-center p-3 justify-between'>
-          {/* search */}
-          <div className='flex flex-row items-center bg-white rounded-lg text-sm px-2'>
-            <div>
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
+        <div className='flex flex-col w-11/12 bg-primary rounded-lg '>
+          <div className='flex flex-row w-full w-full items-center p-3 justify-between'>
+            {/* search */}
+            <div className='flex flex-row items-center bg-white rounded-lg text-sm px-2'>
+              <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </div>
+              <input 
+                placeholder='Search by name or by admission number'
+                type="text"
+                className='p-2 w-80 outline-none'
+                value={searchText}
+    
+                onChange={(e)=>{
+                  setSearchText(e.target.value)
+                  setHostelDataSelected(optimizedSearch(
+                  {
+                    searchText:e.target.value, 
+                    originalData:hostelDataSelectedOriginal, 
+                    filters:filter
+                  }))
+                }}
+              />
+              <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </div>
             </div>
-            <input 
-              placeholder='Search by name or by admission number'
-              className='p-2 w-80 outline-none'
-            />
-            <div>
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </div>
-          </div>
-          
-          <div className='text-stone-800 font-bold text-sm'>Click on a user row to assign role</div>
+            
+            <div className='text-stone-800 font-bold text-sm'>Click on a user row to assign role</div>
 
-          {/* filter and export*/}
-          <div className='flex flex-row space-x-2 items-center'>
-            <div className='py-2 cursor-pointer hover:bg-stone-600 px-3 bg-stone-800 text-white text-sm font-semibold rounded-2xl'>Filter</div>
-            <div className='py-2 cursor-pointer hover:bg-stone-600 px-3 bg-stone-800 text-white text-sm font-semibold rounded-2xl'>Export</div>
+            {/* filter and export*/}
+            <div className='flex flex-row space-x-2 items-center'>
+              <div className='font-bold text-base text-stone-800'>Filter </div>
+              {hostelDataSelectedOriginal[0]&&(
+              <select 
+                onChange={e=>{setFilter(f=>[...f,e.target.value])}}
+                className='p-2 w-40 outline-none ring-slate-200 ring-2 rounded-xl'
+              >
+                <option>-- select --</option>
+                {Object.keys(hostelDataSelectedOriginal[0]).
+                              filter(item=>(
+                                  item!="password"&&
+                                  item!="designation"&&
+                                  item!="is_admin"&&
+                                  item!="stage"&&
+                                  item!="current_inmates"&&
+                                  item!="maximum_inmates"&&
+                                  item!="user_type"&&
+                                  item!="floor_no"&&
+                                  item!="room_id"&&
+                                  item!="block_id"&&
+                                  item!="hostel")).map(item=>(<option>{item}</option>))}
+              </select>)}
+              {/* <div className='py-2 cursor-pointer hover:bg-stone-600 px-3 bg-stone-800 text-white text-sm font-semibold rounded-2xl'>Filter</div> */}
+              {/* <div className='py-2 cursor-pointer hover:bg-stone-600 px-3 bg-stone-800 text-white text-sm font-semibold rounded-2xl'>Export</div> */}
+            </div>
           </div>
+
+          {filter.length>0&&(<div className='w-full px-3 py-2 flex flex-wrap space-x-1'>
+            {filter.map((item, index)=>(
+              <div key={index} className='flex flex-row w-fit justify-between items-center py-2 px-3 bg-stone-800 text-white text-sm font-medium rounded-full'>
+                <div>{item}</div>
+                {/* remove button */}
+                <div
+                    className='ml-2 text-white cursor-pointer rounded-full hover:text-red-600'
+                    onClick={()=>{
+                        var newFilter=[...filter]
+                        newFilter.splice(index,1)
+
+                        setFilter([...newFilter])
+                    }}
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
+                </div>
+              </div>
+            ))}
+          </div>)}
         </div>
+
 
         {/* inmates list */}
         <div className='w-11/12 overflow-y-scroll no-scrollbar'>
@@ -423,6 +366,23 @@ function AdminInmates() {
         </div>
       </div>
 
+      {/* <input 
+              // placeholder='Search by name or by admission number'
+              type="text"
+              className='p-2 w-80 outline-none'
+              value={searchText}
+              onChange={e=>{setSearchText(e.target.value)}}
+  
+              // onChange={(e)=>{
+              //   setSearchText(e.target.value)
+              //   setHostelDataSelected(optimizedSearch(
+              //   {
+              //     searchText:e.target.value, 
+              //     originalData:hostelDataSelectedOriginal, 
+              //     filters:[]
+              //   }))
+              // }}
+            /> */}
       <div className='flex flex-col overflow-hidden items-center py-8 space-y-4 w-11/12 mt-8 bg-white rounded-xl admin-dashbord-height'>
         {/* white box nav bar */}
         <div className='flex flex-row justify-between w-11/12 items-center'>
@@ -465,8 +425,8 @@ function AdminInmates() {
           {tabSelected!="roles"&&<div className='text-sm mb-2'>Showing 1-8 out of 200 results</div>}
         </div>
 
-        {tabSelected!="roles"&&<HostelList />}
-        {tabSelected=="roles"&&<AssignRole />}
+        {tabSelected!="roles"&&HostelList()}
+        {tabSelected=="roles"&&AssignRole()}
       </div>
     </div>
   )

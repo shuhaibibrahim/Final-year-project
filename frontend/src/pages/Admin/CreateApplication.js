@@ -447,27 +447,33 @@ function CreateApplications() {
                     Certificate Template
                   </div>
 
-                  <div className='mt-3 flex flex-row items-center justify-between px-2 w-full'>
+                  <div className='mt-3 flex flex-col items-start space-y-4 px-2 w-full'>
                     <div className='text-stone-800 text-base font-semibold w-full'>
                       Title : {currentApplicationsData[applicationIndex].applicationName}
                     </div>
 
-                    <div className='flex flex-row space-x-2'>
+                    <div className='flex flex-wrap space-x-2 w-full'>
                       {tablesReturned.map((tableName, index)=>(
-                        <select 
-                          key={index} 
-                          onChange={e=>{
-                            setCertificateTemplateText(t=>t+"<<"+e.target.value+">>")
-                            document.getElementById("certificateTemplateTextArea").focus()
-                          }} //<<tablename.columnname>> is added to certificate template text
-                          className=' p-2 outline-none rounded-xl'
-                        >
-                          <option>{tableName.split('_').join(' ')}</option>
-                          {columnsReturned.map((column,cIndex)=>{
-                            if(column.split('.')[0]==tableName)
-                              return <option key={cIndex} value={column}>{column.split('.')[1]}</option>
-                          })}
-                        </select>
+                        <div className='flex flex-col space-y-2'>
+                          <div className='text-stone-800 text-sm font-bold'>{tableName.split('_').join(' ')}</div>
+
+                          <select 
+                            key={index} 
+                            onClick={e=>{
+                              setCertificateTemplateText(t=>t+"<<"+e.target.value+">>")
+                              document.getElementById("certificateTemplateTextArea").focus()
+                            }} //<<tablename.columnname>> is added to certificate template text
+                            className=' p-2 outline-none rounded-xl text-black'
+                          >
+                            <option value="">-- select --</option>
+                            {columnsReturned.map((column,cIndex)=>{
+                              if(column.split('.')[0]!="json"&&column.split('.')[0]==tableName)
+                                return <option className='text-black' key={cIndex} value={column}>{column.split('.')[column.split('.').length-1]}</option>
+                              else if(column.split('.')[0]=="json"&&column.split('.')[1]==tableName)
+                                return <option key={cIndex} value={column}>{column.split('.')[column.split('.').length-1]}</option>
+                            })}
+                          </select>
+                        </div>
                       ))}
 
                     </div>

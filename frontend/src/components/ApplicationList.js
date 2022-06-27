@@ -22,17 +22,18 @@ const ApplicationList=({setCertificates,setAppsno,certificates})=>{
       }, [])
 
       const downloadCertificate = (certificateId,applicationId,certificateName)=>{
-        setLoading(true)
+        // setLoading(true)
         console.log(certificateId)
         axios.get(`${baseUrl}/certificates/download`,{
           params:{
-            certificate_id: certificateId,
+            admission_no: user.user_id,
+            certificate_id:certificateId,
             application_id: applicationId
           }
         })
         .then(res=>{
-          console.log(res)
-          setCertificateText(res.data[0].template_text)
+          console.log(res.data['certificateContent'])
+          setCertificateText(res.data['certificateContent'])
           setCertificateName(certificateName)
           setLoading(false)
           setOpen(true)

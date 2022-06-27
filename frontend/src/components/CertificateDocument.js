@@ -53,8 +53,8 @@ const CertificateDocument = ({certificateText,certificateName}) => {
           <h1 className="font-bold text-lg text-center pb-3 mt-5 uppercase underline">{name}</h1>
           <p>{text}</p>
           <div className="mt-5">
-            <p>To,</p>
-            <p>Akshay K.B</p>
+            {/* <p>To,</p>
+            <p>Akshay K.B</p> */}
           </div>
           <div className="text-center mt-5">This digitally signed document is legally valid as per the Information Technology(IT) Act,2008</div>
         </div>

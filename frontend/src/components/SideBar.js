@@ -18,8 +18,10 @@
     //     }
     // }
 
+import axios from 'axios'
 import React, { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+import App from '../App'
 import keySvg from'../icons/key.svg'
 import logoutSvg from'../icons/logout.svg'
 import userSvg from'../icons/user.svg'
@@ -67,6 +69,19 @@ function SideBar({myLinks, roles, setRole, myActiveIndex, roleIndex, currentRole
         if((localStorage.getItem('subIndex')==null || localStorage.getItem('subIndex')==="-1") && myLinks.length >0 && myLinks[0].subLinks!=undefined)
             localStorage.setItem('subIndex',JSON.stringify(0))
     }, [myLinks])
+
+    let navigate = useNavigate();
+    const logout=()=>{
+        axios.post('http://localhost:8080/logout')
+        .then(function (response) {
+            console.log("success" , response);
+            navigate("/")
+            window.location.reload()
+        })
+        .catch(function (error) {
+            console.log("FAILED!!! ",error);
+        });
+    }
     
     const SideBarLink=({link, index})=>{
         return (
@@ -247,7 +262,10 @@ function SideBar({myLinks, roles, setRole, myActiveIndex, roleIndex, currentRole
                             <div className='text-black'>
                                 <img src={logoutSvg}/>
                             </div>
-                            <div className='py-2'>Logout</div>
+                            <div 
+                                className='py-2 cursor-pointer'
+                                onClick={logout}
+                            >Logout</div>
                         </div>
                     </div>
                 </div>

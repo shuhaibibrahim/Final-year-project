@@ -110,6 +110,7 @@ function App() {
           {user==null&&(<Route path="/login" element={<LoginPage/>}/>)}
           {user==null&&(<Route path="/signup" element={<SignUpPage/>}/>)}
           {user==null&&(<Route path="/facultysignup" element={<FacultySignUp/>}/>)}
+          
           {user!=null&&(user.designation=='faculty')&&(
           <Route path="/" element={<CommonHome user={user}/>}>
             {/* Admin Routes */}
@@ -167,6 +168,12 @@ function App() {
           )}
 
           {/* Student Routes */}
+          {user!=null && user.designation=='student' && user.stage=='noninmate'&&(<Route path="/" element={<StudentHome/>}>
+            <Route index element={<ViewDetails/>}/>
+            <Route path="hostelapply" element={<HostelApplication/>}/>
+            <Route path="noninmatecertificate" element={<CertificatePage/>}/>
+          </Route>)}
+
           {user!=null && user.designation=='student' && user.stage=='noninmate'&&(<Route path="/student" element={<StudentHome/>}>
             <Route index element={<ViewDetails/>}/>
             <Route path="hostelapply" element={<HostelApplication/>}/>
@@ -174,6 +181,16 @@ function App() {
           </Route>)}
 
           {/* Inmate Routes */}
+          {user!=null && user.designation=='student' && user.stage=='inmate'&&(<Route path="/" element={<InmateHome/>}>
+            <Route index element={<MessPage/>}/>
+            <Route path="mess" element={<MessPage/>}/>
+            <Route path="certificates" element={<CertificatePage/>}/>
+            <Route path="noninmatecertificate" element={<NonInmateCertificate/>}/>
+            <Route path="messsec" element={<MessSecretary/>}/>
+            <Route path="messdirector" element={<MessDirector/>}/>
+            <Route path="hostel" element={<HostelPage/>}/>
+          </Route>)}
+
           {user!=null && user.designation=='student' && user.stage=='inmate'&&(<Route path="/inmate" element={<InmateHome/>}>
             <Route index element={<MessPage/>}/>
             <Route path="mess" element={<MessPage/>}/>

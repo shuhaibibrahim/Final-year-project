@@ -1,4 +1,6 @@
-import React, { useState } from 'react'
+import axios from 'axios'
+import React, { useEffect, useState } from 'react'
+import optimizedSearch from '../../components/Search'
 
 function AdminNonInmates() {
   const dummyData=[
@@ -68,7 +70,37 @@ function AdminNonInmates() {
     }
   ]
 
-  const [nonInmates, setNonInmates] = useState(dummyData)
+  const [nonInmates, setNonInmates] = useState([])
+  const [nonInmatesOriginal, setNonInmatesOriginal] = useState([])
+
+  const [searchText, setSearchText] = useState("")
+  const [filter, setFilter] = useState([])
+
+  useEffect(() => {
+    axios.get('http://localhost:8080/admin/noninmates')
+    .then(function (response) {
+        console.log("success" , response ,"response.data");
+        setNonInmatesOriginal(response.data.map(item=>({...item})))
+        setNonInmates(optimizedSearch(
+          {
+            searchText:searchText, 
+            originalData:response.data.map(item=>({...item})), 
+            filters:filter
+          }))
+    })
+    .catch(function (error) {
+        console.log("FAILED!!! ",error);
+    });
+  }, [])
+
+  useEffect(() => {
+    setNonInmates(optimizedSearch({
+      searchText:searchText, 
+      originalData:nonInmatesOriginal, 
+      filters:filter
+    }))
+  }, [filter])
+
 
   return (
     <div className='flex flex-col w-full items-center min-h-screen'>
@@ -96,30 +128,80 @@ function AdminNonInmates() {
         </div>
 
         {/* search and filter */}
-        <div className='flex flex-row bg-primary rounded-lg w-11/12 items-center p-3 justify-between'>
-          {/* search */}
-          <div className='flex flex-row items-center bg-white rounded-lg text-sm px-2'>
-            <div>
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
+        <div className='flex flex-col w-11/12 bg-primary rounded-lg '>
+          <div className='flex flex-row w-full w-full items-center p-3 justify-between'>
+            {/* search */}
+            <div className='flex flex-row items-center bg-white rounded-lg text-sm px-2'>
+              <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </div>
+              <input 
+                  placeholder='Search by name or by admission number'
+                  type="text"
+                  className='p-2 w-80 outline-none'
+                  value={searchText}
+      
+                  onChange={(e)=>{
+                    setSearchText(e.target.value)
+                    setNonInmates(optimizedSearch(
+                    {
+                      searchText:e.target.value, 
+                      originalData:nonInmatesOriginal, 
+                      filters:filter
+                    }))
+                  }}
+                />
+              <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </div>
             </div>
-            <input 
-              placeholder='Search by name or by admission number'
-              className='p-2 w-80 outline-none'
-            />
-            <div>
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-              </svg>
+
+            {/* filter and export*/}
+            <div className='flex flex-row space-x-2 items-center'>
+              <div className='font-bold text-base text-stone-800'>Filter </div>
+              {nonInmatesOriginal[0]&&(
+              <select 
+                onChange={e=>{setFilter(f=>[...f,e.target.value])}}
+                className='p-2 w-40 outline-none ring-slate-200 ring-2 rounded-xl'
+              >
+                <option>-- select --</option>
+                {Object.keys(nonInmatesOriginal[0]).
+                              filter(item=>(
+                                  item!="password"&&
+                                  item!="designation"&&
+                                  item!="is_admin"&&
+                                  item!="stage")).map(item=>(<option>{item}</option>))}
+              </select>)}
+              {/* <div className='py-2 cursor-pointer hover:bg-stone-600 px-3 bg-stone-800 text-white text-sm font-semibold rounded-2xl'>Filter</div> */}
+              {/* <div className='py-2 cursor-pointer hover:bg-stone-600 px-3 bg-stone-800 text-white text-sm font-semibold rounded-2xl'>Export</div> */}
             </div>
           </div>
 
-          {/* filter and export*/}
-          <div className='flex flex-row space-x-2 items-center'>
-            <div className='py-2 cursor-pointer hover:bg-stone-600 px-3 bg-stone-800 text-white text-sm font-semibold rounded-2xl'>Filter</div>
-            <div className='py-2 cursor-pointer hover:bg-stone-600 px-3 bg-stone-800 text-white text-sm font-semibold rounded-2xl'>Export</div>
-          </div>
+          {filter.length>0&&(<div className='w-full px-3 py-2 flex flex-wrap space-x-1'>
+            {filter.map((item, index)=>(
+              <div key={index} className='flex flex-row w-fit justify-between items-center py-2 px-3 bg-stone-800 text-white text-sm font-medium rounded-full'>
+                <div>{item}</div>
+                {/* remove button */}
+                <div
+                    className='ml-2 text-white cursor-pointer rounded-full hover:text-red-600'
+                    onClick={()=>{
+                        var newFilter=[...filter]
+                        newFilter.splice(index,1)
+
+                        setFilter([...newFilter])
+                    }}
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
+                </div>
+              </div>
+            ))}
+          </div>)}
         </div>
 
         {/* inmates list */}
@@ -136,11 +218,11 @@ function AdminNonInmates() {
               {nonInmates.map(user=>(
                 <tr className='border-b border-slate-200 border-solid'>
                   <td className='py-3'>{user.admNo}</td>
-                  <td>{user.name}</td>
-                  <td>{user.dept}</td>
-                  <td>{user.batch}</td>
-                  <td>{user.phone}</td>
-                  <td>{user.email}</td>
+                  <td className='py-3'>{user.name}</td>
+                  <td className='py-3'>{user.dept}</td>
+                  <td className='py-3'>{user.batch}</td>
+                  <td className='py-3'>{user.phone}</td>
+                  <td className='py-3'>{user.email}</td>
                 </tr>
               ))}
           </table>
