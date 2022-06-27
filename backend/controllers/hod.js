@@ -24,11 +24,11 @@ const viewCertificates = async (req,res)=>{
         const certificates=await pool.query(`
         SELECT ST.admission_no,u.name as studentname,B.programme,C.name as certificatename,
         CA.application_id,CA.date,CA.status,CA.application_form,p.path 
-        FROM roles_faculty as RF, hod as H, student as ST, certificate_application as CA, 
+        FROM student as ST, certificate_application as CA, 
         certificates as C, path as P, users as U,batch as B 
-        WHERE RF.userid=$1 and RF.roleid=H.roleid and B.batchid=ST.batchid 
-        and H.department=B.department and ST.admission_no = CA.admission_no and 
-        CA.certificate_id=C.certificate_id and ST.admission_no=u.user_id and C.pathno=P.pathno`,[user_id])
+        WHERE B.batchid=ST.batchid and ST.admission_no = CA.admission_no and 
+        CA.certificate_id=C.certificate_id and ST.admission_no=u.user_id and C.pathno=P.pathno
+        and B.department in(select hod.department from roles_faculty,hod where roles_faculty.userid=$1 and roles_faculty.roleid=hod.roleid)`,[user_id])
         var requiredCertificates=[]
         for (var i=0;i<certificates.rows.length;i++)
         { 
@@ -40,9 +40,9 @@ const viewCertificates = async (req,res)=>{
         }
 
         // console.log(requiredCertificates)
-        console.log(certificates.rows)
+        console.log(requiredCertificates)
         // console.log(req.query)
-        res.json(certificates.rows)
+        res.json(requiredCertificates)
     }
     catch(e){
         console.error(e)

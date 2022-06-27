@@ -1,12 +1,13 @@
 const {pool}=require('../db')
 
 const downloadCertificate = async (req,res)=>{
-    try{
+
         console.log("Helloo")
         try{
             
             const query=await pool.query(`select template_text from certificates where certificate_id=${req.query.certificate_id}`)
-            var matchesArray=query.rows[0].template_text.match(/<<.*>>/g)
+            console.log(query.rows[0])
+            var matchesArray=query.rows[0].template_text.match(/<<.*?>>/g)
     
             console.log(matchesArray)
     
@@ -55,10 +56,7 @@ const downloadCertificate = async (req,res)=>{
         }catch(e){
             console.log(e)
         }
-    }
-    catch(e){
-
-    }
+   
 }
 
 module.exports={downloadCertificate}

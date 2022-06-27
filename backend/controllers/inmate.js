@@ -43,7 +43,9 @@ const submitRoomChange = async(req,res)=>{
         const {user_id,preferredRoom,changeReason}=req.body
         const getadmno=await pool.query("SELECT hostel_admission_no FROM inmate_table WHERE admission_no=$1",[user_id])
         const hostel_admno=getadmno.rows[0].hostel_admission_no
-        const roomchangereq=await pool.query("INSERT INTO room_request values($1,$2,$3,FALSE)",[hostel_admno,preferredRoom,changeReason])
+        const currentroom=await pool.query(`select inmate_room.room_id where hostel_admission_no=$1`,[hostel_admno])
+        const croom=currentroom.rows[0].room_id
+        const roomchangereq=await pool.query("INSERT INTO room_request values($1,$2,$3,FALSE) returning *",[hostel_admno,preferredRoom,changeReason])    
         res.json(roomchangereq)
     }
     catch(e){

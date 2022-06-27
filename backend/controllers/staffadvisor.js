@@ -57,13 +57,14 @@ const approveApplication = async (req,res)=>{
     console.log(patharray)
     if(status===(patharray.length)-1){
         console.log(patharray.length)
-        const query=await pool.query(`update certificate_application set approved=TRUE where application_id=${applicationid} returning *`)
+        const query=await pool.query(`update certificate_application set approved=TRUE and where application_id=${applicationid} returning *`)
         console.log(query.rows)
         res.send(query.rows)
     }
     else{
         const query=await pool.query(`update certificate_application set status=status+1 where application_id=${applicationid} returning *`)
         console.log(query.rows)
+        notification.notifyEmail(query.rows[0].admission_no,query.rows[0].certificate_id,query.rows[0].status,path);
         res.send(query.rows)
     }
    

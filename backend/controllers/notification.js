@@ -18,11 +18,12 @@ const notifyEmail = async (admissionNo,certificateId,status,path)=>{
         recipientname=getEmail.rows[0]?.name
     }
     if(patharray[status]==="HOD"){
-        const getEmail = await pool.query(`select u.email,u.name from users u,student s,roles_faculty r,hod h,batch b
-        where b.batchid=s.batchid and b.department=h.department and h.roleid=r.role_id and r.userid=u.user_id and s.admission_no=$1`,[admissionNo])
+        const getEmail = await pool.query(`select u.email,u.name from users u,roles_faculty r,student s,hod h,batch b
+        where h.department=b.department and h.roleid=r.roleid and r.userid=u.user_id and b.batchid 
+        in(select batchid from student where admission_no=$1)`,[admissionNo])
         console.log(getEmail.rows)
-        // recipientemail=getEmail.rows[0].email
-        // recipientname=getEmail.rows[0].name
+        recipientemail=getEmail.rows[0].email
+        recipientname=getEmail.rows[0].name
     }
 
     var mailOptions = {

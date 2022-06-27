@@ -2,12 +2,21 @@ import React, { useState,useEffect, useContext } from 'react'
 import ApplicationListHOD from '../../components/AppplicationListHOD'
 import {motion} from 'framer-motion'
 import {UserContext} from '../../Contexts/UserContext'
+import axios from 'axios'
 function HodViewApplication() {
  
   const {user} = useContext(UserContext)
 
   const [certificates, setCertificates] = useState([])
   const [appsno,setAppsno]=useState(0)
+
+  // useEffect(() => {
+  //   axios.get(`${baseUrl}/hod/viewcertificates`)
+  //   .then(res=>{
+  //     setCertificates(res.data)
+  //   })
+  // }, [])
+  
 
   return (
     <div className='flex flex-col w-full items-center min-h-screen h-full'>

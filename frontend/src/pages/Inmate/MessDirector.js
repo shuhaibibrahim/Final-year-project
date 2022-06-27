@@ -1,12 +1,21 @@
-import React, { useState } from 'react'
+import React, { useState,useEffect } from 'react'
 import UploadMessBill from '../../components/UploadMessBill'
 import MessOutList from '../../components/MessOutList'
 import {motion} from 'framer-motion'
 import MessDuesView from '../../components/MessDuesView'
 import CurrentMessInmates from '../../components/CurrentMessInmates'
+import MessOutReqs from '../../components/MessOutReqs'
+import axios from 'axios'
 function MessDirector() {
   const [tabSelected, setTabSelected] = useState(1)
   const [inmates,setInmates] = useState([])
+  const [noofDays,setNoofDays]=useState(0)
+  useEffect(() => {
+    axios.get('http://localhost:8080/inmate/messoutdays')
+    .then((res)=>{
+      setNoofDays(res.data[0].value)
+    })
+  }, [])
   return (
     <div className='flex flex-col w-full items-center min-h-screen h-full overflow-y-scroll'>
       <div className='flex flex-row justify-between w-11/12 pt-4 items-center'>
@@ -64,7 +73,7 @@ function MessDirector() {
           <br />
         </div>
         {tabSelected===1&&<CurrentMessInmates inmates={inmates} setInmates={setInmates}/>}
-        {tabSelected===2&&<MessOutList/>}
+        {tabSelected===2&&<MessOutReqs noofDays={noofDays} setNoofDays={setNoofDays}/>}
         {tabSelected===3&&<UploadMessBill/>}
         {tabSelected===4&&<MessDuesView/>}
 

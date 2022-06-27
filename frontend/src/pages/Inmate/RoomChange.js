@@ -1,4 +1,4 @@
-import {useState,useContext} from 'react'
+import {useState,useContext, useEffect} from 'react'
 import { baseUrl } from '../../baseUrl'
 import axios from 'axios'
 import {UserContext} from '../../Contexts/UserContext'
@@ -16,7 +16,7 @@ export default function RoomChange(){
             changeReason:changeReason
         })
         .then(res=>{
-            alert("Submitted")
+            alert("Room Change Request Submitted")
             setPreferredRoom("")
             setChangeReason("")
             setLoading(false)

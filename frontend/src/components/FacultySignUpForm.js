@@ -8,6 +8,7 @@ function FacultySignUpForm() {
     const [email,setEmail]=useState("")
     const [phoneNo,setPhoneNo]=useState("")
     const [password,setPassword]=useState("")
+    const [designation,setDesignation]=useState("")
 
     const submitForm = (e)=>{
         e.preventDefault()
@@ -17,7 +18,8 @@ function FacultySignUpForm() {
             name:name,
             email:email,
             phoneNo:phoneNo,
-            password:password
+            password:password,
+            designation:designation
         })
         .then(res=>console.log(res))
     }
@@ -27,23 +29,32 @@ function FacultySignUpForm() {
           <form action="" className="mt-2" onSubmit={submitForm}>
               <div className="flex flex-col mt-2">
                 <label htmlFor="">PEN Number</label>
-                <input type="text" className="border-solid border-2 rounded-lg mt-2 px-2 py-1" placeholder="Enter your pen number" onChange={e=>{setPenNo(e.target.value)}}/>
+                <input type="text" className="py-2 px-3 rounded-xl ring-2 ring-slate-300 focus:outline-none" placeholder="Enter your pen number" onChange={e=>{setPenNo(e.target.value)}}/>
               </div>
               <div className="flex flex-col mt-2">
                 <label htmlFor="">Name</label>
-                <input type="text" className="border-solid border-2 rounded-lg mt-2 px-2 py-1" placeholder="Enter your name" onChange={e=>{setName(e.target.value)}}/>
+                <input type="text" className="py-2 px-3 rounded-xl ring-2 ring-slate-300 focus:outline-none" placeholder="Enter your name" onChange={e=>{setName(e.target.value)}}/>
               </div>
               <div className="flex flex-col mt-2">
                 <label htmlFor="">Email</label>
-                <input type="email" className="border-solid border-2 rounded-lg mt-2 px-2 py-1" placeholder="Enter your email" onChange={e=>{setEmail(e.target.value)}}/>
+                <input type="email" className="py-2 px-3 rounded-xl ring-2 ring-slate-300 focus:outline-none" placeholder="Enter your email" onChange={e=>{setEmail(e.target.value)}}/>
               </div>
               <div className="flex flex-col mt-2">
                 <label htmlFor="">Phone Number</label>
-                <input type="tel" className="border-solid border-2 rounded-lg mt-2 px-2 py-1" value={phoneNo} onChange={e=>{setPhoneNo(e.target.value)}} placeholder="Enter your phone number"/>
+                <input type="tel" className="py-2 px-3 rounded-xl ring-2 ring-slate-300 focus:outline-none" value={phoneNo} onChange={e=>{setPhoneNo(e.target.value)}} placeholder="Enter your phone number"/>
+              </div>
+              <div className="flex flex-col mt-2">
+                <label htmlFor="">Designation</label>
+                <select name="" id="" className="py-2 px-3 rounded-xl ring-2 ring-slate-300 focus:outline-none" onChange={e=>{setDesignation(e.target.value)}}>
+                    <option value="professor">Professor</option>
+                    <option value="associateprofessor">Associate Professor</option>
+                    <option value="assistantprofessor">Assistant Professor</option>
+                    <option value="others">Others</option>
+                </select>
               </div>
             <div className="flex flex-col mt-2">
               <label htmlFor="">Password</label>
-              <input type="password" className="border-solid border-2 rounded-lg mt-2 px-2 py-1" value={password} onChange={e=>{setPassword(e.target.value)}}placeholder="Enter your password"/>
+              <input type="password" className="py-2 px-3 rounded-xl ring-2 ring-slate-300 focus:outline-none" value={password} onChange={e=>{setPassword(e.target.value)}}placeholder="Enter your password"/>
             </div>
             <div className="mt-2">
                 <p className="text-gray-500">Should contain atleast 8 characters</p>
