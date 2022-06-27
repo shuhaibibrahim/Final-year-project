@@ -10,6 +10,9 @@ router.get('/inmates/getRoles', admin.getInmateRoles)
 router.post('/inmates/updateRole', admin.updateInmateRole)
 router.get('/inmates/removeRole', admin.removeInmateRole)
 
+//non inmate
+router.get('/noninmates', admin.nonInmateList)
+
 //faculty
 router.get('/faculties', admin.facultyList)
 router.get('/faculty/getRoles', admin.getFacultyRoles)
@@ -39,10 +42,13 @@ router.get('/deleteBlock', admin.deleteBlock)
 
 //Seat Matrix
 router.post('/updateSeatMatrix', admin.updateSeatMatrix)
+router.get('/getRoomsInfo', admin.getRoomsInfo)
 
 //Allotment Rules
 router.get('/getHostelCols', admin.getHostelApplicationCols)
 router.get('/getAllotmentColumns', admin.getAllotmentColumns)
 router.post('/updateRule', admin.updateRule)
+router.post('/updateHostelAllotmentOpen', admin.updateHostelAllotmentOpen)
+router.get('/getHostelRequirements', admin.getHostelRequirements)
 
 module.exports=router

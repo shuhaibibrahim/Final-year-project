@@ -87,6 +87,7 @@ function SeatMatrix() {
 
     const [modalType, setModalType] = useState(0) //0 for existing attribute modal 1 for derived attribute modal
     const [maximumInmates, setMaximumInmates] = useState(0)
+    const [hoverIndex, setHoverIndex] = useState(-1)
 
     const getBlocksData=()=>{
         axios.get('http://localhost:8080/admin/getBlocks',{
@@ -137,21 +138,21 @@ function SeatMatrix() {
         getBlocksData()
       }, [tabSelected])
 
-    useEffect(() => {
-        //Fetch this data from database hostel_room table
-        const rangeArray = [...Array(rangeTo - rangeFrom + 1).keys()].map(x => x + rangeFrom);
-        var roomDataFetched=[]
-        rangeArray.forEach((roomNo, index)=>{
-            roomDataFetched.push({
-                roomNo:roomNo,
-                selected:false,
-                userType:null,
-                maximumInmates: null
-            })
-        })
+    // useEffect(() => {
+    //     //Fetch this data from database hostel_room table
+    //     const rangeArray = [...Array(rangeTo - rangeFrom + 1).keys()].map(x => x + rangeFrom);
+    //     var roomDataFetched=[]
+    //     rangeArray.forEach((roomNo, index)=>{
+    //         roomDataFetched.push({
+    //             roomNo:roomNo,
+    //             selected:false,
+    //             userType:null,
+    //             maximumInmates: null
+    //         })
+    //     })
 
-        setRoomData([...roomDataFetched])
-    }, [rangeFrom, rangeTo])
+    //     setRoomData([...roomDataFetched])
+    // }, [rangeFrom, rangeTo])
     
     useEffect(() => {
         var hostelData=tabSelected==0?{...seatMHData}:{...seatLHData}
@@ -160,7 +161,9 @@ function SeatMatrix() {
             var range=hostelData[blockSelected].floorData[floorIndexSelected].roomRange.split('-')
             setRangeFrom(parseInt(range[0]))
             setRangeTo(parseInt(range[1]))
-                
+         
+            getRoomsInfo();
+            
         }
     }, [blockSelected, floorIndexSelected])
 
@@ -192,6 +195,37 @@ function SeatMatrix() {
         }
     }, [selectAll])
     
+    const getRoomsInfo=()=>{
+        var hostelData=tabSelected==0?{...seatMHData}:{...seatLHData}
+
+        axios.get('http://localhost:8080/admin/getRoomsInfo',{
+            params:{
+                blockId: blockSelected,
+                floorNo: hostelData[blockSelected].floorData[floorIndexSelected].floorNo
+            }
+        })
+        .then(function (response) {
+            console.log("success" , response.data ,"response.data");
+
+            var roomDataFetched=[]
+            response.data.forEach((room, index)=>{
+                roomDataFetched.push({
+                    roomId:room.room_id,
+                    roomNo:room.room_no,
+                    selected:false,
+                    userType:room.user_type,
+                    maximumInmates: room.maximum_inmates,
+                    currentInmates: room.current_inmates
+                })
+            })
+
+            setRoomData([...roomDataFetched])
+        })
+        .catch(function (error) {
+            console.log("FAILED!!! ",error);
+        });
+    }
+
     const updateSeatMatrix=()=>{
         var hostelData=tabSelected==0?{...seatMHData}:{...seatLHData}
 
@@ -202,6 +236,7 @@ function SeatMatrix() {
         })
         .then(function (response) {
             console.log("success" , response ,"response.data");
+            getRoomsInfo()
             alert("Updated")
         })
         .catch(function (error) {
@@ -254,30 +289,33 @@ function SeatMatrix() {
                                 </div>
                             </div>
 
-                            <div className='flex flex-row space-x-2 items-center'>
-                                <input 
-                                    type='number' 
-                                    min={0} 
-                                    placeholder="Maximum inmates"
-                                    className='p-2 w-52 outline-none ring-slate-200 ring-2 rounded-xl'
-                                    value={maximumInmates}
-                                    onChange={(e)=>{setMaximumInmates(e.target.value)}}
-                                />
+                            <div className='flex flex-col w-fit'>
+                                <div className='text-stone-800 text-sm font-bold'>Maximum Inmates</div>
+                                <div className='flex flex-row space-x-2 items-center'>
+                                    <input 
+                                        type='number' 
+                                        min={0} 
+                                        placeholder="Maximum inmates"
+                                        className='p-2 w-52 outline-none ring-slate-200 ring-2 rounded-xl'
+                                        value={maximumInmates}
+                                        onChange={(e)=>{setMaximumInmates(e.target.value)}}
+                                    />
 
-                                <div 
-                                    className='button-blue'
-                                    onClick={()=>{
-                                        var newRoomData=[...roomData]
-                                        newRoomData.forEach((room,index)=>{
-                                            if(room.selected==true)
-                                            {
-                                                newRoomData[index].maximumInmates=maximumInmates
-                                            }
-                                        })
-                                        setRoomData([...roomData])
-                                    }}
-                                >
-                                    Assign selected rooms
+                                    <div 
+                                        className='button-blue'
+                                        onClick={()=>{
+                                            var newRoomData=[...roomData]
+                                            newRoomData.forEach((room,index)=>{
+                                                if(room.selected==true)
+                                                {
+                                                    newRoomData[index].maximumInmates=maximumInmates
+                                                }
+                                            })
+                                            setRoomData([...roomData])
+                                        }}
+                                    >
+                                        Assign selected rooms
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -314,12 +352,24 @@ function SeatMatrix() {
                                     newRoomData[index].selected=!newRoomData[index].selected
                                     setRoomData([...newRoomData])
                                 }}
+                                onMouseEnter={()=>{setHoverIndex(index)}}
+                                onMouseLeave={()=>setHoverIndex(-1)}
                             >
                                 <div>{room.roomNo}</div>
 
-                                <div className='absolute flex items-center justify-center text-xs -top-4 -right-4 bg-green-500 h-8 w-8 p-1 text-white font-bold rounded-full'>
+                                <div className='absolute flex items-center justify-center text-xs -bottom-4 -left-4 bg-green-500 h-8 w-8 p-1 text-white font-bold rounded-full'>
                                     <div>{room.userType?room.userType:"nil"}</div>
                                 </div>
+
+                                {room.maximumInmates&&(<div className='absolute flex items-center justify-center text-xs -top-4 -right-4 bg-blue-500 h-8 w-8 p-1 text-white font-bold rounded-full'>
+                                    <div>{room.maximumInmates}</div>
+                                </div>)}
+
+                                {hoverIndex==index&&(
+                                    <div className='inset-0 bg-stone-800/80 flex items-center justify-center text-white font-bold rounded-xl absolute'>
+                                        <div>{room.currentInmates}</div>
+                                    </div>
+                                )}
                             </div>
                         ))}
                     </div>

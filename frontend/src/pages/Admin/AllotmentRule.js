@@ -60,8 +60,9 @@ function AllotmentRule() {
   const [newAttribute, setNewAttribute] = useState("")
   const [newOrder, setNewOrder] = useState("Asc")
   const [updatedRule, setUpdatedRule] = useState([])
-
+{/* updatedRule, rankRule has the form : ['A:ColumnName1:Asc', 'B:ColumnName2:Asc'] */}
   const [rankRule, setRankRule] = useState([])
+  const [allotmentOpen, setAllotmentOpen] = useState(null)
   const [rankSortOrder, setRankSortOrder] = useState("Ascending")
   
   
@@ -77,7 +78,7 @@ function AllotmentRule() {
     .then(function (response) {
       console.log("allotmnent cols: ",response.data)
 
-      const cols=[...response.data]
+      const cols=[...response.data.columnData]
 
       console.log("colsss:",cols.filter(col=>col.columnType=='existing'))
 
@@ -86,6 +87,32 @@ function AllotmentRule() {
 
       setDerivedColumnsData(cols.filter(col=>col.columnType=='derived').map(item=>({...item})))
       setUpdatedDerivedColumnsData(cols.filter(col=>col.columnType=='derived').map(item=>({...item})))
+
+      //combining the exisiting columns and derived columns
+      combineColsData(cols.filter(col=>col.columnType=='existing').map(item=>({...item})),
+      cols.filter(col=>col.columnType=='derived').map(item=>({...item})))
+    })
+    .catch(function (error) {
+        console.log("FAILED!!! ",error);
+    });
+  }
+
+  const getHostelRequirements=(req, res)=>{
+    axios.get('http://localhost:8080/admin/getHostelRequirements')
+    .then(function (response) {
+
+      if(rankRule!="")
+      {
+        setRankRule(response.data.rankRule.split(','))
+        setUpdatedRule(response.data.rankRule.split(','))
+      }
+      else
+      {
+        setRankRule([])
+        setUpdatedRule([])
+      }
+
+      setAllotmentOpen(response.data.allotmentOpen)
     })
     .catch(function (error) {
         console.log("FAILED!!! ",error);
@@ -96,7 +123,7 @@ function AllotmentRule() {
     axios.get('http://localhost:8080/admin/getHostelCols')
     .then(function (response) {
        console.log(response.data)
-       setHostelColsData(response.data)
+       setHostelColsData(response.data) //filling the drop down of existing columns
 
     })
     .catch(function (error) {
@@ -104,26 +131,41 @@ function AllotmentRule() {
     });
 
     getAllotmentColumns()
+    getHostelRequirements()
   }, [])
+
+  const updateHostelAllotmentOpen=()=>{
+    console.log(combinedColumnsData)
+    axios.post('http://localhost:8080/admin/updateHostelAllotmentOpen',{
+      open:allotmentOpen==true?false:true//joining the array ['A:ColumnName1:Asc', 'B:ColumnName2:Asc']
+    })
+    .then(function (response) {
+      console.log(response.data["hostel_allotment_open"])
+      setAllotmentOpen(response.data["hostel_allotment_open"])
+    })
+    .catch(function (error) {
+        console.log("FAILED!!! ",error);
+    });
+  }
 
   const postModification=()=>{
     console.log(combinedColumnsData)
     axios.post('http://localhost:8080/admin/updateRule',{
       columnsData:combinedColumnsData,
-      rankRuleData: updatedRule
+      rankRuleData: updatedRule.join(',') //joining the array ['A:ColumnName1:Asc', 'B:ColumnName2:Asc']
     })
     .then(function (response) {
        console.log(response.data)
        alert("Success")
 
        getAllotmentColumns()
+       getHostelRequirements()
 
     })
     .catch(function (error) {
         console.log("FAILED!!! ",error);
     });
   }
-  
   
   useEffect(() => {
     if(modal!=null)
@@ -333,7 +375,7 @@ function AllotmentRule() {
                 <div className='flex flex-col text-stone-800 text-base p-2 font-semibold w-full'>
 
                   {/* updatedRule has the form : ['A:ColumnName1:Asc', 'B:ColumnName2:Asc'] */}
-                  {updatedRule.map((item,index)=>
+                  {updatedRule.length!=0&&updatedRule.map((item,index)=>
                     item.split(':')[1].includes('.')?
                     (
                       <div key={index}>{index+1} . {item.split(':')[1].split('.')[1]} - {item.split(':')[2]}</div>
@@ -479,7 +521,7 @@ function AllotmentRule() {
         </div>
         
         <div className='mt-5 text-stone-800 font-semibold text-base flex flex-row flex-wrap space-x-2'>
-          {rankRule.map((item, index)=>
+          {rankRule.length!=0&&rankRule.map((item, index)=>
             item.split(':')[1].includes('.')?
             (
               <div key={index}>{item.split(':')[1].split('.')[1]} {item.split(':')[2]} ,</div>
@@ -584,17 +626,32 @@ function AllotmentRule() {
         </div>
         
           
-        <div className='text-stone-800 font-semibold text-base flex flex-row flex-wrap space-x-2'>
-          <div className=''>Current Rule : </div>
-          {rankRule.map((item, index)=>
-          item.split(':')[1].includes('.')?
-          (
-            <div key={index}>{item.split(':')[1].split('.')[1]} {item.split(':')[2]} ,</div>
-          ):
-          (
-            <div key={index}>{item.split(':')[1]} {item.split(':')[2]} ,</div>
-          )
-          )}
+        <div className='flex flex-col w-fit'>
+          <div className='text-stone-800 font-semibold text-base flex flex-row flex-wrap space-x-2'>
+            <div className=''>Current Rule : </div>
+            {rankRule.length!=0&&rankRule.map((item, index)=>
+            item.split(':')[1].includes('.')? //existing column will be stored in the form tablename.columnname
+            (
+              <div key={index}>{item.split(':')[1].split('.')[1]} {item.split(':')[2]} ,</div>
+            ):
+            (
+              <div key={index}>{item.split(':')[1]} {item.split(':')[2]} ,</div>
+            )
+            )}
+          </div>
+
+          <div className='text-stone-800 font-semibold text-base flex flex-row flex-wrap space-x-2'>
+            <div className=''>New Rule : </div>
+            {updatedRule.length!=0&&updatedRule.map((item, index)=>
+            item.split(':')[1].includes('.')? //existing column will be stored in the form tablename.columnname
+            (
+              <div key={index}>{item.split(':')[1].split('.')[1]} {item.split(':')[2]} ,</div>
+            ):
+            (
+              <div key={index}>{item.split(':')[1]} {item.split(':')[2]} ,</div>
+            )
+            )}
+          </div>
         </div>
         
         <div 
@@ -624,8 +681,8 @@ function AllotmentRule() {
         </div>
       </div>
 
-      <div className='flex flex-col items-center py-8 space-y-4 w-11/12 mt-8 admin-dashbord-height bg-white rounded-xl'>
-        <div className='flex flex-col w-11/12  overflow-hidden'>
+      <div className='flex flex-col items-center py-8 space-y-4 w-11/12 mt-8 admin-dashbord-height bg-white rounded-xl relative'>
+        <div className='flex flex-col w-11/12  overflow-hidden '>
           {/* white box nav bar */}
           <div className='flex flex-row tex-black text-sm font-bold relative'>
               {tabs.map((item, index)=>(
@@ -651,17 +708,26 @@ function AllotmentRule() {
 
         </div>
 
+        {tabSelected==0&&(<div className="w-11/12 flex sticky bottom-0">
+          <button 
+            className='button-blue self-start'
+            onClick={updateHostelAllotmentOpen}
+          >{
+            allotmentOpen?"Close Application":"Open Application"
+          }</button>
+        </div>)}
+
           
       </div>
 
-      <div className='w-11/12 flex mt-2 justify-end'>
+      {tabSelected==1&&(<div className='w-11/12 flex mt-2 justify-end'>
         <div 
           className='button-blue'
           onClick={postModification}
         >
           Update Modifications
         </div>
-      </div>
+      </div>)}
     </div>
   )
 }

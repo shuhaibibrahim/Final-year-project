@@ -52,6 +52,21 @@ const removeInmateRole=(req,res)=>{
     res.send('Admin is up!')
 }
 
+//Non inmate functions
+const nonInmateList=(req,res)=>{
+
+    pool.query(`SELECT * FROM Users u, STUDENT s, BATCH b
+                where s.batchId=b.batchId and u.User_Id=s.Admission_No and
+                s.stage!='inmate'`, (err, resp) => {
+        if (err) {
+            throw err
+        }
+
+        console.log('user:', resp.rows)
+
+        res.send(resp.rows)
+    })
+}
 
 //Faculty functions
 const facultyList=(req,res)=>{
@@ -596,7 +611,26 @@ const updateSeatMatrix=(req,res)=>{
     }
 }
 
+const getRoomsInfo=(req, res)=>{
+    pool.query(`SELECT * FROM HOSTEL_ROOM
+                WHERE block_id=$1 and floor_no=$2 order by room_no`, [req.query.blockId, req.query.floorNo], (err, resp) => {
+        if (err) {
+            console.log(err)
+        }
+        
+        console.log(resp.rows)
+        res.send(resp.rows)
+    })
+}
+
 //allotment rules
+const updateHostelAllotmentOpen=(req,res)=>{
+    pool.query(`UPDATE hostel_requirements SET hostel_allotment_open=$1 RETURNING *`,[req.body.open],(err,resp)=>{
+        console.log(resp.rows[0])
+        res.send(resp.rows[0])
+    })
+}
+
 const getHostelApplicationCols=(req,res)=>{
     
     pool.query(`SELECT column_name FROM information_schema.columns
@@ -636,20 +670,28 @@ const getAllotmentColumns=(req, res)=>{
 
         const data=[...resp.rows]
 
-        console.log(data)
-        console.log(data.map(col=>({
-            columnType: col.column_type,
-            columnName: col.columns,
-            columnLetter: col.column_letter,
-            formula: col.formula,
-        })))
+        res.send({
+            columnData:data.map(col=>({
+                            columnType: col.column_type,
+                            columnName: col.columns,
+                            columnLetter: col.column_letter,
+                            formula: col.formula,
+                        }))
+        })
 
-        res.send(resp.rows.map(col=>({
-            columnType: col.column_type,
-            columnName: col.columns,
-            columnLetter: col.column_letter,
-            formula: col.formula,
-        })))
+    })
+}
+
+const getHostelRequirements=(req,res)=>{
+    pool.query('SELECT * FROM hostel_requirements',(err, resp1)=>{
+
+        const rankRule=resp1.rows[0].rank_rule
+        const allotmentOpen=resp1.rows[0].hostel_allotment_open
+
+        res.send({
+            rankRule: rankRule,
+            allotmentOpen:allotmentOpen
+        })
     })
 }
 
@@ -676,10 +718,14 @@ const updateRule=async(req,res)=>{
                     {
                         console.log(err)
                     }
+
                     
                     count++;
                     if(count==req.body.columnsData.length)
                     {
+                        pool.query(`UPDATE hostel_requirements SET rank_rule=$1`,[req.body.rankRuleData],(err,resp)=>{
+                            res.send("success")
+                        })
                         res.send().status(200)
                     }
                 })
@@ -692,14 +738,15 @@ const updateRule=async(req,res)=>{
 
 }
 
-
-
 module.exports={
     //inmate
     inmateList, 
     getInmateRoles,
     updateInmateRole, 
     removeInmateRole,
+
+    //noninmate
+    nonInmateList,
 
     //faculty
     facultyList, 
@@ -733,9 +780,12 @@ module.exports={
 
     //seatMatrix
     updateSeatMatrix,
+    getRoomsInfo,
 
     //allotment rules
+    updateHostelAllotmentOpen,
     getHostelApplicationCols,
     getAllotmentColumns,
+    getHostelRequirements,
     updateRule
 }

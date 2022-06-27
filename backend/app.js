@@ -59,6 +59,13 @@ app.post('/auth/login', passport.authenticate('local') ,(req, res, next)=>{
   res.status(200).send(req.user)
 });
 
+app.post('/logout', function(req, res, next){
+  console.log("logout called")
+  req.user=null;
+  delete req.user
+  res.send("success")
+});
+
 
 //passport.session() middleware calls deSerializeUser function and passes the user to req.user if the user is authenticated
 app.get('/auth/isAuthenticated' ,passport.session(), (req, res, next)=>{

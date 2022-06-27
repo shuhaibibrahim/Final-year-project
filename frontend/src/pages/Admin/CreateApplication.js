@@ -459,12 +459,13 @@ function CreateApplications() {
 
                           <select 
                             key={index} 
-                            onChange={e=>{
+                            onClick={e=>{
                               setCertificateTemplateText(t=>t+"<<"+e.target.value+">>")
                               document.getElementById("certificateTemplateTextArea").focus()
                             }} //<<tablename.columnname>> is added to certificate template text
                             className=' p-2 outline-none rounded-xl text-black'
                           >
+                            <option value="">-- select --</option>
                             {columnsReturned.map((column,cIndex)=>{
                               if(column.split('.')[0]!="json"&&column.split('.')[0]==tableName)
                                 return <option className='text-black' key={cIndex} value={column}>{column.split('.')[column.split('.').length-1]}</option>
