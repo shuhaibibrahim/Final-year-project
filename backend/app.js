@@ -80,6 +80,27 @@ app.post('/facultysignup',async (req,res)=>{
   const hash = bcrypt.hashSync(req.body.password, saltRounds);
   const query= await pool.query(`insert into users(user_id,password,name,email,mobile_no,designation,is_admin) values($1,$2,$3,$4,$5,'faculty',FALSE)`,[req.body.penNo,hash,req.body.name,req.body.email,req.body.mobile_no])
   console.log(query)
+  const secquery = await pool.query(`insert into faculty(user_id,designation) values($1,$2)`[req.body.penNo,req.body.designation])
+  console.log(secquery)
+})
+
+app.post('/studentsignup',async (req,res)=>{
+  try{
+    const saltRounds = 10;
+    const hash = bcrypt.hashSync(req.body.password, saltRounds);
+    console.log("here")
+    const query= await pool.query(`insert into users(user_id,password,name,email,mobile_no,designation,is_admin) values($1,$2,$3,$4,$5,'student',FALSE)`,[req.body.admissionNo,hash,req.body.name,req.body.email,req.body.mobile_no])
+    console.log(query)
+    const yod= await pool.query(`select year from batch where batchid=$1`,[req.body.batchId])
+    console.log(yod)
+    const secquery =await pool.query(`insert into student(admission_no,batchid,year_of_admission,address,stage) values($1,$2,$3,$4,'noninmate')`,[req.body.admissionNo,req.body.batchId,yod.rows[0].year,req.body.address])
+    console.log(secquery)
+  }
+  catch(e){
+    console.log(e)
+  }
+    
+
 })
 
 //----------------------admin routes----------------------

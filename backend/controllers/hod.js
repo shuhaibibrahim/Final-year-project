@@ -20,9 +20,15 @@ const inmateList=(req,res)=>{
 const viewCertificates = async (req,res)=>{
     try{
         const user_id=req.query.user_id
-        // const certificates=await pool.query('SELECT ST.admission_no,u.name as studentname,B.programme,C.name as certificatename,CA.date,CA.status,p.path FROM Roles_faculty as RF, Staff_advisor as SA, student as ST, certificate_application as CA, certificates as C, path as P, users as U,batch as B WHERE Rf.Userid=$1 and Rf.roleid=SA.roleid and SA.batchid=B.batchid and B.batchid=ST.batchid and ST.admission_no = CA.admission_no and CA.certificate_id=C.certificate_id and ST.admission_no=u.user_id and C.pathno=P.pathno',[user_id])
-        const certificates=await pool.query('SELECT ST.admission_no,u.name as studentname,B.programme,C.name as certificatename,CA.date,CA.status,p.path FROM Roles_faculty as RF, hod as h, student as ST, certificate_application as CA, certificates as C, path as P, users as U,batch as B WHERE Rf.Userid=$1 and Rf.roleid=H.roleid and H.department=B.department and B.batchid=ST.batchid and ST.admission_no = CA.admission_no and CA.certificate_id=C.certificate_id and ST.admission_no=u.user_id and C.pathno=P.pathno',[user_id])
-        // const certificates=await pool.query('SELECT * FROM certificate_application where hostel_admission_no=(SELECT hostel_admission_no FROM inmate_table WHERE admission_no=$1)',[user_id])
+        console.log(user_id)
+        const certificates=await pool.query(`
+        SELECT ST.admission_no,u.name as studentname,B.programme,C.name as certificatename,
+        CA.application_id,CA.date,CA.status,CA.application_form,p.path 
+        FROM roles_faculty as RF, hod as H, student as ST, certificate_application as CA, 
+        certificates as C, path as P, users as U,batch as B 
+        WHERE RF.userid=$1 and RF.roleid=H.roleid and B.batchid=ST.batchid 
+        and H.department=B.department and ST.admission_no = CA.admission_no and 
+        CA.certificate_id=C.certificate_id and ST.admission_no=u.user_id and C.pathno=P.pathno`,[user_id])
         var requiredCertificates=[]
         for (var i=0;i<certificates.rows.length;i++)
         { 
@@ -33,10 +39,10 @@ const viewCertificates = async (req,res)=>{
             }
         }
 
-           
-        console.log(requiredCertificates)
+        // console.log(requiredCertificates)
+        console.log(certificates.rows)
         // console.log(req.query)
-        res.json(requiredCertificates)
+        res.json(certificates.rows)
     }
     catch(e){
         console.error(e)
@@ -45,6 +51,5 @@ const viewCertificates = async (req,res)=>{
 }
 
 module.exports={inmateList,
-    viewCertificates,
-
+    viewCertificates
 }

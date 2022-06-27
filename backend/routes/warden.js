@@ -9,5 +9,7 @@ router.get('/gethostelapplications',warden.getHostelApplications)
 
 router.get('/generateranklist',warden.generateRankList)
 
+router.get('/getcertificateapplications',warden.getCertificateApplications)
+
 
 module.exports=router;

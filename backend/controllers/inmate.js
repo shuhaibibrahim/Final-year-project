@@ -148,6 +148,17 @@ const applyMessOut = async (req,res)=>{
     } 
 }
 
+const viewMessBill = async(req,res)=>{
+    try{
+        const query=await pool.query(`select * from messbill where hostel_admission_no=(select hostel_admission_no from inmate_table where admission_no=$1)`,[req.query.user_id])
+        console.log(query)
+        res.json(query.rows)
+    }
+    catch(e){
+        console.log(e)
+    }
+}
+
 const messOutRequests = async (req,res) =>{
     try{
         const requests=await pool.query(`SELECT mo.hostel_admission_no,mo.fromdate,mo.todate,u.name from messout as mo,inmate_table as it,inmate_room as ir,hostel_room as hr,hostel_blocks as hb,users as u
@@ -202,13 +213,14 @@ const uploadMessBill = async (req,res) =>{
     try{
         console.log(req.body)
         req.body.jsonData.map(async item=>{
-            const query= await pool.query("INSERT INTO messbill(hostel_admission_no,bill) VALUES('18MH001',$1)",[item.bill])
+            const query= await pool.query("INSERT INTO messbill(hostel_admission_no,month,attendance,mess_charge,extras,feast,lf,af,total,dues) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)",[item.Hostel_Admission_No,req.body.date.toString(),item.Attendance,item.Mess_Charge,item.Extras,item.Feast,item.LF,item.AF,item.Total,item.Dues])
             console.log(query)
+            res.send("Success")
         })
         
     }
     catch(e){
-
+        console.log(e)
     } 
 }
 
@@ -239,5 +251,6 @@ module.exports={
     messOutRequests,
     currentMessInmates,
     uploadMessBill,
-    cancelMessOut
+    cancelMessOut,
+    viewMessBill
 }

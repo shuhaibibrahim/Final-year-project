@@ -17,7 +17,10 @@ router.post('/complaintbox',inmate.submitComplaint)
 //Room Change
 router.post('/roomchange',inmate.submitRoomChange)
 
-//INMATE - MESSOUT ROUTES
+//INMATE - MESSROUTES
+
+//View Messbill-dues
+router.get('/viewmessbill', inmate.viewMessBill)
 
 //View MessOut history
 router.get('/messouthistory',inmate.viewMessOutHistory)

@@ -2,7 +2,8 @@ const mailer=require('./mailer')
 const {pool}=require('../db')
 const notifyEmail = async (admissionNo,certificateId,status,path)=>{
     var patharray=path.split("-")
-    var recipientmail="";
+    console.log(patharray)
+    var recipientemail="";
     var recipientname="";
     const student=await pool.query(`select users.name from users where users.user_id=$1`,[admissionNo])
     var studentname=student.rows[0].name
@@ -12,16 +13,16 @@ const notifyEmail = async (admissionNo,certificateId,status,path)=>{
         const getEmail = await pool.query(`select u.email,u.name from users u,roles_faculty r,staff_advisor s,batch b
         where b.batchid=s.batchid and s.roleid=r.roleid and r.userid=u.user_id and b.batchid 
         in(select batchid from student where admission_no=$1)`,[admissionNo])
-        console.log(getEmail.rows)
-        recipientemail=getEmail.rows[0].email
-        recipientname=getEmail.rows[0].name
+        console.log(getEmail.rows,admissionNo)
+        recipientemail=getEmail.rows[0]?.email
+        recipientname=getEmail.rows[0]?.name
     }
     if(patharray[status]==="HOD"){
         const getEmail = await pool.query(`select u.email,u.name from users u,student s,roles_faculty r,hod h,batch b
         where b.batchid=s.batchid and b.department=h.department and h.roleid=r.role_id and r.userid=u.user_id and s.admission_no=$1`,[admissionNo])
         console.log(getEmail.rows)
-        recipientemail=getEmail.rows[0].email
-        recipientname=getEmail.rows[0].name
+        // recipientemail=getEmail.rows[0].email
+        // recipientname=getEmail.rows[0].name
     }
 
     var mailOptions = {

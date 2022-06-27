@@ -87,4 +87,20 @@ const generateRankList= async(req,res) =>{
     }
 }
 
-module.exports={hostelRegistry,getHostelApplications,generateRankList}
+const getCertificateApplications = async (req,res)=>{
+    const certificates=await pool.query(`SELECT ST.admission_no,u.name as studentname,B.programme,C.name as certificatename,CA.application_id,CA.date,CA.status,CA.application_form,p.path FROM student as ST, certificate_application as CA, certificates as C, path as P, users as U,batch as B WHERE B.batchid=ST.batchid and ST.admission_no = CA.admission_no and CA.certificate_id=C.certificate_id and ST.admission_no=u.user_id and C.pathno=P.pathno`)
+    console.log(certificates.rows)
+    var requiredCertificates=[]
+        for (var i=0;i<certificates.rows.length;i++)
+        { 
+            var myArray = certificates.rows[i].path.split("-");
+            console.log(myArray)
+            if(myArray[certificates.rows[i].status]=='WD'){
+                requiredCertificates.push(certificates.rows[i])
+            }
+    }
+    console.log(requiredCertificates)
+    res.json(requiredCertificates)
+}
+
+module.exports={hostelRegistry,getHostelApplications,generateRankList,getCertificateApplications}
