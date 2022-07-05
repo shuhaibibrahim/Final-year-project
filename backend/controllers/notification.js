@@ -1,6 +1,7 @@
 const mailer=require('./mailer')
 const {pool}=require('../db')
 const notifyEmail = async (admissionNo,certificateId,status,path)=>{
+    console.log("called",admissionNo, certificateId, status, path)
     var patharray=path.split("-")
     console.log(patharray)
     var recipientemail="";
@@ -9,6 +10,8 @@ const notifyEmail = async (admissionNo,certificateId,status,path)=>{
     var studentname=student.rows[0].name
     const getCertificate=await pool.query(`select name from certificates where certificate_id=$1`,[certificateId])
     var certificateName=getCertificate.rows[0].name
+
+    console.log(status)
     if(patharray[status]==="SA"){
         const getEmail = await pool.query(`select u.email,u.name from users u,roles_faculty r,staff_advisor s,batch b
         where b.batchid=s.batchid and s.roleid=r.roleid and r.userid=u.user_id and b.batchid 
@@ -21,7 +24,7 @@ const notifyEmail = async (admissionNo,certificateId,status,path)=>{
         const getEmail = await pool.query(`select u.email,u.name from users u,roles_faculty r,student s,hod h,batch b
         where h.department=b.department and h.roleid=r.roleid and r.userid=u.user_id and b.batchid 
         in(select batchid from student where admission_no=$1)`,[admissionNo])
-        console.log(getEmail.rows)
+        console.log("email : ",getEmail.rows)
         recipientemail=getEmail.rows[0].email
         recipientname=getEmail.rows[0].name
     }

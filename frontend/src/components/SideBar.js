@@ -44,9 +44,18 @@ function SideBar({myLinks, roles, setRole, myActiveIndex, roleIndex, currentRole
     //     }
             
     // }, [])
+
+    const rolesMap={
+        'admin':'admin',
+        'SA':'Staff Advisor',
+        'HOD':'HOD',
+        'WD':'Warden',
+        'HO':'Hostel Office',
+        'MTRN':'Matron',
+        'SG':'Seargant'
+    }
     
     useEffect(() => {
-        // setLinks(myLinks)
 
         var myActiveIndex=localStorage.getItem('activeIndex')==null?0:parseInt(localStorage.getItem('activeIndex'))
 
@@ -238,7 +247,7 @@ function SideBar({myLinks, roles, setRole, myActiveIndex, roleIndex, currentRole
                                     <div className='text-black'>
                                         <img src={userSvg}/>
                                     </div>
-                                    <div>{role}</div>
+                                    <div>{rolesMap[role]}</div>
                                 </div>
                                 </Link>
                             ))}

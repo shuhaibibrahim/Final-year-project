@@ -57,7 +57,7 @@ function LoginForm() {
                     />
                 </div>
                 <div className="flex items-center justify-between mt-2">
-                    <p className="text-gray-500">Should contain atleast 8 characters</p>
+                    {/* <p className="text-gray-500">Should contain atleast 8 characters</p> */}
                     <p className="text-blue-500 underline cursor-pointer">Forgot Password?</p>
                 </div>
                 <div className="flex items-center justify-center mt-4">

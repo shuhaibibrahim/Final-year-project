@@ -8,6 +8,7 @@ function SignUpForm({filledDetails}) {
     const [address,setAddress]=useState("")
     const signUp = (e)=>{
       e.preventDefault();
+      console.log("filleddetails",filledDetails)
       axios.post(`${baseUrl}/studentsignup`,{batchId:filledDetails[0],email:filledDetails[1],name:filledDetails[2],admissionNo:filledDetails[3],phoneNo:phoneNo,password:password,address:address})
       .then(res=>console.log(res))
     }
@@ -40,7 +41,7 @@ function SignUpForm({filledDetails}) {
               <input type="password" className="border-solid border-2 rounded-lg mt-2 px-2 py-1" value={password} onChange={e=>{setPassword(e.target.value)}}placeholder="Enter your password"/>
             </div>
             <div className="mt-2">
-                <p className="text-gray-500">Should contain atleast 8 characters</p>
+                {/* <p className="text-gray-500">Should contain atleast 8 characters</p> */}
             </div>
             <div className="flex items-center justify-center mt-4">
                 <button type="submit" className="rounded-xl text-white py-2 px-4 w-3/6 bg-stone-800">Sign Up</button>

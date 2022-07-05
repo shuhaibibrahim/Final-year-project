@@ -6,17 +6,17 @@ import fitnessSvg from'../../icons/fitness.svg'
 const wardenLinks=[
     {
         title:"Hostel Admission",
-        to:"warden/admission",
+        to:"WD/admission",
         icon:fitnessSvg,
     },
     {
         title:"View Applications",
-        to:"warden/applications",
+        to:"WD/applications",
         icon:editSvg,
     },
     {
         title:"Hostel Registry",
-        to:"warden/hostelregistry",
+        to:"WD/hostelregistry",
         icon: editSvg,
     },
 

@@ -274,8 +274,9 @@ function HostelRegistry() {
                   setTabSelected("MH")
                 }}
               >
-                  <div>Mens Hostel <span className='ml-2 p-2 text-white bg-stone-800 rounded-lg cursor-default'>200</span></div>
-                  <div className={tabSelected=="MH"?'h-1 self-center w-8/12 bg-stone-800 rounded-full':''}/>
+                  {/* <div>Mens Hostel <span className='ml-2 p-2 text-white bg-stone-800 rounded-lg cursor-default'>200</span></div> */}
+                  <div>Mens Hostel</div>
+                  <div className={tabSelected=="MH"?'h-1 self-center w-12/12 bg-stone-800 rounded-full':''}/>
               </div>
 
               <div 
@@ -285,12 +286,13 @@ function HostelRegistry() {
                   setTabSelected("LH")
                 }}
               >
-                <div>Ladies Hostel <span className='ml-2 p-2 text-white bg-stone-800 rounded-lg cursor-default'>200</span></div>
-                <div className={tabSelected=="LH"?'h-1 w-8/12 self-center bg-stone-800 rounded-full':''}/>
+                {/* <div>Ladies Hostel <span className='ml-2 p-2 text-white bg-stone-800 rounded-lg cursor-default'>200</span></div> */}
+                <div>Ladies Hostel</div>
+                <div className={tabSelected=="LH"?'h-1 w-12/12 self-center bg-stone-800 rounded-full':''}/>
               </div>
           </div>
 
-          <div className='text-sm mb-2'>Showing 1-8 out of 200 results</div>
+          {/* <div className='text-sm mb-2'>Showing 1-8 out of 200 results</div> */}
         </div>
 
         <HostelList />

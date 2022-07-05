@@ -33,9 +33,8 @@ function CommonHome() {
 
         
     // }, [])
-    user.roles=["admin", "staff advisor", "warden", "hosteloffice", "hod"]
+    // user.roles=["admin", "staff advisor", "warden", "hosteloffice", "hod"]
     useEffect(() => {
-
         // if(user.roles[role]==="admin")
         // {
         //     // setRoleTo("admin")
@@ -72,30 +71,30 @@ function CommonHome() {
             console.log("new links : ",adminLinks)
             setLinks(adminLinks.map(item=>({...item})))
         }
-        else if(role==="staff advisor")
+        else if(role==="SA")
         {
             // setRoleTo("staffadvisor")
             console.log("new links : ",saLinks)
             setLinks(saLinks.map(item=>({...item})))
         }
         
-        else if(role==="hod")
+        else if(role==="HOD")
         {
             // setRoleTo("staffadvisor")
             console.log("new links : ",hodLinks)
             setLinks(hodLinks.map(item=>({...item})))
         }
-        else if(role==="warden"){
+        else if(role==="WD"){
             // setRoleTo("warden")
             console.log("new links : ",wardenLinks)
             setLinks(wardenLinks.map(item=>({...item})))
         }
-        else if(role==="hosteloffice"){
+        else if(role==="HO"){
             // setRoleTo("warden")
             console.log("new links : ",hostelOfficeLinks)
             setLinks(hostelOfficeLinks.map(item=>({...item})))
         }
-        else if(user.roles[role]==="sergeant"){
+        else if(user.roles[role]==="SG"){
             // setRoleTo("warden")
             console.log("new links : ",sergeantLinks)
             setLinks(sergeantLinks.map(item=>({...item})))

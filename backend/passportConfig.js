@@ -1,12 +1,13 @@
 var LocalStrategy = require('passport-local');
 var {pool, users} = require('./db');
-
+const bcrypt = require('bcrypt')
 
 module.exports = function(passport){
   passport.use('local',new LocalStrategy((username, password, done)=>{
 
+    
     pool.query(`SELECT * FROM USERS
-                WHERE User_Id=$1 and Password=$2`, [username, password], (err, resp) => {
+                WHERE User_Id=$1`, [username], (err, resp) => {
         if (err) {
             console.log(err)
             // resp.status(400).send("Error while fetching data")
@@ -17,8 +18,13 @@ module.exports = function(passport){
           console.log('user:', resp.rows)
   
           if(resp.rows.length==0)
-            return done(null, false, {message : "incorrect username or passsword"})
+            return done(null, false, {message : "incorrect username"})
   
+          bcrypt.compare(password, resp.rows[0].password, function(err, result) {
+            if(result==false)
+              return done(null, false, {message : "incorrect passsword"})
+          });
+
           var user={...resp.rows[0]}
           user.roles=[]
 
@@ -32,10 +38,10 @@ module.exports = function(passport){
 
                           //adding admin role if user is an admin
                           if(user.is_admin==true)
-                            roles.push('admin')
+                            roles.push({role:'admin'})
                           var userWithRoles={
                             ...user,
-                            roles:roles
+                            roles:roles.map(item=>item.role)
                           }
                           console.log("userWithRoles : ",userWithRoles)
                           return done(null,userWithRoles)
@@ -62,7 +68,7 @@ module.exports = function(passport){
                                 console.log("I got here ",response.rows)
                                 user.roles=response.rows.map(item=>item.role)
 
-                                console.log("userWithRoles : ",user)
+                                console.log("userWithRoles : ",user.roles)
                                 return done(null,user)
                               }
                               else
@@ -139,11 +145,11 @@ module.exports = function(passport){
 
                                     //adding admin role if user is an admin
                                     if(user.is_admin==true)
-                                      roles.push('admin')
+                                      roles.push({role:'admin'})
 
                                     var userWithRoles={
                                       ...user,
-                                      roles:roles
+                                      roles:roles.map(item=>item.rol)
                                     }
                                     console.log("userWithRoles : ",userWithRoles)
                                     return done(null,userWithRoles)

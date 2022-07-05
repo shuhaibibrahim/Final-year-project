@@ -1,8 +1,9 @@
-import {useState,useContext} from "react"
+import {useState,useContext,useEffect} from "react"
 import {motion} from "framer-motion" 
 import axios from 'axios'
 import RankList from "../../components/RankList"
 import {UserContext} from '../../Contexts/UserContext'
+import {baseUrl} from '../../baseUrl'
 
 function HostelApplication() {
   const [currpage,setCurrPage]=useState(1)
@@ -11,6 +12,11 @@ function HostelApplication() {
   const {user}=useContext(UserContext)
   const [details,setDetails]=useState({})
 
+  useEffect(() => {
+    axios.get(`${baseUrl}/student/checkapplied`,{params:{userid:user.user_id}})
+    .then(res=>console.log(res))
+  }, [])
+  
   const submitHandler =()=>{
     setDetails({...details,user_id:user.user_id})
     axios.post('http://localhost:8080/student/hostelapplication',details)
@@ -30,12 +36,8 @@ function HostelApplication() {
       <motion.div initial={{opacity:0}} animate={{opacity:1}} transition={{duration:0.5}} className='w-10/12 mt-12 bg-white rounded-xl text-left p-5'>
         {currpage===1 && <div><h2 className="font-bold">Rules</h2>
         <ol className="list-decimal pl-5 pt-2 ">
-            <li>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Rerum, ab!</li>
-            <li>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Rerum, ab!</li>
-            <li>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Rerum, ab!</li>
-            <li>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Rerum, ab!</li>
-            <li>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Rerum, ab!</li>
-            <li>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Rerum, ab!</li>
+            <li>Admission shall be confined to the regular full time students who are in the current nominal roll of the college prepared from time to time by the College of Engineering, Thiruvananthapuram. </li>
+            <li>The warden shall have powers to issue instructions and standing orders to regulate the internal matters of the hostel and the warden's decision shall be final in all matters connected with the hostel. </li>
         </ol>
         <div className="w-full flex items-end justify-end mt-5">
             <motion.button whileHover={{x:10, backgroundColor:'green'}}  className="ml-auto p-3 bg-stone-800 text-white rounded-xl" onClick={()=>setCurrPage(currpage+1)}>Proceed to Apply</motion.button>
@@ -69,9 +71,11 @@ function HostelApplication() {
                 <option value="Gate">GATE</option>
               </select>
               <label htmlFor="" className="mt-2">Qualifying Exam Rank</label>
-              <input type="text" name="rank"  value={details.rank} onChange={(e)=>{setDetails({...details,[e.target.name]:e.target.value})}} className="p-2 ring-slate-200 ring-2 rounded-xl outline-none"/>
+              <input type="number" name="rank"  value={details.rank} onChange={(e)=>{setDetails({...details,[e.target.name]:e.target.value})}} className="p-2 ring-slate-200 ring-2 rounded-xl outline-none"/>
               <label htmlFor="" className="mt-2">University Number</label>
               <input type="text" name="universityno" value={details.universityno} onChange={(e)=>{setDetails({...details,[e.target.name]:e.target.value})}} className="p-2 ring-slate-200 ring-2 rounded-xl outline-none"/>
+              <label className="mt-2">University CGPA</label>
+              <input type="number" name="cgpa" value={details.cgpa} onChange={(e)=>{setDetails({...details,[e.target.name]:e.target.value})}} className="p-2 ring-slate-200 ring-2 rounded-xl outline-none"></input>
             </div>
           <div className="w-full flex items-center justify-between mt-5">
               <motion.button whileHover={{x:-10, backgroundColor:'red'}}  className="p-3 bg-stone-800 text-white rounded-xl" onClick={()=>setCurrPage(currpage-1)}>Back</motion.button>
@@ -107,7 +111,7 @@ function HostelApplication() {
               </div>
               
               <label htmlFor="" className="mt-2">Annual Income</label>
-              <input type="text" name="annual_income" value={details.annual_income} onChange={(e)=>{setDetails({...details,[e.target.name]:e.target.value})}} className="px-2 py-1 ring-slate-200 ring-2 rounded-xl outline-none"/>
+              <input type="number" name="annual_income" value={details.annual_income} onChange={(e)=>{setDetails({...details,[e.target.name]:e.target.value})}} className="px-2 py-1 ring-slate-200 ring-2 rounded-xl outline-none"/>
               <label htmlFor="" className="mt-2">Residential Address</label>
               <textarea type="text" name="present_address" value={details.present_address} onChange={(e)=>{setDetails({...details,[e.target.name]:e.target.value})}}  className="px-2 py-1 ring-slate-200 ring-2 rounded-xl outline-none"/>
             </div>
@@ -153,7 +157,7 @@ function HostelApplication() {
         </div>
         <div className="w-full flex items-center justify-between mt-5">
               <motion.button whileHover={{x:-10, backgroundColor:'red'}}  className="p-3 bg-stone-800 text-white rounded-xl" onClick={()=>setCurrPage(currpage-1)}>Back</motion.button>
-              <motion.button whileHover={{x:10, backgroundColor:'green'}}  className="p-3 bg-stone-800 text-white rounded-xl" onClick={submitHandler} type="submit">Submit Application</motion.button>
+              <motion.button whileHover={{x:10, backgroundColor:'green'}}  className="p-3 bg-stone-800 text-white rounded-xl" onClick={()=>{submitHandler();setCurrPage(currpage+1)}} type="submit">Submit Application</motion.button>
         </div>
         </div>}
         {currpage===6 && <div>
@@ -193,13 +197,13 @@ function HostelApplication() {
               <div className="flex flex-col items-center justify-center p-5 bg-purple-800 rounded-lg mr-5">
                 <h2 className="text-lg font-semibold text-white">Your Rank</h2>
                 <hr/>
-                <h1 className="text-2xl font-bold text-white">2</h1>
+                <h1 className="text-2xl font-bold text-white">1</h1>
               </div>
 
               <div className="flex flex-col items-center justify-center p-5 bg-teal-700 rounded-lg ml-5">
                 <h2 className="text-lg font-semibold text-white">Allotted Room</h2>
                 <hr/>
-                <h1 className="text-2xl font-bold text-white">A109</h1>
+                <h1 className="text-2xl font-bold text-white">Pending..</h1>
               </div>
             </div>
           

@@ -119,12 +119,12 @@ function AdminNonInmates() {
               <div
                 className='cursor-pointer '
               >
-                  <div>Non Inmates<span className='ml-2 p-2 text-white bg-stone-800 rounded-lg cursor-default'>200</span></div>
+                  <div>Non Inmates<span className='ml-2 p-2 text-white bg-stone-800 rounded-lg cursor-default'>{nonInmatesOriginal.length}</span></div>
                   <div className='h-1 self-center w-8/12 bg-stone-800 rounded-full'/>
               </div>
           </div>
 
-          <div className='text-sm mb-2'>Showing 1-8 out of 200 results</div>
+          {/* <div className='text-sm mb-2'>Showing 1-8 out of 200 results</div> */}
         </div>
 
         {/* search and filter */}
@@ -217,11 +217,11 @@ function AdminNonInmates() {
               </tr>
               {nonInmates.map(user=>(
                 <tr className='border-b border-slate-200 border-solid'>
-                  <td className='py-3'>{user.admNo}</td>
+                  <td className='py-3'>{user.user_id}</td>
                   <td className='py-3'>{user.name}</td>
                   <td className='py-3'>{user.dept}</td>
-                  <td className='py-3'>{user.batch}</td>
-                  <td className='py-3'>{user.phone}</td>
+                  <td className='py-3'>{user.batch_name}</td>
+                  <td className='py-3'>{user.mobile_no}</td>
                   <td className='py-3'>{user.email}</td>
                 </tr>
               ))}

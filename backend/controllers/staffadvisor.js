@@ -47,7 +47,10 @@ const viewCertificates = async (req,res)=>{
 
 const approveApplication = async (req,res)=>{
     const applicationid=req.body.application_id
-    console.log(applicationid)
+    console.log(`SELECT P.path,CA.status 
+    from certificate_application as CA,certificates as C,path as P 
+    where CA.application_id=${applicationid} and CA.certificate_id=C.certificate_id and C.pathno=P.pathno`)
+
     const query=await pool.query(`SELECT P.path,CA.status 
     from certificate_application as CA,certificates as C,path as P 
     where CA.application_id=${applicationid} and CA.certificate_id=C.certificate_id and C.pathno=P.pathno`)
@@ -56,12 +59,16 @@ const approveApplication = async (req,res)=>{
     var patharray=path.split("-")
     console.log(patharray)
     if(status===(patharray.length)-1){
-        console.log(patharray.length)
-        const query=await pool.query(`update certificate_application set approved=TRUE and where application_id=${applicationid} returning *`)
-        console.log(query.rows)
-        res.send(query.rows)
+        console.log(`update certificate_application set approved=TRUE where application_id=${applicationid} returning *`)
+        // const query=await pool.query(`update certificate_application set approved=TRUE and where application_id=${applicationid} returning *`)
+        pool.query(`update certificate_application set approved=TRUE where application_id=${applicationid} returning *`,(err,resp)=>{
+            if(err)
+                console.log(err)
+            res.send(query.rows)
+        })
     }
     else{
+        console.log(`update certificate_application set status=status+1 where application_id=${applicationid} returning *`)
         const query=await pool.query(`update certificate_application set status=status+1 where application_id=${applicationid} returning *`)
         console.log(query.rows)
         notification.notifyEmail(query.rows[0].admission_no,query.rows[0].certificate_id,query.rows[0].status,path);
@@ -84,12 +91,12 @@ const signUpInvite = async (req,res)=>{
     in(select roleid from roles_faculty where userid=$1 and role='SA')`,[staffadvid])
     console.log(getbatchId.rows)
     var ptext=getbatchId.rows[0].batchid
-    req.body.jsonData.forEach(user => {
+    req.body.jsonData.forEach(async(user) => {
         // Encrypt
-        ptext=ptext+':'+user.EmailId+':'+user.Name+':'+user.AdmissionNo
-        console.log(ptext)
+        var text=ptext+':'+user.EmailId+':'+user.Name+':'+user.AdmissionNo
+        console.log(text)
         // var ciphertext = CryptoJS.AES.encrypt(JSON.stringify({ptext}), 'secret key 123').toString();
-        var ciphertext = encrypt(ptext,'secret key 123')
+        var ciphertext = encrypt(text,'secret key 123')
         var mailOptions = {
             from: 'cethostelmanagement@outlook.com', // sender address (who sends)
             to: `${user.EmailId}`, // list of receivers (who receives)
@@ -100,7 +107,7 @@ const signUpInvite = async (req,res)=>{
         };
     
         // send mail with defined transport object
-        mailer.transporter.sendMail(mailOptions, function(error, info){
+        await mailer.transporter.sendMail(mailOptions, function(error, info){
             if(error){
                 return console.log(error);
             }
@@ -108,7 +115,7 @@ const signUpInvite = async (req,res)=>{
             console.log('Message sent: ' + info.response);
             res.send("Success")
         });
-        ptext=getbatchId.rows[0].batchId
+        // ptext=getbatchId.rows[0].batchId
     });
     
 

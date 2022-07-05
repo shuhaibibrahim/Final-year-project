@@ -459,11 +459,10 @@ function AdminFaculty() {
                   <option value={null}>-- select --</option>
                   <option value="Computer Science and Engineering">Computer Science and Engineering</option>
                   <option value="Civil Enginering">Civil Enginering</option>
-                  <option value="Applied Electronics and Instrumentation Engineering">Applied Electronics and Instrumentation Engineering</option>
                   <option value="Electronics Engineering">Electronics Engineering</option>
                   <option value="Electrical and Electronics Engineering">Electrical and Electronics Engineering</option>
                   <option value="Mechanical Engineering">Mechanical Engineering</option>
-                  <option value="Industrial Engineering">Industrial Engineering</option>
+                  <option value="MCA">MCA</option>
                   <option value="Architecture">Architecture</option>
                 </select>
             </div>
@@ -500,7 +499,7 @@ function AdminFaculty() {
                   setTabSelected("faculty")
                 }}
               >
-                  <div>Faculty <span className='ml-2 p-2 text-white bg-stone-800 rounded-lg cursor-default'>200</span></div>
+                  <div>Faculty <span className='ml-2 p-2 text-white bg-stone-800 rounded-lg cursor-default'>{facultyOriginal.length}</span></div>
                   <div className={tabSelected=="faculty"?'h-1 self-center w-6/12 bg-stone-800 rounded-full':''}/>
               </div>
 

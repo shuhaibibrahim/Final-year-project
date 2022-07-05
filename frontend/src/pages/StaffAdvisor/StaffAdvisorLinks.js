@@ -6,17 +6,17 @@ import fitnessSvg from'../../icons/fitness.svg'
 const saLinks=[
     {
         title:"Students Details",
-        to:"staffadvisor/studentsdetails",
+        to:"SA/studentsdetails",
         icon: fitnessSvg,
     },
     {
         title:"Signup Invite",
-        to:"staffadvisor/signupinvite",
+        to:"SA/signupinvite",
         icon: editSvg,
     },
     {
         title:" View Applications",
-        to:"staffadvisor/SaViewApplication",
+        to:"SA/SaViewApplication",
         icon: bookSvg,
     }
 ]
