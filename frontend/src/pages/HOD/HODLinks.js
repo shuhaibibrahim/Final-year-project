@@ -6,17 +6,17 @@ import fitnessSvg from'../../icons/fitness.svg'
 const hodLinks=[
     {
         title:"Students Details",
-        to:"hod/studentsdetails",
+        to:"HOD/studentsdetails",
         icon: fitnessSvg,
     },
     {
         title:"Add Staff Advisor",
-        to:"hod/addstaffadvisor",
+        to:"HOD/addstaffadvisor",
         icon: editSvg,
     },
     {
         title:" View Applications",
-        to:"hod/HodViewApplication",
+        to:"HOD/HodViewApplication",
         icon: bookSvg,
     }
 ]

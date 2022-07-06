@@ -26,8 +26,8 @@ function MessPage() {
                   setTabSelected(1)
                 }}
               >
-                  <div>Mess Bill <span className='ml-2 p-2 text-white bg-stone-800 rounded-lg cursor-default'>200</span></div>
-                  <div className={tabSelected===1?'mt-2 h-1 self-center w-6/12 bg-stone-800 rounded-full':''}/>
+                  <div>Mess Bill</div>
+                  <div className={tabSelected===1?'mt-2 h-1 self-center w-12/12 bg-stone-800 rounded-full':''}/>
               </div>
 
               <div 

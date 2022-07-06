@@ -6,12 +6,12 @@ import fitnessSvg from'../../icons/fitness.svg'
 const hostelOfficeLinks=[
     {
         title:"Hostel Admission",
-        to:"hosteloffice/admission",
+        to:"HO/admission",
         icon:fitnessSvg,
     },
     {
         title:"Mess",
-        to:"hosteloffice/mess",
+        to:"HO/mess",
         icon: editSvg,
     },
 

@@ -22,20 +22,18 @@ function SignupInvite() {
   const [indEmail,setIndEmail]=useState("");
   const [indAdmno,setIndAdmno]=useState("");
   const [indName,setIndName]=useState("");
-  const {setLoading} =useContext(UserContext)
+  const {setLoading,user} =useContext(UserContext)
 
   const sendEmail = (e)=>{
     e.preventDefault()
-    setLoading(true)
-    axios.post(`${baseUrl}/staffadvisor/signupinvite`,jsonData)
+    axios.post(`${baseUrl}/staffadvisor/signupinvite`,{jsonData,UserId:user.user_id})
     .then(res=>{
       console.log(res)
-      setLoading(false)
     })
   }
   const sendIndEmail = (e)=>{
     e.preventDefault()
-    axios.post(`${baseUrl}/staffadvisor/signupinvite`,[{EmailId:indEmail,Name:indName,AdmissionNo:indAdmno}])
+    axios.post(`${baseUrl}/staffadvisor/signupinvite`,{jsonData:[{EmailId:indEmail,Name:indName,AdmissionNo:indAdmno}],UserId:user.user_id})
     .then(res=>console.log(res))
   }
   return (

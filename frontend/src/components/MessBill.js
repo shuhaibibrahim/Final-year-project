@@ -1,65 +1,23 @@
-import {useState} from "react"
+import {useState,useEffect, useContext} from "react"
+import axios from 'axios'
+import { baseUrl } from "../baseUrl"
+import { UserContext } from "../Contexts/UserContext"
 function MessBill() {
-   const messouts=[
-       {
-         SlNo:"1234",
-         Month:"xyz",
-         Attendance:"cse",
-         MessCharge:15426,
-         Extras:125,
-         Feast:1265,
-         LF:123,
-         AF:12,
-         Total:122545,
-         Dues:12354
-       },
-       {
-        SlNo:"1234",
-        Month:"xyz",
-        Attendance:"cse",
-        MessCharge:15426,
-        Extras:125,
-        Feast:1265,
-        LF:123,
-        AF:12,
-        Total:122545,
-        Dues:12354
-       },
-       {
-        SlNo:"1234",
-        Month:"xyz",
-        Attendance:"cse",
-        MessCharge:15426,
-        Extras:125,
-        Feast:1265,
-        LF:123,
-        AF:12,
-        Total:122545,
-        Dues:12354
-      },
-      {
-        SlNo:"1234",
-        Month:"xyz",
-        Attendance:"cse",
-        MessCharge:15426,
-        Extras:125,
-        Feast:1265,
-        LF:123,
-        AF:12,
-        Total:122545,
-        Dues:12354
-      },
-       
-       
-     ]
-
-     const [hostelDataSelected, setHostelDataSelected] = useState(messouts)
-     const [tabSelected, setTabSelected] = useState(1)
-     const [selectedRowIndex, setSelectedRowIndex] = useState(-1)
-     const [selectedHostel, setSelectedHostel] = useState(null)
-   
-       return (
-         // <div className='w-full'>
+  const [messbill, setMessBill] = useState([])
+  const [tabSelected, setTabSelected] = useState(1)
+  const {user,setLoading} = useContext(UserContext)
+  useEffect(() => {
+    setLoading(true)
+    axios.get(`${baseUrl}/inmate/viewmessbill`,{params:{user_id:user.user_id}})
+    .then(res=>{
+      setMessBill(res.data)
+      setLoading(false)
+    })
+    
+  }, [])
+  
+    return (
+      // <div className='w-full'>
          <>
            {/* inmates list */}
            <div className='w-11/12'>
@@ -77,31 +35,21 @@ function MessBill() {
                    <th className='p-3'>Total</th>
                    <th className='p-3'>Dues</th>
                  </tr>
-                 {hostelDataSelected.map((user, index)=>(
+                 {messbill.map((user, index)=>(
                    <tr 
-                     className={'border-b text-center border-slate-200 border-solid '+(index==selectedRowIndex && selectedHostel==tabSelected ?' bg-blue-300 ':' hover:bg-gray-300')}
-                     onClick={()=>{
-                       if(selectedRowIndex==index && selectedHostel==tabSelected)
-                       {
-                         setSelectedRowIndex(-1)
-                         setSelectedHostel(null)
-                       }
-                       else
-                       {
-                         setSelectedRowIndex(index)
-                         setSelectedHostel(tabSelected) //"MH" or "LH"
-                       }
-                     }}
+                     key={index+1}
+                     className={'border-b text-center border-slate-200 border-solid hover:bg-gray-300'}
                    >
-                     <td className='p-3'>{user.SlNo}</td>
-                     <td className='p-3'>{user.Month}</td>
-                     <td className='p-3'>{user.Attendance}</td>
-                     <td className='p-3'>{user.MessCharge}</td>
-                     <td className='p-3'>{user.Extras}</td>
-                     <td className='p-3'>{user.Feast}</td>
-                     <td className='p-3'>{user.LF}</td>
-                     <td className='p-3'>{user.AF}</td>
-                     <td className='p-3'>{user.Total}</td>
+                     <td className='p-3'>{index+1}</td>
+                     <td className='p-3'>{user.month}</td>
+                     <td className='p-3'>{user.attendance}</td>
+                     <td className='p-3'>{user.mess_charge}</td>
+                     <td className='p-3'>{user.extras}</td>
+                     <td className='p-3'>{user.feast}</td>
+                     <td className='p-3'>{user.lf}</td>
+                     <td className='p-3'>{user.af}</td>
+                     <td className='p-3'>{user.total}</td>
+                     <td className='p-3'>{user.dues}</td>
                    </tr>
                  ))}
              </table>

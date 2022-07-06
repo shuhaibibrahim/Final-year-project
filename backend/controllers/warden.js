@@ -44,7 +44,7 @@ const generateRankList= async(req,res) =>{
         var temp=[]
         headerquery.rows.forEach(element => {
             if(element.column_type==='existing'){
-                temp.push({header:element.columns.split('.')[1],key:element.columns})
+                temp.push({header:element.columns.split('.')[1],key:element.columns.split('.')[1]})
                 //Existing column format : 'table.columnname'
             }
             else{
@@ -52,6 +52,8 @@ const generateRankList= async(req,res) =>{
                 //Derived column format : 'columnname'
             }
         });
+
+        temp.push({header:"rank", key:"rank"})
         worksheet.columns=[...temp]
         // console.log(worksheet.columns)
         const noofrows=query.rows.length
@@ -70,14 +72,96 @@ const generateRankList= async(req,res) =>{
             rows.push(row)
         }
 
-        worksheet.eachRow((row, rowNo)=>{
-            headerquery.rows.forEach(col=>{
-                if(col.column_type==='derived')
-                    worksheet.getCell(col.column_letter+''+(rowNo+1)).value={formula:col.formula}
-            })
-        })
-        console.log(rows)
+        console.log(rows.length)
         worksheet.addRows(rows);
+        
+        worksheet.eachRow((row, rowNo)=>{
+            console.log(rowNo)
+
+            if(rowNo!=1)
+            {
+                headerquery.rows.forEach(col=>{
+                    
+                    if(col.column_type==='derived')    
+                    {
+                        var matchesArray=col.formula.match(/<.*?>/g)
+    
+                        console.log(matchesArray)
+                        var formula=col.formula
+    
+                        matchesArray.forEach(pattern=>{
+                            formula=formula.replace(pattern, (pattern.slice(1,-1)+""+rowNo))
+                        })
+    
+                        console.log(formula)
+                        
+                        worksheet.getCell(col.column_letter+''+rowNo).value={formula:formula}
+
+                    }
+                })
+            }
+        })
+
+        
+        var sortedRows=[]
+        worksheet.eachRow((row, rowNo)=>{
+            console.log(rowNo)
+
+            if(rowNo!=1)
+            {
+                var newRow=[]
+                row.eachCell((cell, cellNo)=>{
+                    console.log(cell.value)
+                    newRow.push(cell.value?cell.value:"")
+                })
+            }
+
+            sortedRows.push(newRow)
+        })
+
+        
+
+        const hostelRequirements=await pool.query('select rank_rule from hostel_requirements')
+        console.log(hostelRequirements.rows[0].rank_rule)
+        const colLetter=hostelRequirements.rows[0].rank_rule.split(':')[0]
+        const order=hostelRequirements.rows[0].rank_rule.split(':')[2]
+
+        sortedRows = sortedRows.sort(function(a, b) { 
+            if(order=='Asc')
+                return a[colLetter.charPointAt(0)-65] - b[colLetter.charPointAt(0)-65]; 
+            else
+                return a[colLetter.charPointAt(0)-65] - b[colLetter.charPointAt(0)-65]; 
+        });
+        const sorted_worksheet = workbook.addWorksheet('RankList-Sorted');
+
+
+        sorted_worksheet.columns=[...temp]
+        sorted_worksheet.addRows(sortedRows)
+
+        worksheet.eachRow(async (row, rowNo)=>{
+            if(rowNo!=1)
+            {
+                var newRow=[]
+                const userId=row.getCell("user_id").value
+                row.getCell("rank").value=rowNo-1
+                
+                const hostelRequirements=await pool.query(`INSERT INTO rank_list(user_id, rank, verified)
+                values($1, $2, $3)`,[userId, rowNo-1, false])
+            }
+
+        })
+
+        // const rankCol = worksheet.getColumn('rank');
+        // rankCol.eachCell(async function(cell, rowNumber) {
+        //     cell.value=rowNumber
+        //     worksheet.getRow(rowNumber).getCell('rank').value={rowNumber}
+        //     // const userId=worksheet.getRow(rowNumber).getCell("user_id").value
+        //     // const hostelRequirements=await pool.query(`INSERT INTO rank_list(user_id, rank, verified)
+        //     // values($1, $2, $3)`,[userId, rowNumber, false])
+
+        // });
+
+        workbook.removeWorksheet("RankList")
         console.log("running")
         await workbook.xlsx.writeFile("Ranklist.xlsx");
 
@@ -87,4 +171,20 @@ const generateRankList= async(req,res) =>{
     }
 }
 
-module.exports={hostelRegistry,getHostelApplications,generateRankList}
+const getCertificateApplications = async (req,res)=>{
+    const certificates=await pool.query(`SELECT ST.admission_no,u.name as studentname,B.programme,C.name as certificatename,CA.application_id,CA.date,CA.status,CA.application_form,p.path FROM student as ST, certificate_application as CA, certificates as C, path as P, users as U,batch as B WHERE B.batchid=ST.batchid and ST.admission_no = CA.admission_no and CA.certificate_id=C.certificate_id and ST.admission_no=u.user_id and C.pathno=P.pathno`)
+    console.log(certificates.rows)
+    var requiredCertificates=[]
+        for (var i=0;i<certificates.rows.length;i++)
+        { 
+            var myArray = certificates.rows[i].path.split("-");
+            console.log(myArray)
+            if(myArray[certificates.rows[i].status]=='WD'){
+                requiredCertificates.push(certificates.rows[i])
+            }
+    }
+    console.log(requiredCertificates)
+    res.json(requiredCertificates)
+}
+
+module.exports={hostelRegistry,getHostelApplications,generateRankList,getCertificateApplications}

@@ -57,7 +57,7 @@ const nonInmateList=(req,res)=>{
 
     pool.query(`SELECT * FROM Users u, STUDENT s, BATCH b
                 where s.batchId=b.batchId and u.User_Id=s.Admission_No and
-                s.stage!='inmate'`, (err, resp) => {
+                s.stage='noninmate'`, (err, resp) => {
         if (err) {
             throw err
         }
@@ -128,7 +128,7 @@ const postFacultyRole=(req,res)=>{
                                     console.log("err2=3 : ",err)
                                 }
     
-                                res.send("Success")
+                                res.send({message : "Success"})
                             })
                         })
                 }
@@ -140,7 +140,7 @@ const postFacultyRole=(req,res)=>{
                             console.log("err2=3 : ",err)
                         }
 
-                        res.send("Success")
+                        res.send({message : "Success"})
                     })
                 }
                                
@@ -154,11 +154,14 @@ const postFacultyRole=(req,res)=>{
                     console.log("err4 : ",err)
                 }
 
-                res.send("Success")
+                res.send({message : "Success"})
             })
         }
+        else
+        {
+            res.send({message : "Success"})
+        }
 
-        res.send("Success")
     })
 }
 
@@ -171,7 +174,7 @@ const removeFacultyRole=(req,res)=>{
         }
         console.log('deleted:', resp.rows)
 
-        res.send("success")
+        res.send({message : "success"})
     })
 }
 
@@ -604,7 +607,7 @@ const updateSeatMatrix=(req,res)=>{
                 if(count==req.body.roomData.length)
                 {
                     console.log("updated")
-                    res.send("Updated")
+                    res.send({message : "Updated"})
                 }
             })
 
@@ -724,9 +727,8 @@ const updateRule=async(req,res)=>{
                     if(count==req.body.columnsData.length)
                     {
                         pool.query(`UPDATE hostel_requirements SET rank_rule=$1`,[req.body.rankRuleData],(err,resp)=>{
-                            res.send("success")
+                            res.send({message : "success"})
                         })
-                        res.send().status(200)
                     }
                 })
     

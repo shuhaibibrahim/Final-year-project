@@ -40,9 +40,9 @@ const adminLinks=[
         icon: editSvg,
     },
     {
-        title:"Allotment Rules",
-        to:"admin/allotmentrule",
-        icon: bookSvg,
+      title:"Create/Edit Application",
+      to:"admin/createapplication",
+      icon: editSvg,
     },
     {
         title:"Application Paths",
@@ -50,9 +50,9 @@ const adminLinks=[
         icon: fitnessSvg,
     },
     {
-      title:"Create/Edit Application",
-      to:"admin/createapplication",
-      icon: editSvg,
+        title:"Allotment Rules",
+        to:"admin/allotmentrule",
+        icon: bookSvg,
     },
     {
       title:"Hostel Blocks",

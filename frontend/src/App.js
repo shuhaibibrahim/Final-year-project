@@ -128,7 +128,7 @@ function App() {
             </Route>)}
 
             {/* staffadvisor Routes */}
-            <Route path="staffadvisor" element={<AdvisorHome/>}>
+            <Route path="SA" element={<AdvisorHome/>}>
               <Route index element={<StudentsDetails/>}/>
               <Route path="studentsdetails" element={<StudentsDetails/>}/>
               <Route path="signupinvite" element={<SignupInvite/>}/>
@@ -136,7 +136,7 @@ function App() {
             </Route>
 
             {/* hod Routes */}
-            <Route path="/hod" element={<HodHome/>}>
+            <Route path="/HOD" element={<HodHome/>}>
               <Route index element={<StudentsDetailsHod/>}/>
               <Route path="studentsdetails" element={<StudentsDetailsHod/>}/>
               <Route path="addstaffadvisor" element={<AddStaffAdvisor/>}/>
@@ -144,20 +144,20 @@ function App() {
             </Route>
 
             {/* Warden Routes */}
-            <Route path="/warden" element={<WardenHome/>}>
+            <Route path="/WD" element={<WardenHome/>}>
               <Route index element={<HostelAdmission/>}/>
               <Route path="admission" element={<HostelAdmission/>}/>
               <Route path="hostelregistry" element={<HostelRegistry/>}/>
               <Route path="applications" element={<ViewApplications/>}/>
             </Route>
 
-            <Route path="/sergeant" element={<SergeantHome/>}>
+            <Route path="/SG" element={<SergeantHome/>}>
               <Route index element={<ViewComplaints/>}/>
               <Route path="complaints" element={<ViewComplaints/>}/>
             </Route>
 
             {/* Hostel Office Routes */}
-            <Route path="/hosteloffice" element={<HostelOfficeHome/>}>
+            <Route path="/HO" element={<HostelOfficeHome/>}>
               <Route index element={<AdmissionHostelOffice/>}/>
               <Route path="admission" element={<AdmissionHostelOffice/>}/>
               <Route path="hostelregistry" element={<HostelRegistry/>}/>

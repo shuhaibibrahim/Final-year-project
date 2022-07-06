@@ -11,6 +11,7 @@ const ApplicationListStaffAdvisor=({setCertificates,setAppsno,certificates})=>{
     const [details,setDetails] = useState({})
     // const [certificates,setCertificates] = useState([])
     useEffect(() => {
+      setLoading(true)
         axios.get(`${baseUrl}/staffadvisor/viewcertificates`,{
           params:{
             user_id:user.user_id
@@ -18,6 +19,7 @@ const ApplicationListStaffAdvisor=({setCertificates,setAppsno,certificates})=>{
         })
         .then(res=>{
         //   console.log("hello")
+        setLoading(false)
           console.log(res.data)
           setCertificates(res.data)
           setAppsno(res.data.length)

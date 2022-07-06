@@ -286,9 +286,9 @@ function AddStaffAdvisor() {
                       }
                     }}
                   >
-                    <td className='py-3'>{user.penNo}</td>
+                    <td className='py-3'>{user.user_id}</td>
                     <td className='py-3'>{user.name}</td>
-                    <td className='py-3'>{user.phone}</td>
+                    <td className='py-3'>{user.mobile_no}</td>
                     <td className='py-3'>{user.email}</td>
                   </tr>
                 ))}

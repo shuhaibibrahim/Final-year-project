@@ -3,6 +3,8 @@ import ApplicationListWarden from '../../components/ApplicationListWarden'
 import {motion} from 'framer-motion'
 
 import { UserContext } from '../../Contexts/UserContext';
+import axios from 'axios';
+import { baseUrl } from '../../baseUrl';
 
 function ViewApplications() {
   
@@ -10,7 +12,6 @@ function ViewApplications() {
 
   const [certificates, setCertificates] = useState([])
   const [appsno,setAppsno]=useState(0)
-
   return (
     <div className='flex flex-col w-full items-center min-h-screen h-full'>
       <div className='flex flex-row justify-between w-11/12 pt-4 items-center'>

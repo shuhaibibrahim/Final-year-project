@@ -459,7 +459,7 @@ function CreateApplications() {
 
                           <select 
                             key={index} 
-                            onClick={e=>{
+                            onChange={e=>{
                               setCertificateTemplateText(t=>t+"<<"+e.target.value+">>")
                               document.getElementById("certificateTemplateTextArea").focus()
                             }} //<<tablename.columnname>> is added to certificate template text

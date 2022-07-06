@@ -101,10 +101,11 @@ function AllotmentRule() {
     axios.get('http://localhost:8080/admin/getHostelRequirements')
     .then(function (response) {
 
-      if(rankRule!="")
+      console.log("dsds",response.data["rankRule"].split(','))
+      if(response.data["rankRule"]!="")
       {
-        setRankRule(response.data.rankRule.split(','))
-        setUpdatedRule(response.data.rankRule.split(','))
+        setRankRule(response.data["rankRule"].split(','))
+        setUpdatedRule(response.data["rankRule"].split(','))
       }
       else
       {

@@ -395,8 +395,9 @@ function AdminInmates() {
                   setTabSelected("MH")
                 }}
               >
-                  <div>Mens Hostel <span className='ml-2 p-2 text-white bg-stone-800 rounded-lg cursor-default'>200</span></div>
-                  <div className={tabSelected=="MH"?'h-1 self-center w-8/12 bg-stone-800 rounded-full':''}/>
+                  {/* <div>Mens Hostel <span className='ml-2 p-2 text-white bg-stone-800 rounded-lg cursor-default'></span></div> */}
+                  <div>Mens Hostel</div>
+                  <div className={tabSelected=="MH"?'h-1 self-center w-12/12 bg-stone-800 rounded-full':''}/>
               </div>
 
               <div 
@@ -407,8 +408,9 @@ function AdminInmates() {
                   setTabSelected("LH")
                 }}
               >
-                <div>Ladies Hostel <span className='ml-2 p-2 text-white bg-stone-800 rounded-lg cursor-default'>200</span></div>
-                <div className={tabSelected=="LH"?'h-1 w-8/12 self-center bg-stone-800 rounded-full':''}/>
+                {/* <div>Ladies Hostel <span className='ml-2 p-2 text-white bg-stone-800 rounded-lg cursor-default'>{hostelDataSelectedOriginal.length}</span></div> */}
+                <div>Ladies Hostel</div>
+                <div className={tabSelected=="LH"?'h-1 w-12/12 self-center bg-stone-800 rounded-full':''}/>
               </div>
 
               {selectedRowIndex!=-1&& <motion.div initial={{scale:0.8}} animate={{scale:1}}  

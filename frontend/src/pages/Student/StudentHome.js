@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Outlet } from 'react-router-dom'
 import SideBar from '../../components/SideBar'
 import editSvg from'../../icons/edit.svg'
@@ -7,6 +7,7 @@ import bookSvg from'../../icons/book.svg'
 import fitnessSvg from'../../icons/fitness.svg'
 
 function StudentHome() {
+  
   const links=[
     {
         title:"View Hostel Details",
