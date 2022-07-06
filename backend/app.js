@@ -45,6 +45,9 @@ const port = 8080
 //----------------------ROUTES-----------------------
 app.get('/', (req, res) => {
   res.send('Hello World!')
+  pool.query("select * from users",(err, resp)=>{
+    console.log(resp.rows)
+  })
 })
 
 //----------------------auth routes----------------------

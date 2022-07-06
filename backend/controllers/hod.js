@@ -115,7 +115,7 @@ const facultyList=(req,res)=>{
 const getFacultyRoles=(req, res)=>{
     
     console.log(req.query)
-    pool.query(`SELECT Role FROM ROLES_FACULTY rf, staff_advisor s, batch b
+    pool.query(`SELECT Role, rf.roleid FROM ROLES_FACULTY rf, staff_advisor s, batch b
         WHERE
         rf.UserId=$1 and
         rf.roleid=s.roleid and
@@ -125,7 +125,10 @@ const getFacultyRoles=(req, res)=>{
         throw err
         }
 
-        res.send(resp1.rows.map(item=>item.role))
+        res.send(resp1.rows.map(item=>({
+            role:item.role,
+            roleid:item.roleid
+        })))
     })
 }
 
@@ -179,6 +182,7 @@ const postFacultyRole=(req,res)=>{
                                 
             })
     
+            res.setHeader('Content-Type', 'text/plain');
             res.send({message : "success"})
         })
     }catch(e){
@@ -187,14 +191,15 @@ const postFacultyRole=(req,res)=>{
 }
 
 const removeFacultyRole=(req,res)=>{
-    console.log("delete called at bacend", req.query)
+    console.log("delete called at bacend", JSON.parse(req.query.role)["roleid"])
     pool.query(`DELETE FROM ROLES_FACULTY 
-                WHERE UserID=$1 AND Role=$2 returning *`, [req.query.penNo, req.query.role], (err, resp) => {
+                WHERE UserID=$1 AND roleid=$2 returning *`, [req.query.penNo, JSON.parse(req.query.role)["roleid"]], (err, resp) => {
         if (err) {
           throw err
         }
         console.log('deleted:', resp.rows)
 
+        res.setHeader('Content-Type', 'text/plain');
         res.send("success")
     })
 }

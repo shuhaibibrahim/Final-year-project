@@ -151,7 +151,7 @@ function AddStaffAdvisor() {
     });
   }
 
-  const deleteRole=(role)=>{
+  const deleteRole=(roleItem)=>{
 
     setLoading(true)
 
@@ -159,7 +159,7 @@ function AddStaffAdvisor() {
     axios.get('http://localhost:8080/hod/faculty/removeRole',{
       params:{
         penNo:faculty[selectedRowIndex].pen_no,
-        role:role
+        role:roleItem
       }
     })
     .then(function (response) {
@@ -339,9 +339,9 @@ function AddStaffAdvisor() {
             <div className='w-full flex flex-row items-center mt-4'>
               <div className='text-stone-800 font-bold'>Roles</div> 
                 <span className='text-stone-800 font-bold mr-3 flex flex-row'>:</span>
-                {selectedFacultyRoles.map((item, index)=>item=="SA"&&(
+                {selectedFacultyRoles.map((item, index)=>item.role=="SA"&&(
                   <div key={index} className='flex flex-row w-fit justify-between items-center mr-2 py-2 px-3 bg-stone-800 text-white text-sm font-medium rounded-full space-x-2'>
-                    <div>{item}</div>
+                    <div>{item.role}</div>
                     <div
                         className='ml-2 text-white cursor-pointer rounded-full hover:text-red-600'
                         onClick={()=>{
