@@ -1,6 +1,6 @@
 var LocalStrategy = require('passport-local');
 var {pool, users} = require('./db');
-const bcrypt = require('bcrypt')
+const bcryptjs = require('bcryptjs')
 
 module.exports = function(passport){
   passport.use('local',new LocalStrategy((username, password, done)=>{
@@ -20,7 +20,7 @@ module.exports = function(passport){
           if(resp.rows.length==0)
             return done(null, false, {message : "incorrect username"})
   
-          bcrypt.compare(password, resp.rows[0].password, function(err, result) {
+          bcryptjs.compare(password, resp.rows[0].password, function(err, result) {
             if(result==false)
               return done(null, false, {message : "incorrect passsword"})
           });

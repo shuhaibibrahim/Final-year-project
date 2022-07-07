@@ -451,7 +451,7 @@ const getTableAndCols=(req,res)=>{
                 tables.push('certificate_application')
                 console.log("tempJSON : ",Object.keys(tempJson))
                 
-                columnsData=[...columnsData, ...Object.keys(tempJson).map(key=>("json.certificate_application.application_from."+key))]
+                columnsData=[...columnsData, ...Object.keys(tempJson).map(key=>("json.certificate_application.application_form."+key))]
                 //since certificate template field and its value are stored as a json string in the certificate_application,
                 //the key will be stored in the template_text as json.certificate_application.application_from.key
 

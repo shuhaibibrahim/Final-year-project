@@ -14,8 +14,7 @@ const staffadvisor=require('./routes/staffadvisor')
 const certificates=require('./routes/certificates')
 const bodyParser = require('body-parser')
 var passport = require('passport');
-const {pool} = require('./db')
-const bcrypt = require('bcrypt')
+const bcryptjs = require('bcryptjs')
 
 //----------------------MIDDLEWARES-----------------------
 //Body parser middleware - passport returned ad request without this
@@ -89,7 +88,7 @@ app.get('/auth/isAuthenticated' ,passport.session(), (req, res, next)=>{
 app.post('/facultysignup',async (req,res,next)=>{
   console.log(req.body)
   const saltRounds = 10;
-  const hash = bcrypt.hashSync(req.body.password, saltRounds);
+  const hash = bcryptjs.hashSync(req.body.password, saltRounds);
   pool.query(`insert into users(user_id,password,name,email,mobile_no,designation,is_admin) 
   values($1,$2,$3,$4,$5,'faculty',FALSE) returning *`,[req.body.penNo,hash,req.body.name,req.body.email,req.body.phoneNo],(err, resp)=>{
 
@@ -109,7 +108,7 @@ app.post('/facultysignup',async (req,res,next)=>{
 app.post('/studentsignup',async (req,res)=>{
   try{
     const saltRounds = 10;
-    const hash = bcrypt.hashSync(req.body.password, saltRounds);
+    const hash = bcryptjs.hashSync(req.body.password, saltRounds);
     console.log("here")
     const query= await pool.query(`insert into users(user_id,password,name,email,mobile_no,designation,is_admin) values($1,$2,$3,$4,$5,'student',FALSE)`,[req.body.admissionNo,hash,req.body.name,req.body.email,req.body.phoneNo])
     console.log(req.body)
